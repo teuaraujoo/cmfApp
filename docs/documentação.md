@@ -1,0 +1,1 @@
+STACKS: NextJS + PostgressSQL + Tailwind CSS + Shadcn + TyperScript
