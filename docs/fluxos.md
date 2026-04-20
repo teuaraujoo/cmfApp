@@ -289,3 +289,6 @@ manter histórico
 depois da deleção:
 preferir atualização ao invés de exclusão 
 
+
+Fluxo das camadas aplicação
+route -> services -> schema -> rules -> mapper -> repository 

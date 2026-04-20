@@ -44,3 +44,4 @@ CMF.sql
 aprendizados.txt
 comandos.txt
 /src/generated/prisma
+payloads.json

@@ -1,11 +1,18 @@
-import { getAll } from "@/server/services/users.services";
+import { AppError } from "@/server/error/app-errors";
+import { getAll, createUser } from "@/server/services/users.services";
 
 export async function GET() {
     try {
         const users = await getAll();
-        return Response.json({ message: 'Usuários encontrados com sucesso!', data: users });
+
+        return Response.json({
+            message: 'Usuários encontrados com sucesso!',
+            data: users
+        },
+            { status: 200 });
+
     } catch (err) {
-        console.error('API /api/users error', err);
+
         return Response.json({
             message: 'Erro ao acessar o banco de dados',
             detail: err instanceof Error ? err.message : String(err),
@@ -15,10 +22,29 @@ export async function GET() {
     }
 };
 
-export async function POST(params:type) {
+export async function POST(request: Request) {
     try {
+        const body = await request.json();
+
+        const user = await createUser(body);
+
+        return Response.json({
+            message: 'Usuário criado com sucesso!',
+            data: user
+        }, { status: 201 });
 
     } catch (err) {
 
+        if (err instanceof AppError) {
+            return Response.json({
+                message: err.message
+            }, { status: err.statusCode });
+        }
+
+        return Response.json({
+            message: 'Erro interno do servidor!',
+        },
+            { status: 500 }
+        );
     }
-}
+};
