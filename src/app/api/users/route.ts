@@ -1,50 +1,60 @@
 import { AppError } from "@/server/error/app-errors";
-import { getAllUsers, createUser } from "@/server/services/users.services";
+import { createUser, getAllUsers } from "@/server/services/users.services";
+import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function GET() {
-    try {
-        const users = await getAllUsers();
+  try {
+    await userHelpers.requireAdminUser();
 
-        return Response.json({
-            message: 'Usuários encontrados com sucesso!',
-            data: users
-        },
-            { status: 200 });
+    const users = await getAllUsers();
 
-    } catch (err) {
-
-        return Response.json({
-            message: 'Erro ao acessar o banco de dados',
-            detail: err instanceof Error ? err.message : String(err),
-        },
-            { status: 500 }
-        );
+    return Response.json(
+      {
+        message: "Usuários encontrados com sucesso!",
+        data: users,
+      },
+      { status: 200 }
+    );
+  } catch (err) {
+    if (err instanceof AppError) {
+      return Response.json({ message: err.message }, { status: err.statusCode });
     }
+
+    return Response.json(
+      {
+        message: "Erro ao acessar o banco de dados.",
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 500 }
+    );
+  };
 };
 
 export async function POST(request: Request) {
-    try {
-        const body = await request.json();
+  try {
+    await userHelpers.requireAdminUser();
 
-        const user = await createUser(body);
+    const body = await request.json();
+    const user = await createUser(body);
 
-        return Response.json({
-            message: 'Usuário criado com sucesso!',
-            data: user
-        }, { status: 201 });
-
-    } catch (err) {
-
-        if (err instanceof AppError) {
-            return Response.json({
-                message: err.message
-            }, { status: err.statusCode });
-        }
-
-        return Response.json({
-            message: 'Erro interno do servidor!',
-        },
-            { status: 500 }
-        );
+    return Response.json(
+      {
+        message: "Usuário criado com sucesso!",
+        data: user,
+      },
+      { status: 201 }
+    );
+  } catch (err) {
+    if (err instanceof AppError) {
+      return Response.json({ message: err.message }, { status: err.statusCode });
     }
+
+    return Response.json(
+      {
+        message: "Erro interno do servidor!",
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 500 }
+    );
+  };
 };

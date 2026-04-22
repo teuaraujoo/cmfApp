@@ -2,24 +2,46 @@ import { prisma } from "@/libs/prisma";
 import { Prisma } from "@/generated/prisma/client";
 
 export async function getAll() {
-    const users = await prisma.users.findMany();
-    return users;
+  return prisma.public_users.findMany({
+    orderBy: {
+      created_at: "desc",
+    },
+  });
 };
 
 export async function getByEmail(email: string) {
-    const user = await prisma.users.findUnique({ where: { email } });
-    return user;
+  return prisma.public_users.findUnique({ where: { email } });
 };
 
-export async function newUser(tx: Prisma.TransactionClient, newUser: Prisma.usersCreateInput) {
-    const user = await tx.users.create({ data: newUser });
-    return user;
+export async function getByAuthUserId(authUserId: string) {
+  return prisma.public_users.findUnique({ where: { auth_user_id: authUserId } });
+};
+
+export async function getWithProfilesByAuthUserId(authUserId: string) {
+  return prisma.public_users.findUnique({
+    where: { auth_user_id: authUserId },
+    include: {
+      alunos: true,
+      professores: true,
+    },
+  });
+};
+
+export async function newUser(tx: Prisma.TransactionClient, newUser: Prisma.public_usersCreateInput) {
+  return tx.public_users.create({ data: newUser });
 };
 
 export async function createAluno(tx: Prisma.TransactionClient, aluno: Prisma.alunosUncheckedCreateInput) {
-    return await tx.alunos.create({ data: aluno });
+  return tx.alunos.create({ data: aluno });
 };
 
 export async function createProfessor(tx: Prisma.TransactionClient, professor: Prisma.professoresUncheckedCreateInput) {
-    return await tx.professores.create({ data: professor });
+  return tx.professores.create({ data: professor });
+};
+
+export async function disableMustChangePassword(userId: number) {
+  return prisma.public_users.update({
+    where: { id: userId },
+    data: { must_change_password: false },
+  });
 };
