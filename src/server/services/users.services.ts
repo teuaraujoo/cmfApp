@@ -1,4 +1,4 @@
-import { CreateAluno, CreateProfessor, GET, POST } from "../repositories/users.respositories"
+import { createAluno, createProfessor, getAll, newUser } from "../repositories/users.respositories"
 import { prisma } from "@/libs/prisma";
 import { createUserSchema, CreateUserBody } from "../schemas/user.schema";
 import { validateUser } from "../rules/users/users.rules";
@@ -6,8 +6,8 @@ import { PrismaUserMapper } from "../mappers/users.mapper";
 import { Prisma } from "@/generated/prisma/client";
 import { AppError } from "../error/app-errors";
 
-export async function getAll() {
-    return await GET();
+export async function getAllUsers() {
+    return await getAll();
 };
 
 export async function createUser(body: CreateUserBody) {
@@ -19,16 +19,16 @@ export async function createUser(body: CreateUserBody) {
     return prisma.$transaction(async (tx) => {
         try {
 
-            const user = await POST(tx, PrismaUserMapper.toPrismaUser(data));
+            const user = await newUser(tx, PrismaUserMapper.toPrismaUser(data));
 
             // CASO ALUNO
             if (data.role === 'ALUNO') {
-                await CreateAluno(tx, PrismaUserMapper.toPrismaAluno(user.id, data));
+                await createAluno(tx, PrismaUserMapper.toPrismaAluno(user.id, data));
             };
 
             // CASO PROFESSOR
             if (data.role === 'PROFESSOR') {
-                await CreateProfessor(tx, PrismaUserMapper.toPrismaProfessor(user.id, data));
+                await createProfessor(tx, PrismaUserMapper.toPrismaProfessor(user.id, data));
             };
 
             return PrismaUserMapper.toClienteResponse(user);

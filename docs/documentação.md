@@ -1,39 +1,35 @@
+SISTEMA DE GERENCIAMENTO DE CURSO DE REFORÇO E GERENCIAMENTO DE FREQUENCIA
+
+Sistema feito para a Curso Matemática Fácil, localizado em Aracaju-SE, nele possui cadastro de alunos, turmas e professores. Além disso, os alunos do curso podem registrar/marcar presença ou asência nas aulas e os professores podem marcar início e fim da aula
+
 STACKS: NextJS + PostgressSQL + Tailwind CSS + Shadcn + TyperScript
 
 {
-    "nome": "Usuario Novo",
-    "email": "teste@email.com",
+    "nome": "Ricardo Gomes",
+    "email": "ricardo.gomes@email.com",
     "senha_hash": "123456",
-    "role": "ADMIN"
+    "role": "PROFESSOR",
+    "tel": "85992345678",
+    "professor": {
+        "materia": "História",
+        "modalidade_id": 2
+    }
 }
 
 {
-    "user_id": 14,
-    "data_nasc": "25/03/2012",
-    "serie": "6° ano",
-    "resp_tel": "11999999999",
-    "resp_nome": "Responsavel Teste",
-    "modalidade_id": 1,
-    "tempo_aula": 60,
-    "horas_semana": 4,
-    "tempo_contrato": 12
-}
-
-{
-    "nome": "New user",
-    "email": "teste@gmail.com",
+    "nome": "Ana Souza",
+    "email": "ana.souza@email.com",
     "senha_hash": "123456",
-    "role": "ADMIN",
-    "tel": "(79)988081797",
+    "role": "ALUNO",
+    "tel": "71991234567",
     "aluno": {
-        "user_id": 14,
-        "data_nasc": "25/03/2012",
-        "serie": "6° ano",
-        "resp_tel": "11999999999",
-        "resp_nome": "Responsavel Teste",
+        "data_nasc": "2009-03-15",
+        "serie": "9° ano",
+        "resp_tel": "71999887766",
+        "resp_nome": "João Souza",
         "modalidade_id": 1,
         "tempo_aula": 60,
-        "horas_semana": 4,
-        "tempo_contrato": 12
+        "horas_semana": 3,
+        "tempo_contrato": 6
     }
 }

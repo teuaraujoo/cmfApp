@@ -1,10 +1,10 @@
 import { CreateUserBody } from "@/server/schemas/user.schema";
-import { GetByEmail } from "@/server/repositories/users.respositories";
+import { getByEmail } from "@/server/repositories/users.respositories";
 import { AppError } from "@/server/error/app-errors";
 
 export async function validateUser(data: CreateUserBody) {
 
-    const findEmail = await GetByEmail(data.email);
+    const findEmail = await getByEmail(data.email);
     if (findEmail) {
         throw new AppError('Email já cadastrado!', 409);
     };

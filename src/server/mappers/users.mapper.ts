@@ -36,6 +36,7 @@ export class PrismaUserMapper {
 
     static toClienteResponse(response: users) {
         return {
+            id: response.id,
             nome: response.nome,
             email: response.email,
             role: response.role,

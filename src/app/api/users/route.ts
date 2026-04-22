@@ -1,9 +1,9 @@
 import { AppError } from "@/server/error/app-errors";
-import { getAll, createUser } from "@/server/services/users.services";
+import { getAllUsers, createUser } from "@/server/services/users.services";
 
 export async function GET() {
     try {
-        const users = await getAll();
+        const users = await getAllUsers();
 
         return Response.json({
             message: 'Usuários encontrados com sucesso!',
