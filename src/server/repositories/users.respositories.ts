@@ -49,3 +49,7 @@ export async function inactivePublicUser(tx: Prisma.TransactionClient, id: numbe
 export async function activePublicUser(tx: Prisma.TransactionClient, id: number) {
   return tx.public_users.update({ where: { id: id }, data: { status: "ATIVO" } });
 };
+
+export async function updateUserById(tx: Prisma.TransactionClient, data: Prisma.public_usersUpdateInput, id: number) {
+  return tx.public_users.update({ where: { id }, data });
+};

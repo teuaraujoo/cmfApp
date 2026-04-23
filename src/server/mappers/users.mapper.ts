@@ -1,4 +1,4 @@
-import { CreateUserBody } from "../schemas/user.schema";
+import { CreateUserBody, UpdateUserBody } from "../schemas/user.schema";
 import { public_users } from "@/generated/prisma/client";
 
 export class UserMapper {
@@ -12,6 +12,16 @@ export class UserMapper {
       tel: user.tel,
       auth_user_id: authUserId,
       must_change_password: true,
+    };
+  };
+
+  // formata payload de update para alterar somente campos da tabela public.users
+  static toPrismaUserUpdate(user: UpdateUserBody) {
+    return {
+      nome: user.nome,
+      email: user.email,
+      role: user.role,
+      tel: user.tel,
     };
   };
 

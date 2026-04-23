@@ -2,11 +2,11 @@ import { AppError } from "@/server/error/app-errors";
 import { userHelpers } from "@/server/helpers/users.helpers";
 import { getUserById, inactiveUser, activeUser, updateUser } from "@/server/services/users.services";
 
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         await userHelpers.requireAdminUser();
-        const id = Number(params.id);
-        const user = await getUserById(id);
+        const { id } = await params;
+        const user = await getUserById(Number(id));
 
         return Response.json({
             message: "Usuário encontrado com sucesso!",
@@ -29,7 +29,7 @@ export async function GET({ params }: { params: { id: string } }) {
     };
 };
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         await userHelpers.requireAdminUser();
         const { id } = await params;

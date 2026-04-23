@@ -11,11 +11,12 @@ import {
   getById,
   inactivePublicUser,
   activePublicUser,
+  updateUserById
 } from "../repositories/users.respositories";
-import { createAluno, inactiveAluno, activeAluno } from "../repositories/alunos.repositories";
-import { createProfessor, inactiveProfessor, activeProfessor } from "../repositories/professores.repositories";
-import { CreateUserBody, createUserSchema } from "../schemas/user.schema";
-import { validateUser } from "../rules/users.rules";
+import { createAluno, inactiveAluno, activeAluno, updateAluno } from "../repositories/alunos.repositories";
+import { createProfessor, inactiveProfessor, activeProfessor, updateProfessor } from "../repositories/professores.repositories";
+import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "../schemas/user.schema";
+import { validateUpdateUser, validateUser } from "../rules/users.rules";
 
 export async function getAllUsers() {
   return getAll();
@@ -78,8 +79,41 @@ export async function createUser(body: CreateUserBody) {
   };
 };
 
-export async function updateUser(body: CreateUserBody, id: number) {
+export async function updateUser(body: UpdateUserBody, id: number) {
   try {
+    const data = updateUserSchema.parse(body);
+
+    const authUserId = await validateUpdateUser(data, id);
+
+    const adminSupabase = createAdminClient();
+
+    const { data: authData, error: authError } = await adminSupabase.auth.admin.updateUserById(
+      authUserId,
+      {
+        email: data.email,
+        user_metadata: {
+          role: data.role,
+        },
+      }
+    );
+
+    if (authError || !authData.user) {
+      throw new AppError(authError?.message ?? "Não foi possível atualizar o usuário no Auth.", 400);
+    };
+
+    return await prisma.$transaction(async (tx) => {
+     const user = await updateUserById(tx, UserMapper.toPrismaUserUpdate(data), id);
+
+      if (data.role === "PROFESSOR") {
+        await updateProfessor(tx, ProfessorMapper.toPrismaProfessor(id, data), id);
+      };
+
+      if (data.role === "ALUNO") {
+        await updateAluno(tx, AlunoMapper.toPrismaAluno(id, data), id);
+      };
+
+      return UserMapper.toResponseAdmin(user);
+    });
 
   } catch (err) {
     throw err;

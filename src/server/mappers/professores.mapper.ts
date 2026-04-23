@@ -1,4 +1,4 @@
-import { CreateUserBody } from "../schemas/user.schema";
+import { CreateUserBody, UpdateUserBody } from "../schemas/user.schema";
 
 type getProfessor = {
     nome: string
@@ -12,7 +12,7 @@ type getProfessor = {
 
 export class ProfessorMapper {
     // formata peayload de professor para o prisma
-    static toPrismaProfessor(id: number, professor: CreateUserBody) {
+    static toPrismaProfessor(id: number, professor: CreateUserBody | UpdateUserBody) {
         return {
             user_id: id,
             materia: professor.professor!.materia,

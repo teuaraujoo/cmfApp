@@ -33,3 +33,9 @@ export const createUserSchema = z.object({
 });
 
 export type CreateUserBody = z.infer<typeof createUserSchema>;
+
+export const updateUserSchema = createUserSchema.omit({
+  temporary_password: true,
+});
+
+export type UpdateUserBody = z.infer<typeof updateUserSchema>;

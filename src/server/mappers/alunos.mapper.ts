@@ -1,4 +1,4 @@
-import { CreateUserBody } from "../schemas/user.schema";
+import { CreateUserBody, UpdateUserBody } from "../schemas/user.schema";
 
 type getAluno = {
     nome: string
@@ -20,7 +20,7 @@ type getAluno = {
 export class AlunoMapper {
 
     // formata payload de aluno para o prisma
-    static toPrismaAluno(id: number, aluno: CreateUserBody) {
+    static toPrismaAluno(id: number, aluno: CreateUserBody | UpdateUserBody) {
         return {
             user_id: id,
             data_nasc: aluno.aluno!.data_nasc,
