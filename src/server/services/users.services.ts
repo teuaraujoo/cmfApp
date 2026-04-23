@@ -2,7 +2,9 @@ import { prisma } from "@/libs/prisma";
 import { createAdminClient } from "@/libs/supabase/admin";
 import { Prisma } from "@/generated/prisma/client";
 import { AppError } from "../error/app-errors";
-import { PrismaUserMapper } from "../mappers/users.mapper";
+import { UserMapper } from "../mappers/users.mapper";
+import { AlunoMapper } from "../mappers/alunos.mapper";
+import { ProfessorMapper } from "../mappers/professores.mapper";
 import {
   getAll,
   newUser,
@@ -47,17 +49,17 @@ export async function createUser(body: CreateUserBody) {
   try {
     return await prisma.$transaction(
       async (tx) => {
-        const user = await newUser(tx, PrismaUserMapper.toPrismaUser(data, authData.user.id));
+        const user = await newUser(tx, UserMapper.toPrismaUser(data, authData.user.id));
 
         if (data.role === "ALUNO") {
-          await createAluno(tx, PrismaUserMapper.toPrismaAluno(user.id, data));
+          await createAluno(tx, AlunoMapper.toPrismaAluno(user.id, data));
         };
 
         if (data.role === "PROFESSOR") {
-          await createProfessor(tx, PrismaUserMapper.toPrismaProfessor(user.id, data));
+          await createProfessor(tx, ProfessorMapper.toPrismaProfessor(user.id, data));
         };
 
-        return PrismaUserMapper.toResponseAdmin(user);
+        return UserMapper.toResponseAdmin(user);
       },
       {
         maxWait: 5000,
@@ -96,7 +98,7 @@ export async function inactiveUser(id: number) {
         await inactiveProfessor(tx, id);
       };
 
-      return PrismaUserMapper.toResponseAdmin(userDel);
+      return UserMapper.toResponseAdmin(userDel);
     });
 
   } catch (err) {
@@ -125,7 +127,7 @@ export async function activeUser(id: number) {
         await activeProfessor(tx, id);
       };
 
-      return PrismaUserMapper.toResponseAdmin(userAct);
+      return UserMapper.toResponseAdmin(userAct);
     });
 
   } catch (err) {
