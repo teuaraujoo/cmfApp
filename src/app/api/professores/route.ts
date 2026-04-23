@@ -1,10 +1,13 @@
 import { AppError } from "@/server/error/app-errors";
 import { getAllProfessores } from "@/server/services/professores.services";
+import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function GET() {
     try {
+        await userHelpers.requireAdminUser();
 
         const data = await getAllProfessores();
+        
         return Response.json(
             {
                 message: "Professores encontrados com sucesso!",

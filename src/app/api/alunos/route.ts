@@ -1,10 +1,13 @@
 import { AppError } from "@/server/error/app-errors";
 import { getAllAlunos } from "@/server/services/alunos.services";
+import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function GET() {
     try {
-        
+        await userHelpers.requireAdminUser();
+
         const data = await getAllAlunos();
+        
         return Response.json(
             {
                 message: "Alunos encontrados com sucesso!",

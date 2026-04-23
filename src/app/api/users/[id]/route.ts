@@ -5,6 +5,7 @@ import { getUserById, inactiveUser, activeUser, updateUser } from "@/server/serv
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         await userHelpers.requireAdminUser();
+        
         const { id } = await params;
         const user = await getUserById(Number(id));
 
@@ -32,6 +33,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         await userHelpers.requireAdminUser();
+
         const { id } = await params;
         const user = await inactiveUser(Number(id));
 
@@ -53,9 +55,12 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         await userHelpers.requireAdminUser();
+
         const body = await request.json();
         const { id } = await params;
+
         const user = await updateUser(body, Number(id));
+
         return Response.json({
             message: "Usuário atualizado com sucesso!",
             data: user

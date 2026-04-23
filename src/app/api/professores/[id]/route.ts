@@ -1,11 +1,14 @@
 import { AppError } from "@/server/error/app-errors";
 import { getProfessorById } from "@/server/services/professores.services";
+import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        await userHelpers.requireAdminUser();
 
         const { id } = await params;
         const data = await getProfessorById(Number(id));
+        
         return Response.json(
             {
                 message: "Professor encontrado com sucesso!",
