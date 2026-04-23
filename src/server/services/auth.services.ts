@@ -1,7 +1,7 @@
 import { AppError } from "@/server/error/app-errors";
 import { LoginBody, loginSchema, ChangePasswordBody, changePasswordSchema } from "@/server/schemas/auth.schema";
 import { createClient } from "@/libs/supabase/server";
-import { PrismaUserMapper } from "@/server/mappers/users.mapper";
+import { UserMapper } from "@/server/mappers/users.mapper";
 import { disableMustChangePassword, getByAuthUserId } from "@/server/repositories/users.respositories";
 import { userHelpers } from "../helpers/users.helpers";
 
@@ -30,7 +30,7 @@ export async function loginUser(body: LoginBody) {
     throw new AppError("Usuário inativo.", 403);
   };
 
-  return PrismaUserMapper.toLoginResponse(appUser);
+  return UserMapper.toLoginResponse(appUser);
 };
 
 export async function logoutUser() {
@@ -62,5 +62,5 @@ export async function changePassword(body: ChangePasswordBody) {
 
   const updatedUser = await disableMustChangePassword(appUser.id);
 
-  return PrismaUserMapper.toChangePasswordResponse(updatedUser);
+  return UserMapper.toChangePasswordResponse(updatedUser);
 };
