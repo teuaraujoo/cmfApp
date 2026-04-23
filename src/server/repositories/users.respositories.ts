@@ -9,6 +9,10 @@ export async function getAll() {
   });
 };
 
+export async function getById(id: number) {
+  return prisma.public_users.findUnique({ where: { id } });
+};
+
 export async function getByEmail(email: string) {
   return prisma.public_users.findUnique({ where: { email } });
 };
@@ -31,17 +35,17 @@ export async function newUser(tx: Prisma.TransactionClient, newUser: Prisma.publ
   return tx.public_users.create({ data: newUser });
 };
 
-export async function createAluno(tx: Prisma.TransactionClient, aluno: Prisma.alunosUncheckedCreateInput) {
-  return tx.alunos.create({ data: aluno });
-};
-
-export async function createProfessor(tx: Prisma.TransactionClient, professor: Prisma.professoresUncheckedCreateInput) {
-  return tx.professores.create({ data: professor });
-};
-
 export async function disableMustChangePassword(userId: number) {
   return prisma.public_users.update({
     where: { id: userId },
     data: { must_change_password: false },
   });
+};
+
+export async function inactivePublicUser(tx: Prisma.TransactionClient, id: number) {
+  return tx.public_users.update({ where: { id: id }, data: { status: "INATIVO" } });
+};
+
+export async function activePublicUser(tx: Prisma.TransactionClient, id: number) {
+  return tx.public_users.update({ where: { id: id }, data: { status: "ATIVO" } });
 };

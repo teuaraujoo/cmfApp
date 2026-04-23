@@ -3,13 +3,25 @@ import { createAdminClient } from "@/libs/supabase/admin";
 import { Prisma } from "@/generated/prisma/client";
 import { AppError } from "../error/app-errors";
 import { PrismaUserMapper } from "../mappers/users.mapper";
-import { createAluno, createProfessor, getAll, newUser } from "../repositories/users.respositories";
+import {
+  getAll,
+  newUser,
+  getById,
+  inactivePublicUser,
+  activePublicUser,
+} from "../repositories/users.respositories";
+import { createAluno, inactiveAluno, activeAluno } from "../repositories/alunos.repositories";
+import { createProfessor, inactiveProfessor, activeProfessor } from "../repositories/professores.repositories";
 import { CreateUserBody, createUserSchema } from "../schemas/user.schema";
-import { validateUser } from "../rules/users/users.rules";
+import { validateUser } from "../rules/users.rules";
 
 export async function getAllUsers() {
   return getAll();
-}
+};
+
+export async function getUserById(id: number) {
+  return getById(id);
+};
 
 export async function createUser(body: CreateUserBody) {
   const data = createUserSchema.parse(body);
@@ -45,7 +57,7 @@ export async function createUser(body: CreateUserBody) {
           await createProfessor(tx, PrismaUserMapper.toPrismaProfessor(user.id, data));
         };
 
-        return PrismaUserMapper.toUserCreationResponseAdmin(user);
+        return PrismaUserMapper.toResponseAdmin(user);
       },
       {
         maxWait: 5000,
@@ -59,6 +71,64 @@ export async function createUser(body: CreateUserBody) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
       throw new AppError("Email já cadastrado!", 409);
     };
+
+    throw err;
+  };
+};
+
+export async function inactiveUser(id: number) {
+  try {
+
+    const user = await getById(id);
+
+    if (!user) {
+      throw new AppError("Usuário não encontrado!", 404);
+    };
+
+    return prisma.$transaction(async (tx) => {
+      const userDel = await inactivePublicUser(tx, id);
+
+      if (user.role === "ALUNO") {
+        await inactiveAluno(tx, id);
+      };
+
+      if (user.role === "PROFESSOR") {
+        await inactiveProfessor(tx, id);
+      };
+
+      return PrismaUserMapper.toResponseAdmin(userDel);
+    });
+
+  } catch (err) {
+
+    throw err;
+  };
+};
+
+export async function activeUser(id: number) {
+  try {
+
+    const user = await getById(id);
+
+    if (!user) {
+      throw new AppError("Usuário não encontrado!", 404);
+    };
+
+    return prisma.$transaction(async (tx) => {
+      const userAct = await activePublicUser(tx, id);
+
+      if (user.role === "ALUNO") {
+        await activeAluno(tx, id);
+      };
+
+      if (user.role === "PROFESSOR") {
+        await activeProfessor(tx, id);
+      };
+
+      return PrismaUserMapper.toResponseAdmin(userAct);
+    });
+
+  } catch (err) {
 
     throw err;
   };

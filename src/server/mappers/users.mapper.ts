@@ -39,8 +39,8 @@ export class PrismaUserMapper {
     };
   };
 
-  // resposta específica para o cliente 
-  static toUserCreationResponseAdmin(response: public_users) {
+  // resposta específica para o cliente admin
+  static toResponseAdmin(response: public_users) {
     return {
       id: response.id,
       nome: response.nome,
