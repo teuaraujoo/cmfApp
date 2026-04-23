@@ -78,6 +78,14 @@ export async function createUser(body: CreateUserBody) {
   };
 };
 
+export async function updateUser(body: CreateUserBody, id: number) {
+  try {
+
+  } catch (err) {
+    throw err;
+  }
+};
+
 export async function inactiveUser(id: number) {
   try {
 

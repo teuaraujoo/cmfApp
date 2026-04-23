@@ -1,6 +1,6 @@
 import { AppError } from "@/server/error/app-errors";
 import { userHelpers } from "@/server/helpers/users.helpers";
-import { getUserById, inactiveUser, activeUser } from "@/server/services/users.services";
+import { getUserById, inactiveUser, activeUser, updateUser } from "@/server/services/users.services";
 
 export async function GET({ params }: { params: { id: string } }) {
     try {
@@ -8,11 +8,10 @@ export async function GET({ params }: { params: { id: string } }) {
         const id = Number(params.id);
         const user = await getUserById(id);
 
-        return Response.json(
-            {
-                message: "Usuário encontrado com sucesso!",
-                data: user,
-            },
+        return Response.json({
+            message: "Usuário encontrado com sucesso!",
+            data: user,
+        },
             { status: 200 }
         );
     } catch (err) {
@@ -32,6 +31,7 @@ export async function GET({ params }: { params: { id: string } }) {
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        await userHelpers.requireAdminUser();
         const { id } = await params;
         const user = await inactiveUser(Number(id));
 
@@ -50,8 +50,33 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     };
 };
 
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        await userHelpers.requireAdminUser();
+        const body = await request.json();
+        const { id } = await params;
+        const user = await updateUser(body, Number(id));
+        return Response.json({
+            message: "Usuário atualizado com sucesso!",
+            data: user
+        },
+        { status: 200 });
+    } catch (err) {
+        if (err instanceof AppError) {
+            return Response.json({ message: err.message }, { status: err.statusCode })
+        };
+        
+        return Response.json({
+            message: "Error interno do servidor!",
+            detail: err instanceof Error ? err.message : String(err)
+        },
+        { status: 500 });
+    };
+};
+
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        await userHelpers.requireAdminUser();
         const { id } = await params;
         const user = await activeUser(Number(id));
         return Response.json({ message: "Usuário ativado com sucesso!", data: user }, { status: 200 });
