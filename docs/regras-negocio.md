@@ -15,7 +15,6 @@ PROFESSORES
 todo professor deve estar vinculado a um usuário
 professor deve possuir matéria e modalidade
 professor pode estar vinculado a várias turmas
-professor só pode atuar nas turmas em que está vinculado
 
 MODALIDADES
 modalidades devem ser cadastradas previamente
@@ -24,10 +23,9 @@ turmas devem respeitar a modalidade definida
 
 TURMAS
 toda turma deve possuir nome e carga horária semanal
-uma turma deve ter pelo menos 1 aluno e 1 professor
+uma turma deve ter pelo menos 1 aluno e 1 professor *
 uma turma pode ter vários alunos e professores
 uma turma pode estar ativa ou inativa
-alunos e professores devem ser compatíveis com a modalidade da turma
 
 AGENDA DA TURMA
 cada turma deve ter dias fixos de aula
