@@ -2,8 +2,9 @@ import { AppError } from "@/server/error/app-errors";
 import { LoginBody, loginSchema, ChangePasswordBody, changePasswordSchema } from "@/server/schemas/auth.schema";
 import { createClient } from "@/libs/supabase/server";
 import { UserMapper } from "@/server/mappers/users.mapper";
-import { disableMustChangePassword, getByAuthUserId } from "@/server/repositories/users.respositories";
+import { disableMustChangePassword } from "@/server/repositories/users.respositories";
 import { userHelpers } from "../helpers/users.helpers";
+import { validateLogin } from "../rules/auth.rules";
 
 export async function loginUser(body: LoginBody) {
   const data = loginSchema.parse(body);
@@ -14,21 +15,7 @@ export async function loginUser(body: LoginBody) {
     password: data.password,
   });
 
-  if (error || !authData.user) {
-    throw new AppError("Credenciais inválidas.", 401);
-  };
-
-  const appUser = await getByAuthUserId(authData.user.id);
-
-  if (!appUser) {
-    await supabase.auth.signOut();
-    throw new AppError("Usuário autenticado sem cadastro local.", 401);
-  };
-
-  if (appUser.status !== "ATIVO") {
-    await supabase.auth.signOut();
-    throw new AppError("Usuário inativo.", 403);
-  };
+  const appUser  = await validateLogin(error, authData.user, supabase);
 
   return UserMapper.toLoginResponse(appUser);
 };
