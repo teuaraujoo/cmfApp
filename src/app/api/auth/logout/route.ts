@@ -1,9 +1,18 @@
 import { AppError } from "@/server/error/app-errors";
+import { authenticatedUserRateLimit } from "@/libs/ratelimit";
+import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
+import { validateRequestOrigin } from "@/server/helpers/origin.helper";
 import { logoutUser } from "@/server/services/auth.services";
+import { userHelpers } from "@/server/helpers/users.helpers";
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    // O logout depende apenas da sessão atual presente nos cookies da requisição.
+
+    await validateRequestOrigin(request);
+    
+    const session = await userHelpers.getCurrentAppUser();
+    await rateLimitByIdentifier(`logout:user:${session.appUser.id}`, authenticatedUserRateLimit);
+
     await logoutUser();
 
     return Response.json(

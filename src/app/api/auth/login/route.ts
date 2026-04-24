@@ -1,9 +1,19 @@
 import { AppError } from "@/server/error/app-errors";
+import { loginRateLimitByEmail, loginRateLimitByIp } from "@/libs/ratelimit";
+import { rateLimitByIdentifier, rateLimitByIp } from "@/server/helpers/rate-limit.helper";
+import { validateRequestOrigin } from "@/server/helpers/origin.helper";
 import { loginUser } from "@/server/services/auth.services";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+
+    await validateRequestOrigin(request);
+    
+    const body = await request.json();  
+
+    await rateLimitByIdentifier(`login:email:${String(body.email).toLowerCase()}`, loginRateLimitByEmail);
+    await rateLimitByIp(request, loginRateLimitByIp);
+
     const user = await loginUser(body);
 
     return Response.json(

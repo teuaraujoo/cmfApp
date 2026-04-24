@@ -11,6 +11,8 @@ STACKS
 - Tailwind CSS
 - Shadcn
 - TypeScript
+- Redis
+- Upstash
 
 OBJETIVO DESTA DOCUMENTACAO
 

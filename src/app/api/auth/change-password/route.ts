@@ -1,8 +1,17 @@
 import { changePassword } from "@/server/services/auth.services";
 import { AppError } from "@/server/error/app-errors";
+import { authenticatedUserRateLimit } from "@/libs/ratelimit";
+import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
+import { validateRequestOrigin } from "@/server/helpers/origin.helper";
+import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function POST(request: Request) {
   try {
+    await validateRequestOrigin(request);
+    
+    const session = await userHelpers.getCurrentAppUser();
+    await rateLimitByIdentifier(`change-password:user:${session.appUser.id}`, authenticatedUserRateLimit);
+
     const body = await request.json();
     const user = await changePassword(body);
 

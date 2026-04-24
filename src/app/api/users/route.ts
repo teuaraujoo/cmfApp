@@ -1,6 +1,9 @@
 import { AppError } from "@/server/error/app-errors";
+import { adminMutationRateLimit } from "@/libs/ratelimit";
+import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { createUser, getAllUsers } from "@/server/services/users.services";
 import { userHelpers } from "@/server/helpers/users.helpers";
+import { validateRequestOrigin } from "@/server/helpers/origin.helper";
 
 export async function GET() {
   try {
@@ -32,7 +35,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    await userHelpers.requireAdminUser();
+
+    await validateRequestOrigin(request);
+    
+    const session = await userHelpers.requireAdminUser();
+    await rateLimitByIdentifier(`users:create:admin:${session.appUser.id}`, adminMutationRateLimit);
 
     const body = await request.json();
     const user = await createUser(body);
