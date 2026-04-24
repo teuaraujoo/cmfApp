@@ -1,5 +1,5 @@
 import { AppError } from "@/server/error/app-errors";
-import { getAlunoById } from "@/server/services/alunos.services";
+import { getAlunoByUserId } from "@/server/services/alunos.services";
 import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -7,7 +7,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         await userHelpers.requireAdminUser();
 
         const { id } = await params;
-        const data = await getAlunoById(Number(id));
+        const data = await getAlunoByUserId(Number(id));
         
         return Response.json(
             {

@@ -1,14 +1,5 @@
 import { CreateUserBody, UpdateUserBody } from "../schemas/user.schema";
-
-type getProfessor = {
-    nome: string
-    email: string
-    role: string
-    tel: string
-    status: string
-    materia: string
-    modalidade: string
-};
+import { Prisma } from "@/generated/prisma/client";
 
 export class ProfessorMapper {
     // formata peayload de professor para o prisma
@@ -20,9 +11,21 @@ export class ProfessorMapper {
         };
     };
 
-    static toResponseProfessorGet(response: getProfessor) {
+    static toResponseProfessorGet(
+        professor: Prisma.professoresUncheckedCreateInput,
+        user: Prisma.public_usersUncheckedCreateInput,
+        modalidade: Prisma.modalidadesUncheckedCreateInput
+    ) {
         return {
-            ...response,
-        }
+            id: professor.id,
+            user_id: user.id,
+            nome: user.nome,
+            email: user.email,
+            tel: user.tel,
+            role: user.role,
+            status: user.status,
+            materia: professor.materia,
+            modalidade: modalidade.tipo,
+        };
     };
 };

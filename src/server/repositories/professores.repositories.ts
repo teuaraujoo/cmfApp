@@ -5,6 +5,10 @@ export async function getAll() {
     return prisma.professores.findMany({
         orderBy: {
             created_at: "desc"
+        },
+        include: {
+            users: true,
+            modalidades: true
         }
     });
 };
@@ -13,8 +17,16 @@ export async function getTotal() {
     return prisma.professores.count();
 };
 
-export async function getById(id: number) {
-    return prisma.professores.findUnique({ where: { user_id: id } });
+export async function getByUserId(id: number) {
+    return prisma.professores.findUnique({
+        where: {
+            user_id: id
+        },
+        include: {
+            users: true,
+            modalidades: true
+        }
+    });
 };
 
 export async function createProfessor(tx: Prisma.TransactionClient, professor: Prisma.professoresUncheckedCreateInput) {

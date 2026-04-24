@@ -5,6 +5,9 @@ export async function getAll() {
   return prisma.alunos.findMany({
     orderBy: {
       created_at: "desc"
+    },
+    include: {
+      users: true
     }
   });
 };
@@ -13,8 +16,15 @@ export async function getTotal() {
   return prisma.alunos.count();
 };
 
-export async function getById(id: number) {
-  return prisma.alunos.findUnique({ where: { user_id: id } });
+export async function getByUserId(id: number) {
+  return prisma.alunos.findUnique({
+    where: {
+      user_id: id
+    },
+    include: {
+      users: true
+    }
+  });
 };
 
 export async function createAluno(tx: Prisma.TransactionClient, aluno: Prisma.alunosUncheckedCreateInput) {

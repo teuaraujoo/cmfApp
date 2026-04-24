@@ -1,5 +1,5 @@
 import { AppError } from "@/server/error/app-errors";
-import { getProfessorById } from "@/server/services/professores.services";
+import { getProfessorByUserId } from "@/server/services/professores.services";
 import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -7,7 +7,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         await userHelpers.requireAdminUser();
 
         const { id } = await params;
-        const data = await getProfessorById(Number(id));
+        const data = await getProfessorByUserId(Number(id));
         
         return Response.json(
             {

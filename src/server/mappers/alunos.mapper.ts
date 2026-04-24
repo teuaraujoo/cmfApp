@@ -1,21 +1,5 @@
 import { CreateUserBody, UpdateUserBody } from "../schemas/user.schema";
-
-type getAluno = {
-    nome: string
-    email: string
-    role: string
-    tel: string
-    status: string
-    data_nasc: string
-    serie: string
-    resp_tel: string
-    resp_nome: string
-    modalidade: string
-    tempo_aula: number
-    horas_semana: number
-    tempo_contrato: number
-};
-
+import { Prisma } from "@/generated/prisma/client";
 
 export class AlunoMapper {
 
@@ -34,9 +18,23 @@ export class AlunoMapper {
         };
     };
 
-    static toResponseAlunoGet(response: getAluno) {
+    static toResponseAlunoGet(aluno: Prisma.alunosUncheckedCreateInput, user: Prisma.public_usersUncheckedCreateInput) {
         return {
-            ...response,
+            id: aluno.id,
+            user_id: aluno.user_id,
+            nome: user.nome,
+            email: user.email,
+            role: user.role,
+            tel: user.tel,
+            status: aluno.status,
+            data_nasc: aluno.data_nasc,
+            serie: aluno.serie,
+            resp_tel: aluno.resp_tel,
+            resp_nome: aluno.resp_nome,
+            modalidade: aluno.modalidade_id,
+            tempo_aula: aluno.tempo_aula,
+            horas_semana: aluno.horas_semana,
+            tempo_contrato: aluno.tempo_contrato,
         };
     };
 };
