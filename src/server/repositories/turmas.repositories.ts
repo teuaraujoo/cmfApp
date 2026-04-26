@@ -24,8 +24,12 @@ export async function getById(id: number) {
     });
 };
 
-export async function newTurma(turma: Prisma.turmasUncheckedCreateInput) {
-    return prisma.turmas.create({ data: turma })
+export async function getByName(nome: string) {
+  return prisma.turmas.findUnique({ where: { nome } })  
+};
+
+export async function newTurma(tx: Prisma.TransactionClient, turma: Prisma.turmasUncheckedCreateInput) {
+    return tx.turmas.create({ data: turma })
 };
 
 export async function newTurmaAluno(tx: Prisma.TransactionClient, aluno: Prisma.turma_alunosUncheckedCreateInput[]) {

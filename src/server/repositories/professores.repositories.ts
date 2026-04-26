@@ -29,6 +29,10 @@ export async function getByUserId(id: number) {
     });
 };
 
+export async function findManyByIds(ids: number[]) {
+  return prisma.alunos.findMany({ where: { id: { in: ids } } });
+};
+
 export async function createProfessor(tx: Prisma.TransactionClient, professor: Prisma.professoresUncheckedCreateInput) {
     return tx.professores.create({ data: professor });
 };

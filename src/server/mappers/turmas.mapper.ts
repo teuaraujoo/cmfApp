@@ -1,5 +1,22 @@
 import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "../schemas/turmas.shema";
 
+/*
+[
+    {
+       turma_id: number
+        alunos_id: number  
+    },
+    {
+       turma_id: number
+        alunos_id: number  
+    }
+]
+
+[ turma_id, turma_id ]
+[ alunos_id, alunos_id ]
+
+*/
+
 export class TurmaMapper {
 
     static toPrisma(turma: CreateTurmaBody) {
@@ -13,8 +30,8 @@ export class TurmaMapper {
         return {
             turma_id: turmaId,
             dia_semana: turmaAgenda.dia_semana,
-            horario_inicio: turmaAgenda.horario_inicio,
-            horario_fim: turmaAgenda.horario_fim,
+            horario_inicio: new Date(`2026-01-01T${turmaAgenda.horario_inicio}:00`),
+            horario_fim: new Date(`2026-01-01T${turmaAgenda.horario_fim}:00`),
 
         };
     };
@@ -26,7 +43,7 @@ export class TurmaMapper {
         };
     };
 
-    static toTurmaProfessores(turmaId: number, turmaProfessores: CreateTurmaProfessorBody) {
+    static toTurmaProfessoresPrisma(turmaId: number, turmaProfessores: CreateTurmaProfessorBody) {
         return {
             turma_id: turmaId,
             professores_id: turmaProfessores.professor_id
