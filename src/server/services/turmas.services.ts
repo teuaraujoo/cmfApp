@@ -18,7 +18,6 @@ export async function getAllTurmas() {
     return turmas;
 };
 
-// TODO: Verificação de horário de professor -> RULES
 export async function createTurma(body: CreateTurmaBody) {
     const data = createTurmaSchema.parse(body);
 
@@ -44,7 +43,7 @@ export async function createTurma(body: CreateTurmaBody) {
             };
 
             if (data.turma_professores) {
-                await TurmaHelpers.createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores);
+                await TurmaHelpers.createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda);
             };
 
             return turma;
