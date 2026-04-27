@@ -1,8 +1,8 @@
 import { CreateTurmaBody, CreateTurmaAgendaBody } from "../schemas/turmas.shema";
 import { AppError } from "../error/app-errors";
 import { TurmaRepositories } from "../repositories/turmas.repositories";
-import { findManyByIds as findManyAlunosByIds } from "../repositories/alunos.repositories";
-import { findManyByIds as findManyProfessoresByIds } from "../repositories/professores.repositories";
+import { AlunosRepositories } from "../repositories/alunos.repositories";
+import { ProfessoresRepositories } from "../repositories/professores.repositories";
 import { TurmaHelpers } from "../helpers/turma.helpers";
 import { dateToMinutes } from "../utils/dateToMinutes";
 
@@ -45,7 +45,7 @@ export class TurmaRules {
 
     static async validateTurmaAlunos(alunos: CreateTurmaAlunoPrisma[]) {
         const alunosIds = alunos.map(aluno => aluno.alunos_id);
-        const findAlunos = await findManyAlunosByIds(alunosIds);
+        const findAlunos = await AlunosRepositories.findManyByIds(alunosIds);
 
         if (!findAlunos || findAlunos.length !== alunosIds.length) {
             throw new AppError("Error ao achar alunos", 400);
@@ -54,7 +54,7 @@ export class TurmaRules {
 
     static async validateTurmaProfessores(professores: CreateTurmaProfessorPrisma[], newAgenda: CreateTurmaAgendaBody[]) {
         const professoresIds = professores.map(professor => professor.professores_id);
-        const findProfessores = await findManyProfessoresByIds(professoresIds);
+        const findProfessores = await ProfessoresRepositories.findManyByIds(professoresIds);
         const turmasDosProfessores = await TurmaRepositories.findTurmasByProfessoresIds(professoresIds);
 
         const newSchedules = newAgenda.map((item) => ({

@@ -2,6 +2,7 @@ import { AppError } from "@/server/error/app-errors";
 import { userHelpers } from "@/server/helpers/users.helpers";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { adminMutationRateLimit } from "@/libs/ratelimit";
+import { deleteTurma, getTurmaById } from "@/server/services/turmas.services";
 
 export async function GET(
     _request: Request,

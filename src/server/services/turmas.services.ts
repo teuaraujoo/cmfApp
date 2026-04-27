@@ -37,7 +37,7 @@ export async function createTurma(body: CreateTurmaBody) {
             if (data.turma_agenda) {
                 await TurmaHelpers.createAgendaIfProvided(tx, turma.id, data);
             };
-            
+
             if (data.turma_alunos) {
                 await TurmaHelpers.createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos);
             };
@@ -57,3 +57,36 @@ export async function createTurma(body: CreateTurmaBody) {
         throw err;
     };
 };
+
+export async function deleteTurma(id: number) {
+    try {
+
+        const turma = await TurmaRepositories.getById(id);
+
+        if (!turma) {
+            throw new AppError("Turma não encontrada", 404);
+        };
+
+        return await TurmaRepositories.deleteById(id);
+
+    } catch (err) {
+        throw err
+    };
+};
+
+export async function getTurmaById(id: number) {
+    try {
+
+        const turma = await TurmaRepositories.getById(id);
+
+        if (!turma) {
+            throw new AppError("Turma não encontrada", 404);
+        }; 
+
+        return turma;
+
+    } catch (err) {
+        throw err;
+    };
+};
+

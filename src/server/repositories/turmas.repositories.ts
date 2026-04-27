@@ -70,5 +70,4 @@ export class TurmaRepositories {
     static async newTurmaAgenda(tx: Prisma.TransactionClient, turmaAgenda: Prisma.turma_agendaUncheckedCreateInput[]) {
         return tx.turma_agenda.createMany({ data: turmaAgenda })
     };
-
-}
+};

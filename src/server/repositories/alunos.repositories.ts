@@ -18,15 +18,6 @@ export class AlunosRepositories {
     return prisma.alunos.count();
   };
 
-<<<<<<< HEAD
-export async function findManyByIds(ids: number[]) {
-  return prisma.alunos.findMany({ where: { id: { in: ids } } });
-};
-
-export async function createAluno(tx: Prisma.TransactionClient, aluno: Prisma.alunosUncheckedCreateInput) {
-  return tx.alunos.create({ data: aluno });
-};
-=======
   static async getByUserId(id: number) {
     return prisma.alunos.findUnique({
       where: {
@@ -37,7 +28,10 @@ export async function createAluno(tx: Prisma.TransactionClient, aluno: Prisma.al
       }
     });
   };
->>>>>>> e0d5404f8a00bf0df7ba30e1cb50c5511ac191a4
+
+  static async findManyByIds(ids: number[]) {
+    return prisma.alunos.findMany({ where: { id: { in: ids } } });
+  };
 
   static async createAluno(tx: Prisma.TransactionClient, aluno: Prisma.alunosUncheckedCreateInput) {
     return tx.alunos.create({ data: aluno });
