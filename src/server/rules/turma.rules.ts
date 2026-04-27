@@ -1,6 +1,6 @@
 import { CreateTurmaBody, CreateTurmaAgendaBody } from "../schemas/turmas.shema";
 import { AppError } from "../error/app-errors";
-import { getByName, findTurmasByProfessoresIds } from "../repositories/turmas.repositories";
+import { TurmaRepositories } from "../repositories/turmas.repositories";
 import { findManyByIds as findManyAlunosByIds } from "../repositories/alunos.repositories";
 import { findManyByIds as findManyProfessoresByIds } from "../repositories/professores.repositories";
 import { TurmaHelpers } from "../helpers/turma.helpers";
@@ -20,7 +20,7 @@ type CreateTurmaProfessorPrisma = {
 export class TurmaRules {
 
     static async validateTurma(data: CreateTurmaBody, agenda: CreateTurmaAgendaBody) {
-        const turma = await getByName(data.nome);
+        const turma = await TurmaRepositories.getByName(data.nome);
         const horarioInicio = TurmaHelpers.toTimeUtc(agenda.horario_inicio);
         const horarioFim = TurmaHelpers.toTimeUtc(agenda.horario_fim);
         // const matchAgenda = turma!.turma_agenda.some(item => item.dia_semana === agenda.dia_semana);
@@ -55,7 +55,7 @@ export class TurmaRules {
     static async validateTurmaProfessores(professores: CreateTurmaProfessorPrisma[], newAgenda: CreateTurmaAgendaBody[]) {
         const professoresIds = professores.map(professor => professor.professores_id);
         const findProfessores = await findManyProfessoresByIds(professoresIds);
-        const turmasDosProfessores = await findTurmasByProfessoresIds(professoresIds);
+        const turmasDosProfessores = await TurmaRepositories.findTurmasByProfessoresIds(professoresIds);
 
         const newSchedules = newAgenda.map((item) => ({
             dia_semana: item.dia_semana,

@@ -2,14 +2,14 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/libs/prisma";
 import { createTurmaSchema, CreateTurmaBody } from "../schemas/turmas.shema";
 import { AppError } from "../error/app-errors";
-import { getAll, newTurma } from "../repositories/turmas.repositories";
+import { TurmaRepositories } from "../repositories/turmas.repositories";
 import { TurmaMapper } from "../mappers/turmas.mapper";
 import { TurmaHelpers } from "../helpers/turma.helpers";
 import { TurmaRules } from "../rules/turma.rules";
 
 export async function getAllTurmas() {
 
-    const turmas = await getAll();
+    const turmas = await TurmaRepositories.getAll();
 
     if (!turmas) {
         throw new AppError("Error ao buscar turmas!", 404);
@@ -28,7 +28,7 @@ export async function createTurma(body: CreateTurmaBody) {
 
     try {
         return await prisma.$transaction(async (tx) => {
-            const turma = await newTurma(tx, TurmaMapper.toPrisma(data));
+            const turma = await TurmaRepositories.newTurma(tx, TurmaMapper.toPrisma(data));
 
             if (!turma) {
                 throw new AppError("Error ao criar turma!", 500);

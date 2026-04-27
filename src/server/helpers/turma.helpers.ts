@@ -1,7 +1,7 @@
 import { Prisma } from "@/generated/prisma/client";
 import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "../schemas/turmas.shema";
 import { TurmaMapper } from "../mappers/turmas.mapper";
-import { newTurmaAgenda, newTurmaAluno, newTurmaProfessor } from "../repositories/turmas.repositories";
+import { TurmaRepositories } from "../repositories/turmas.repositories";
 import { checkCreateManyCount } from "./check-createmany";
 import { TurmaRules } from "../rules/turma.rules";
 
@@ -22,7 +22,7 @@ export class TurmaHelpers {
             return TurmaMapper.toTurmaAgenda(turmaId, item);
         });
 
-        const agendaResult = await newTurmaAgenda(tx, agenda);
+        const agendaResult = await TurmaRepositories.newTurmaAgenda(tx, agenda);
         checkCreateManyCount(agendaResult, agenda.length, "Agenda da turma");
     };
 
@@ -33,7 +33,7 @@ export class TurmaHelpers {
 
         await TurmaRules.validateTurmaAlunos(alunos);
 
-        const alunosResult = await newTurmaAluno(tx, alunos);
+        const alunosResult = await TurmaRepositories.newTurmaAluno(tx, alunos);
 
         checkCreateManyCount(alunosResult, alunos.length, "Alunos da turma");
     };
@@ -50,7 +50,7 @@ export class TurmaHelpers {
 
         await TurmaRules.validateTurmaProfessores(professores, agenda);
 
-        const professorResult = await newTurmaProfessor(tx, professores);
+        const professorResult = await TurmaRepositories.newTurmaProfessor(tx, professores);
 
         checkCreateManyCount(professorResult, professores.length, "Professores da turma");
     };
