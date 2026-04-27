@@ -2,10 +2,10 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/libs/prisma";
 import { createTurmaSchema, CreateTurmaBody } from "../schemas/turmas.shema";
 import { AppError } from "../error/app-errors";
-import { validateTurma, validateTurmaAlunos, validateTurmaProfessores } from "../rules/turma.rules";
-import { getAll, newTurma, newTurmaProfessor, newTurmaAluno, newTurmaAgenda } from "../repositories/turmas.repositories";
+import { getAll, newTurma } from "../repositories/turmas.repositories";
 import { TurmaMapper } from "../mappers/turmas.mapper";
-import { checkCreateManyCount } from "../helpers/check-createmany";
+import { TurmaHelpers } from "../helpers/turma.helpers";
+import { TurmaRules } from "../rules/turma.rules";
 
 export async function getAllTurmas() {
 
@@ -18,12 +18,13 @@ export async function getAllTurmas() {
     return turmas;
 };
 
+// TODO: Verificação de horário de professor -> RULES
 export async function createTurma(body: CreateTurmaBody) {
     const data = createTurmaSchema.parse(body);
 
     await Promise.all(data.turma_agenda.map(
         async (agenda) => {
-            await validateTurma(data, agenda)
+            await TurmaRules.validateTurma(data, agenda);
         }));
 
     try {
@@ -35,23 +36,15 @@ export async function createTurma(body: CreateTurmaBody) {
             };
 
             if (data.turma_agenda) {
-                const agenda = data.turma_agenda.map(item => TurmaMapper.toTurmaAgenda(Number(turma.id), item));
-                const agendaResult = await newTurmaAgenda(tx, agenda);
-                checkCreateManyCount(agendaResult, agenda.length, "Agenda da turma")
+                await TurmaHelpers.createAgendaIfProvided(tx, turma.id, data);
             };
             
             if (data.turma_alunos) {
-                const alunos = data.turma_alunos.map(aluno => TurmaMapper.toTurmaAlunosPrisma(Number(turma.id), aluno));
-                await validateTurmaAlunos(alunos);
-                const alunosResult = await newTurmaAluno(tx, alunos);
-                checkCreateManyCount(alunosResult, alunos.length, "Alunos da turma");
+                await TurmaHelpers.createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos);
             };
 
             if (data.turma_professores) {
-                const professores = data.turma_professores.map(professor => TurmaMapper.toTurmaProfessoresPrisma(Number(turma.id), professor));
-                await validateTurmaProfessores(professores);
-                const professoresResult = await newTurmaProfessor(tx, professores);
-                checkCreateManyCount(professoresResult, professores.length, "Professores da turma");
+                await TurmaHelpers.createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores);
             };
 
             return turma;

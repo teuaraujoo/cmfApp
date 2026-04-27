@@ -25,7 +25,9 @@ export async function getById(id: number) {
 };
 
 export async function getByName(nome: string) {
-  return prisma.turmas.findUnique({ where: { nome } })  
+  return prisma.turmas.findUnique({ where: { nome }, include: {
+    turma_agenda: true
+  } })  
 };
 
 export async function newTurma(tx: Prisma.TransactionClient, turma: Prisma.turmasUncheckedCreateInput) {

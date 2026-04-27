@@ -1,21 +1,5 @@
+import { TurmaHelpers } from "../helpers/turma.helpers";
 import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "../schemas/turmas.shema";
-
-/*
-[
-    {
-       turma_id: number
-        alunos_id: number  
-    },
-    {
-       turma_id: number
-        alunos_id: number  
-    }
-]
-
-[ turma_id, turma_id ]
-[ alunos_id, alunos_id ]
-
-*/
 
 export class TurmaMapper {
 
@@ -30,8 +14,8 @@ export class TurmaMapper {
         return {
             turma_id: turmaId,
             dia_semana: turmaAgenda.dia_semana,
-            horario_inicio: new Date(`2026-01-01T${turmaAgenda.horario_inicio}:00`),
-            horario_fim: new Date(`2026-01-01T${turmaAgenda.horario_fim}:00`),
+            horario_inicio: TurmaHelpers.toTimeUtc(turmaAgenda.horario_inicio),
+            horario_fim: TurmaHelpers.toTimeUtc(turmaAgenda.horario_fim),
 
         };
     };
