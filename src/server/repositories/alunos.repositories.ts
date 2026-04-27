@@ -1,44 +1,47 @@
 import { prisma } from "@/libs/prisma";
 import { Prisma } from "@/generated/prisma/client";
 
-export async function getAll() {
-  return prisma.alunos.findMany({
-    orderBy: {
-      created_at: "desc"
-    },
-    include: {
-      users: true
-    }
-  });
-};
+export class AlunosRepositories {
 
-export async function getTotal() {
-  return prisma.alunos.count();
-};
+  static async getAll() {
+    return prisma.alunos.findMany({
+      orderBy: {
+        created_at: "desc"
+      },
+      include: {
+        users: true
+      }
+    });
+  };
 
-export async function getByUserId(id: number) {
-  return prisma.alunos.findUnique({
-    where: {
-      user_id: id
-    },
-    include: {
-      users: true
-    }
-  });
-};
+  static async getTotal() {
+    return prisma.alunos.count();
+  };
 
-export async function createAluno(tx: Prisma.TransactionClient, aluno: Prisma.alunosUncheckedCreateInput) {
-  return tx.alunos.create({ data: aluno });
-};
+  static async getByUserId(id: number) {
+    return prisma.alunos.findUnique({
+      where: {
+        user_id: id
+      },
+      include: {
+        users: true
+      }
+    });
+  };
 
-export async function inactiveAluno(tx: Prisma.TransactionClient, userId: number) {
-  return tx.alunos.update({ where: { user_id: userId }, data: { status: "INATIVO" } });
-};
+  static async createAluno(tx: Prisma.TransactionClient, aluno: Prisma.alunosUncheckedCreateInput) {
+    return tx.alunos.create({ data: aluno });
+  };
 
-export async function activeAluno(tx: Prisma.TransactionClient, userId: number) {
-  return tx.alunos.update({ where: { user_id: userId }, data: { status: "ATIVO" } });
-};
+  static async inactiveAluno(tx: Prisma.TransactionClient, userId: number) {
+    return tx.alunos.update({ where: { user_id: userId }, data: { status: "INATIVO" } });
+  };
 
-export async function updateAluno(tx: Prisma.TransactionClient, data: Prisma.alunosUpdateInput, id: number) {
-  return tx.alunos.update({ where: { user_id: id }, data })
+  static async activeAluno(tx: Prisma.TransactionClient, userId: number) {
+    return tx.alunos.update({ where: { user_id: userId }, data: { status: "ATIVO" } });
+  };
+
+  static async updateAluno(tx: Prisma.TransactionClient, data: Prisma.alunosUpdateInput, id: number) {
+    return tx.alunos.update({ where: { user_id: id }, data })
+  };
 };

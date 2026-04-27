@@ -1,46 +1,49 @@
 import { CreateUserBody, UpdateUserBody } from "@/server/schemas/user.schema";
-import { getByEmail, getById } from "@/server/repositories/users.respositories";
+import { UsersRepositories } from "@/server/repositories/users.respositories";
 import { AppError } from "@/server/error/app-errors";
 
-export async function validateUser(data: CreateUserBody) {
-  const findEmail = await getByEmail(data.email);
+export class UsersRules {
 
-  if (findEmail) {
-    throw new AppError("Email já cadastrado!", 409);
+  static async validateUser(data: CreateUserBody) {
+    const findEmail = await UsersRepositories.getByEmail(data.email);
+
+    if (findEmail) {
+      throw new AppError("Email já cadastrado!", 409);
+    };
+
+    if (data.role === "ALUNO" && !data.aluno) {
+      throw new AppError("Dados do aluno são obrigatórios!", 400);
+    };
+
+    if (data.role === "PROFESSOR" && !data.professor) {
+      throw new AppError("Dados do professor são obrigatórios!", 400);
+    };
   };
 
-  if (data.role === "ALUNO" && !data.aluno) {
-    throw new AppError("Dados do aluno são obrigatórios!", 400);
-  };
+  static async validateUpdateUser(data: UpdateUserBody, id: number) {
+    const findEmail = await UsersRepositories.getByEmail(data.email);
+    const findUser = await UsersRepositories.getById(id);
 
-  if (data.role === "PROFESSOR" && !data.professor) {
-    throw new AppError("Dados do professor são obrigatórios!", 400);
-  };
-};
+    if (!findUser) {
+      throw new AppError("Usuário não encontrado!", 404);
+    };
 
-export async function validateUpdateUser(data: UpdateUserBody, id: number) {
-  const findEmail = await getByEmail(data.email);
-  const findUser = await getById(id);
+    if (findEmail && findEmail.id !== id) {
+      throw new AppError("Email já cadastrado!", 409);
+    };
 
-  if (!findUser) {
-    throw new AppError("Usuário não encontrado!", 404);
-  };
+    if (data.role !== findUser.role) {
+      throw new AppError("Alteração de role ainda não é suportada nesta rota.", 400);
+    };
 
-  if (findEmail && findEmail.id !== id) {
-    throw new AppError("Email já cadastrado!", 409);
-  };
-  
-  if (data.role !== findUser.role) {
-    throw new AppError("Alteração de role ainda não é suportada nesta rota.", 400);
-  };
+    if (data.role === "ALUNO" && !data.aluno) {
+      throw new AppError("Dados do aluno são obrigatórios!", 400);
+    };
 
-  if (data.role === "ALUNO" && !data.aluno) {
-    throw new AppError("Dados do aluno são obrigatórios!", 400);
-  };
+    if (data.role === "PROFESSOR" && !data.professor) {
+      throw new AppError("Dados do professor são obrigatórios!", 400);
+    };
 
-  if (data.role === "PROFESSOR" && !data.professor) {
-    throw new AppError("Dados do professor são obrigatórios!", 400);
+    return findUser.auth_user_id;
   };
-
-  return findUser.auth_user_id;
 };

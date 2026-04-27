@@ -1,5 +1,5 @@
 import { AppError } from "../error/app-errors";
-import { getByAuthUserId } from "../repositories/users.respositories";
+import { UsersRepositories } from "../repositories/users.respositories";
 import { AuthError, User } from "@supabase/supabase-js";
 import { createClient } from "@/libs/supabase/server";
 
@@ -9,7 +9,7 @@ export async function validateLogin(error: AuthError| null, authUser: User | nul
         throw new AppError("Credenciais inválidas.", 401);
     };
 
-    const appUser = await getByAuthUserId(authUser.id);
+    const appUser = await UsersRepositories.getByAuthUserId(authUser.id);
 
     if (!appUser) {
         await supabase.auth.signOut();

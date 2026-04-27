@@ -1,9 +1,9 @@
-import { getTotal, getAll, getByUserId } from "../repositories/alunos.repositories";
+import { AlunosRepositories } from "../repositories/alunos.repositories";
 import { AlunoMapper } from "../mappers/alunos.mapper";
 import { AppError } from "../error/app-errors";
 
 export async function getAllAlunos() {
-  const alunos = await getAll();
+  const alunos = await AlunosRepositories.getAll();
 
   if (!alunos) {
     throw new AppError("Error ao encontrar alunos!", 404);
@@ -13,11 +13,11 @@ export async function getAllAlunos() {
 };
 
 export async function getTotalAlunos() {
-  return getTotal();
+  return AlunosRepositories.getTotal();
 };
 
 export async function getAlunoByUserId(userId: number) {
-  const aluno = await getByUserId(userId);
+  const aluno = await AlunosRepositories.getByUserId(userId);
 
   if (!aluno) {
     throw new AppError("Error ao encontrar aluno!", 404);

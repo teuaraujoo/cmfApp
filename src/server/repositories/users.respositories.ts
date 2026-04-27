@@ -1,55 +1,58 @@
 import { prisma } from "@/libs/prisma";
 import { Prisma } from "@/generated/prisma/client";
 
-export async function getAll() {
-  return prisma.public_users.findMany({
-    orderBy: {
-      created_at: "desc",
-    },
-  });
-};
+export class UsersRepositories {
 
-export async function getById(id: number) {
-  return prisma.public_users.findUnique({ where: { id } });
-};
+  static async getAll() {
+    return prisma.public_users.findMany({
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+  };
 
-export async function getByEmail(email: string) {
-  return prisma.public_users.findUnique({ where: { email } });
-};
+  static async getById(id: number) {
+    return prisma.public_users.findUnique({ where: { id } });
+  };
 
-export async function getByAuthUserId(authUserId: string) {
-  return prisma.public_users.findUnique({ where: { auth_user_id: authUserId } });
-};
+  static async getByEmail(email: string) {
+    return prisma.public_users.findUnique({ where: { email } });
+  };
 
-export async function getWithProfilesByAuthUserId(authUserId: string) {
-  return prisma.public_users.findUnique({
-    where: { auth_user_id: authUserId },
-    include: {
-      alunos: true,
-      professores: true,
-    },
-  });
-};
+  static async getByAuthUserId(authUserId: string) {
+    return prisma.public_users.findUnique({ where: { auth_user_id: authUserId } });
+  };
 
-export async function newUser(tx: Prisma.TransactionClient, newUser: Prisma.public_usersCreateInput) {
-  return tx.public_users.create({ data: newUser });
-};
+  static async getWithProfilesByAuthUserId(authUserId: string) {
+    return prisma.public_users.findUnique({
+      where: { auth_user_id: authUserId },
+      include: {
+        alunos: true,
+        professores: true,
+      },
+    });
+  };
 
-export async function disableMustChangePassword(userId: number) {
-  return prisma.public_users.update({
-    where: { id: userId },
-    data: { must_change_password: false },
-  });
-};
+  static async newUser(tx: Prisma.TransactionClient, newUser: Prisma.public_usersCreateInput) {
+    return tx.public_users.create({ data: newUser });
+  };
 
-export async function inactivePublicUser(tx: Prisma.TransactionClient, id: number) {
-  return tx.public_users.update({ where: { id: id }, data: { status: "INATIVO" } });
-};
+  static async disableMustChangePassword(userId: number) {
+    return prisma.public_users.update({
+      where: { id: userId },
+      data: { must_change_password: false },
+    });
+  };
 
-export async function activePublicUser(tx: Prisma.TransactionClient, id: number) {
-  return tx.public_users.update({ where: { id: id }, data: { status: "ATIVO" } });
-};
+  static async inactivePublicUser(tx: Prisma.TransactionClient, id: number) {
+    return tx.public_users.update({ where: { id: id }, data: { status: "INATIVO" } });
+  };
 
-export async function updateUserById(tx: Prisma.TransactionClient, data: Prisma.public_usersUpdateInput, id: number) {
-  return tx.public_users.update({ where: { id }, data });
+  static async activePublicUser(tx: Prisma.TransactionClient, id: number) {
+    return tx.public_users.update({ where: { id: id }, data: { status: "ATIVO" } });
+  };
+
+  static async updateUserById(tx: Prisma.TransactionClient, data: Prisma.public_usersUpdateInput, id: number) {
+    return tx.public_users.update({ where: { id }, data });
+  };
 };
