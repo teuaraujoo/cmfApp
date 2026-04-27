@@ -5,31 +5,24 @@ import { AppError } from "../error/app-errors";
 import { UserMapper } from "../mappers/users.mapper";
 import { AlunoMapper } from "../mappers/alunos.mapper";
 import { ProfessorMapper } from "../mappers/professores.mapper";
-import {
-  getAll,
-  newUser,
-  getById,
-  inactivePublicUser,
-  activePublicUser,
-  updateUserById
-} from "../repositories/users.respositories";
-import { createAluno, inactiveAluno, activeAluno, updateAluno } from "../repositories/alunos.repositories";
-import { createProfessor, inactiveProfessor, activeProfessor, updateProfessor } from "../repositories/professores.repositories";
+import { UsersRepositories } from "../repositories/users.respositories";
+import { UsersRules } from "../rules/users.rules";
+import { AlunosRepositories } from "../repositories/alunos.repositories";
+import { ProfessoresRepositories } from "../repositories/professores.repositories";
 import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "../schemas/user.schema";
-import { validateUpdateUser, validateUser } from "../rules/users.rules";
 
 export async function getAllUsers() {
-  return getAll();
+  return UsersRepositories.getAll();
 };
 
 export async function getUserById(id: number) {
-  return getById(id);
+  return UsersRepositories.getById(id);
 };
 
 export async function createUser(body: CreateUserBody) {
   const data = createUserSchema.parse(body);
 
-  await validateUser(data);
+  await UsersRules.validateUser(data);
 
   const adminSupabase = createAdminClient();
 
@@ -50,14 +43,14 @@ export async function createUser(body: CreateUserBody) {
   try {
     return await prisma.$transaction(
       async (tx) => {
-        const user = await newUser(tx, UserMapper.toPrismaUser(data, authData.user.id));
+        const user = await UsersRepositories.newUser(tx, UserMapper.toPrismaUser(data, authData.user.id));
 
         if (data.role === "ALUNO") {
-          await createAluno(tx, AlunoMapper.toPrismaAluno(user.id, data));
+          await AlunosRepositories.createAluno(tx, AlunoMapper.toPrismaAluno(user.id, data));
         };
 
         if (data.role === "PROFESSOR") {
-          await createProfessor(tx, ProfessorMapper.toPrismaProfessor(user.id, data));
+          await ProfessoresRepositories.createProfessor(tx, ProfessorMapper.toPrismaProfessor(user.id, data));
         };
 
         return UserMapper.toResponseAdmin(user);
@@ -83,7 +76,7 @@ export async function updateUser(body: UpdateUserBody, id: number) {
   try {
     const data = updateUserSchema.parse(body);
 
-    const authUserId = await validateUpdateUser(data, id);
+    const authUserId = await UsersRules.validateUpdateUser(data, id);
 
     const adminSupabase = createAdminClient();
 
@@ -102,14 +95,14 @@ export async function updateUser(body: UpdateUserBody, id: number) {
     };
 
     return await prisma.$transaction(async (tx) => {
-     const user = await updateUserById(tx, UserMapper.toPrismaUserUpdate(data), id);
+     const user = await UsersRepositories.updateUserById(tx, UserMapper.toPrismaUserUpdate(data), id);
 
       if (data.role === "PROFESSOR") {
-        await updateProfessor(tx, ProfessorMapper.toPrismaProfessor(id, data), id);
+        await ProfessoresRepositories.updateProfessor(tx, ProfessorMapper.toPrismaProfessor(id, data), id);
       };
 
       if (data.role === "ALUNO") {
-        await updateAluno(tx, AlunoMapper.toPrismaAluno(id, data), id);
+        await AlunosRepositories.updateAluno(tx, AlunoMapper.toPrismaAluno(id, data), id);
       };
 
       return UserMapper.toResponseAdmin(user);
@@ -123,21 +116,21 @@ export async function updateUser(body: UpdateUserBody, id: number) {
 export async function inactiveUser(id: number) {
   try {
 
-    const user = await getById(id);
+    const user = await UsersRepositories.getById(id);
 
     if (!user) {
       throw new AppError("Usuário não encontrado!", 404);
     };
 
     return prisma.$transaction(async (tx) => {
-      const userDel = await inactivePublicUser(tx, id);
+      const userDel = await UsersRepositories.inactivePublicUser(tx, id);
 
       if (user.role === "ALUNO") {
-        await inactiveAluno(tx, id);
+        await AlunosRepositories.inactiveAluno(tx, id);
       };
 
       if (user.role === "PROFESSOR") {
-        await inactiveProfessor(tx, id);
+        await ProfessoresRepositories.inactiveProfessor(tx, id);
       };
 
       return UserMapper.toResponseAdmin(userDel);
@@ -152,21 +145,21 @@ export async function inactiveUser(id: number) {
 export async function activeUser(id: number) {
   try {
 
-    const user = await getById(id);
+    const user = await UsersRepositories.getById(id);
 
     if (!user) {
       throw new AppError("Usuário não encontrado!", 404);
     };
 
     return prisma.$transaction(async (tx) => {
-      const userAct = await activePublicUser(tx, id);
+      const userAct = await UsersRepositories.activePublicUser(tx, id);
 
       if (user.role === "ALUNO") {
-        await activeAluno(tx, id);
+        await AlunosRepositories.activeAluno(tx, id);
       };
 
       if (user.role === "PROFESSOR") {
-        await activeProfessor(tx, id);
+        await ProfessoresRepositories.activeProfessor(tx, id);
       };
 
       return UserMapper.toResponseAdmin(userAct);

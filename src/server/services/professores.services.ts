@@ -1,9 +1,9 @@
 import { AppError } from "../error/app-errors";
 import { ProfessorMapper } from "../mappers/professores.mapper";
-import { getTotal, getAll, getByUserId } from "../repositories/professores.repositories";
+import { ProfessoresRepositories } from "../repositories/professores.repositories";
 
 export async function getAllProfessores() {
-  const professores = await getAll();
+  const professores = await ProfessoresRepositories.getAll();
 
   if (!professores) {
     throw new AppError("Error ao encontrar professores", 404);
@@ -13,11 +13,11 @@ export async function getAllProfessores() {
 };
 
 export async function getTotalProfessores() {
-  return getTotal();
+  return ProfessoresRepositories.getTotal();
 };
 
 export async function getProfessorByUserId(id: number) {
-  const professor = await getByUserId(id);
+  const professor = await ProfessoresRepositories.getByUserId(id);
 
   if (!professor) {
     throw new AppError("Não foi possível encontrar professor!", 404);

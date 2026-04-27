@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { AppError } from "../error/app-errors";
-import { getWithProfilesByAuthUserId } from "../repositories/users.respositories";
+import { UsersRepositories } from "../repositories/users.respositories";
 
 export class userHelpers {
     
@@ -33,7 +33,7 @@ export class userHelpers {
             throw new AppError("Usuário não autenticado.", 401);
         };
 
-        const appUser = await getWithProfilesByAuthUserId(authUser.id);
+        const appUser = await UsersRepositories.getWithProfilesByAuthUserId(authUser.id);
 
         if (!appUser) {
             throw new AppError("Usuário autenticado sem perfil local vinculado.", 401);
