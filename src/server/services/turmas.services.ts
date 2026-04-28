@@ -15,7 +15,7 @@ export async function getAllTurmas() {
         throw new AppError("Error ao buscar turmas!", 404);
     };
 
-    return turmas;
+    return turmas.map((turma) => TurmaMapper.toResponseTurmasGet(turma));
 };
 
 export async function getTurmaById(id: number) {

@@ -7,8 +7,24 @@ export class TurmaRepositories {
         return prisma.turmas.findMany({
             include: {
                 turma_agenda: true,
-                turma_alunos: true,
-                turma_professores: true
+                turma_alunos: {
+                    include: {
+                        alunos: {
+                            include: {
+                                users: true
+                            }
+                        }
+                    }
+                },
+                turma_professores: {
+                    include: {
+                        professores: {
+                            include: {
+                                users: true
+                            }
+                        }
+                    }
+                }
             }
         });
     };
