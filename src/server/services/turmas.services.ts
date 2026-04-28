@@ -18,6 +18,22 @@ export async function getAllTurmas() {
     return turmas;
 };
 
+export async function getTurmaById(id: number) {
+    try {
+
+        const turma = await TurmaRepositories.getById(id);
+
+        if (!turma) {
+            throw new AppError("Turma não encontrada", 404);
+        }; 
+
+        return turma;
+
+    } catch (err) {
+        throw err;
+    };
+};
+
 export async function createTurma(body: CreateTurmaBody) {
     const data = createTurmaSchema.parse(body);
 
@@ -73,20 +89,3 @@ export async function deleteTurma(id: number) {
         throw err
     };
 };
-
-export async function getTurmaById(id: number) {
-    try {
-
-        const turma = await TurmaRepositories.getById(id);
-
-        if (!turma) {
-            throw new AppError("Turma não encontrada", 404);
-        }; 
-
-        return turma;
-
-    } catch (err) {
-        throw err;
-    };
-};
-
