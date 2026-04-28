@@ -7,8 +7,8 @@ export class TurmaMapper {
         return {
             nome: turma.nome,
             horas_semana: turma.horas_semana,
-            vigecnia_inicio: turma.vigencia_inicio,
-            vigencia_fim: turma.vigencia_fim,
+            vigencia_inicio: new Date(turma.vigencia_inicio),
+            vigencia_fim: new Date(turma.vigencia_fim),
         }
     };
 

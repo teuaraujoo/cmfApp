@@ -25,9 +25,13 @@ export class TurmaRules {
         const horarioFim = TurmaHelpers.toTimeUtc(agenda.horario_fim);
         // const matchAgenda = turma!.turma_agenda.some(item => item.dia_semana === agenda.dia_semana);
         // const compareHours = turma?.turma_agenda[0].horario_inicio !== horarioInicio;
-
+        
         if (turma) {
             throw new AppError("Turma já existente!", 400);
+        };
+        
+        if (!data.vigencia_fim || !data.vigencia_inicio) {
+            throw new AppError("Vigência é obrigatória", 400);
         };
 
         if (!data.turma_agenda) {
