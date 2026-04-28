@@ -6,7 +6,9 @@ export class TurmaMapper {
     static toPrisma(turma: CreateTurmaBody) {
         return {
             nome: turma.nome,
-            horas_semana: turma.horas_semana
+            horas_semana: turma.horas_semana,
+            vigecnia_inicio: turma.vigencia_inicio,
+            vigencia_fim: turma.vigencia_fim,
         }
     };
 
