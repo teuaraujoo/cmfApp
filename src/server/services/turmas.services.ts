@@ -11,7 +11,7 @@ export async function getAllTurmas() {
 
     const turmas = await TurmaRepositories.getAll();
 
-    if (!turmas) {
+    if (!turmas || turmas.length <= 0) {
         throw new AppError("Error ao buscar turmas!", 404);
     };
 
@@ -25,9 +25,9 @@ export async function getTurmaById(id: number) {
 
         if (!turma) {
             throw new AppError("Turma não encontrada", 404);
-        }; 
+        };
 
-        return turma;
+        return TurmaMapper.toResponseTurmasGet(turma);
 
     } catch (err) {
         throw err;

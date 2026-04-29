@@ -36,10 +36,27 @@ export class TurmaRepositories {
                 id
             },
             include: {
+                modalidades: true,
                 turma_agenda: true,
-                turma_alunos: true,
-                turma_professores: true
-            }
+                turma_alunos: {
+                    include: {
+                        alunos: {
+                            include: {
+                                users: true
+                            }
+                        }
+                    }
+                },
+                turma_professores: {
+                    include: {
+                        professores: {
+                            include: {
+                                users: true
+                            }
+                        }
+                    }
+                },
+            },
         });
     };
 
