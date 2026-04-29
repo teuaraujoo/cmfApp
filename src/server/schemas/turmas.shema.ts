@@ -19,6 +19,7 @@ export const createTurmaSchema = z.object({
     horas_semana: z.number().positive(),
     vigencia_inicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato esperado: YYYY-MM-DD"),
     vigencia_fim: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato esperado: YYYY-MM-DD"),
+    modalidade_id: z.number().int().positive(),
 
     turma_agenda: z.array(turmaAgendaSchema).min(1, "A turma precisa ter pelo menos um horário!"),
 

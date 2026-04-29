@@ -6,6 +6,7 @@ export class TurmaRepositories {
     static async getAll() {
         return prisma.turmas.findMany({
             include: {
+                modalidades:true,
                 turma_agenda: true,
                 turma_alunos: {
                     include: {

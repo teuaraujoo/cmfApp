@@ -581,6 +581,7 @@ model modalidades {
   alunos            alunos[]
   aulas_individuais aulas_individuais[]
   professores       professores[]
+  turmas            turmas[]
 
   @@schema("public")
 }
@@ -659,9 +660,11 @@ model turmas {
   updated_at        DateTime            @default(now()) @db.Timestamp(6)
   vigencia_inicio   DateTime?           @db.Date
   vigencia_fim      DateTime?           @db.Date
+  modalidade_id     Int?
   turma_agenda      turma_agenda[]
   turma_alunos      turma_alunos[]
   turma_professores turma_professores[]
+  modalidades       modalidades?        @relation(fields: [modalidade_id], references: [id], onDelete: Restrict, map: "fk_turma_modalidade")
 
   @@index([status], map: "idx_turmas_status")
   @@index([vigencia_fim], map: "idx_turmas_vigencia_fim")

@@ -5,6 +5,7 @@ import { dateToTime } from "../utils/dateToTime";
 
 type TurmaWithRelations = Prisma.turmasGetPayload<{
     include: {
+        modalidades: true,
         turma_agenda: true;
         turma_alunos: {
             include: {
@@ -48,6 +49,7 @@ export class TurmaMapper {
             horas_semana: turma.horas_semana,
             vigencia_inicio: new Date(turma.vigencia_inicio),
             vigencia_fim: new Date(turma.vigencia_fim),
+            modalidade_id: turma.modalidade_id
         }
     };
 
@@ -83,6 +85,7 @@ export class TurmaMapper {
             status: turma.status,
             vigencia_inicio: turma.vigencia_inicio,
             vigencia_fim: turma.vigencia_fim,
+            modalidade: turma.modalidades,
             turma_agenda: this.toResponseTurmaAgendaGet(turma.turma_agenda),
             turma_alunos: this.toResponseTurmaAlunosGet(turma.turma_alunos),
             turma_professores: this.toResponseTurmaProfessoresGet(turma.turma_professores),

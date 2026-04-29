@@ -34,6 +34,10 @@ export class TurmaRules {
             throw new AppError("Vigência é obrigatória", 400);
         };
 
+        if (!data.modalidade_id) {
+            throw new AppError("Modalidade da turma é obrigatória!", 400);
+        };
+
         if (!data.turma_agenda) {
             throw new AppError("Agenda da turma é obrigatória", 400);
         };
