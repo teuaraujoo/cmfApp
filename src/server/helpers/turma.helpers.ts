@@ -26,12 +26,17 @@ export class TurmaHelpers {
         checkCreateManyCount(agendaResult, agenda.length, "Agenda da turma");
     };
 
-    static async createTurmaAlunoIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaAlunoBody[]) {
+    static async createTurmaAlunoIfProvided(
+        tx: Prisma.TransactionClient,
+        turmaId: number,
+        data: CreateTurmaAlunoBody[],
+        agenda: CreateTurmaAgendaBody[]
+    ) {
         const alunos = data.map((aluno) => {
             return TurmaMapper.toTurmaAlunosPrisma(turmaId, aluno);
         });
 
-        await TurmaRules.validateTurmaAlunos(alunos);
+        await TurmaRules.validateTurmaAlunos(alunos, agenda);
 
         const alunosResult = await TurmaRepositories.newTurmaAluno(tx, alunos);
 
@@ -40,7 +45,8 @@ export class TurmaHelpers {
 
     static async createTurmaProfessorIfProvided(
         tx: Prisma.TransactionClient,
-        turmaId: number, data: CreateTurmaProfessorBody[],
+        turmaId: number,
+        data: CreateTurmaProfessorBody[],
         agenda: CreateTurmaAgendaBody[]
     ) {
 

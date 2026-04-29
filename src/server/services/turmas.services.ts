@@ -55,7 +55,7 @@ export async function createTurma(body: CreateTurmaBody) {
             };
 
             if (data.turma_alunos) {
-                await TurmaHelpers.createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos);
+                await TurmaHelpers.createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda);
             };
 
             if (data.turma_professores) {

@@ -25,11 +25,11 @@ export class TurmaRules {
         const horarioFim = TurmaHelpers.toTimeUtc(agenda.horario_fim);
         // const matchAgenda = turma!.turma_agenda.some(item => item.dia_semana === agenda.dia_semana);
         // const compareHours = turma?.turma_agenda[0].horario_inicio !== horarioInicio;
-        
+
         if (turma) {
             throw new AppError("Turma já existente!", 400);
         };
-        
+
         if (!data.vigencia_fim || !data.vigencia_inicio) {
             throw new AppError("Vigência é obrigatória", 400);
         };
@@ -51,19 +51,47 @@ export class TurmaRules {
         // };
     };
 
-    static async validateTurmaAlunos(alunos: CreateTurmaAlunoPrisma[]) {
+    static async validateTurmaAlunos(alunos: CreateTurmaAlunoPrisma[], newAgenda: CreateTurmaAgendaBody[]) {
+        
         const alunosIds = alunos.map(aluno => aluno.alunos_id);
         const findAlunos = await AlunosRepositories.findManyByIds(alunosIds);
+        const turmasDosAlunos = await TurmaRepositories.findTurmasByAlunosIds(alunosIds);
 
         if (!findAlunos || findAlunos.length !== alunosIds.length) {
             throw new AppError("Error ao achar alunos", 400);
         };
+
+        const newSchedules = newAgenda.map((item) => ({
+            dia_semana: item.dia_semana,
+            inicio: dateToMinutes(TurmaHelpers.toTimeUtc(item.horario_inicio)),
+            fim: dateToMinutes(TurmaHelpers.toTimeUtc(item.horario_fim))
+        }));
+
+        const currentSchedules = turmasDosAlunos.flatMap((turma) => turma.turma_agenda.map((agenda) => ({
+            turma_id: turma.id,
+            dia_semana: agenda.dia_semana,
+            inicio: dateToMinutes(agenda.horario_inicio),
+            fim: dateToMinutes(agenda.horario_fim)
+        })));
+
+        for (const fresh of newSchedules) {
+            for (const current of currentSchedules) {
+                if (TurmaHelpers.hasConflit(fresh, current)) {
+                    throw new AppError("Aluno já possui turma nesse dia e horário", 400);
+                };
+            };
+        };
+
     };
 
     static async validateTurmaProfessores(professores: CreateTurmaProfessorPrisma[], newAgenda: CreateTurmaAgendaBody[]) {
         const professoresIds = professores.map(professor => professor.professores_id);
         const findProfessores = await ProfessoresRepositories.findManyByIds(professoresIds);
         const turmasDosProfessores = await TurmaRepositories.findTurmasByProfessoresIds(professoresIds);
+
+        if (!findProfessores || findProfessores.length !== professoresIds.length) {
+            throw new AppError("Error ao achar professores!", 400);
+        };
 
         const newSchedules = newAgenda.map((item) => ({
             dia_semana: item.dia_semana,
@@ -78,7 +106,6 @@ export class TurmaRules {
             fim: dateToMinutes(agenda.horario_fim),
         })));
 
-
         for (const fresh of newSchedules) {
             for (const current of currentSchedules) {
                 if (TurmaHelpers.hasConflit(fresh, current)) {
@@ -87,8 +114,5 @@ export class TurmaRules {
             };
         };
 
-        if (!findProfessores || findProfessores.length !== professoresIds.length) {
-            throw new AppError("Error ao achar professores!", 400);
-        };
     };
 };

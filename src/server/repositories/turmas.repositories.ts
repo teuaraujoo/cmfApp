@@ -6,7 +6,7 @@ export class TurmaRepositories {
     static async getAll() {
         return prisma.turmas.findMany({
             include: {
-                modalidades:true,
+                modalidades: true,
                 turma_agenda: true,
                 turma_alunos: {
                     include: {
@@ -66,7 +66,22 @@ export class TurmaRepositories {
                 turma_professores: true,
             },
         });
-    }
+    };
+
+    static async findTurmasByAlunosIds(alunosIds: number[]) {
+        return prisma.turmas.findMany({
+            where: {
+                turma_alunos: {
+                    some: {
+                        alunos_id: { in: alunosIds }
+                    }
+                }
+            },
+            include: {
+                turma_agenda: true
+            }
+        });
+    };
 
     static async newTurma(tx: Prisma.TransactionClient, turma: Prisma.turmasUncheckedCreateInput) {
         return tx.turmas.create({ data: turma })
