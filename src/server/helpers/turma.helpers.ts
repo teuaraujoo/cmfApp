@@ -4,32 +4,33 @@ import { TurmaMapper } from "../mappers/turmas.mapper";
 import { TurmaRepositories } from "../repositories/turmas.repositories";
 import { checkCreateManyCount } from "./check-createmany";
 import { TurmaRules } from "../rules/turma.rules";
-
-type Agenda = {
-    turma_id?: number
-    dia_semana: number
-    inicio: number
-    fim: number
-};
-
 export class TurmaHelpers {
 
     static async createAgendaIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaBody) {
 
         if (!data.turma_agenda?.length) return;
-
+        
         const agenda = data.turma_agenda.map((item) => {
             return TurmaMapper.toTurmaAgenda(turmaId, item);
         });
 
+        for (const agenda of data.turma_agenda) {
+            await TurmaRules.validateAgendaItem(agenda);
+        };
+
+        await TurmaRules.validateAgenda(data.turma_agenda, data.vigencia_inicio, data.vigencia_fim);
+        
         const agendaResult = await TurmaRepositories.newTurmaAgenda(tx, agenda);
         checkCreateManyCount(agendaResult, agenda.length, "Agenda da turma");
     };
+    
+    static async updateTurmaAgendaIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaBody) {
+        
 
-    static async updateTurmaAgendaIfProvided(tx: Prisma.TransactionClient, turmaId: number, agenda: CreateTurmaAgendaBody[]) {
 
+        await TurmaRules.validateAgenda(data.turma_agenda, data.vigencia_inicio, data.vigencia_fim, turmaId);
     };
-
+    
     static async createTurmaAlunoIfProvided(
         tx: Prisma.TransactionClient,
         turmaId: number,
@@ -71,7 +72,10 @@ export class TurmaHelpers {
         return new Date(Date.UTC(1970, 0, 1, hours, minutes, 0));
     };
 
-    static hasConflit(fresh: Agenda, current: Agenda) {
+    static hasConflit(
+        fresh: { dia_semana: number; inicio: number; fim: number },
+        current: { dia_semana: number; inicio: number; fim: number }
+    ) {
         return (
             fresh.dia_semana === current.dia_semana &&
             fresh.inicio < current.fim &&

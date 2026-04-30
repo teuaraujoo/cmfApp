@@ -68,7 +68,8 @@ export class TurmaRepositories {
             }
         })
     };
-
+    
+    // Achar todas as turmas que o professor ja esta (create) / achar todas as turmas que o professor esta menos a turma que esta sendo atualizada (update)
     static async findTurmasByProfessoresIds(professoresIds: number[]) {
         return prisma.turmas.findMany({
             where: {
@@ -99,6 +100,35 @@ export class TurmaRepositories {
             }
         });
     };
+
+    static async findTurmasByAgendaCandidates(
+        diasSemana: number[],
+        vigenciaInicio: Date,
+        vigenciaFim: Date,
+        TurmaId?: number
+    ) {
+        return prisma.turmas.findMany({
+            where: {
+                ...(TurmaId ? { id: { not: TurmaId } } : {}),
+                vigencia_inicio: {
+                    lte: vigenciaFim,
+                },
+                vigencia_fim: {
+                    gte: vigenciaInicio,
+                },
+                turma_agenda: {
+                    some: {
+                        dia_semana: {
+                            in: diasSemana,
+                        },
+                    },
+                },
+            },
+            include: {
+                turma_agenda: true,
+            },
+        });
+    }
 
     static async newTurma(tx: Prisma.TransactionClient, turma: Prisma.turmasUncheckedCreateInput) {
         return tx.turmas.create({ data: turma })

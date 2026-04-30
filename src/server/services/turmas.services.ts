@@ -37,10 +37,7 @@ export async function getTurmaById(id: number) {
 export async function createTurma(body: CreateTurmaBody) {
     const data = createTurmaSchema.parse(body);
 
-    await Promise.all(data.turma_agenda.map(
-        async (agenda) => {
-            await TurmaRules.validateTurma(data, agenda);
-        }));
+    await TurmaRules.validateTurma(data);
 
     try {
         return await prisma.$transaction(async (tx) => {
@@ -78,11 +75,6 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
 
     const data = createTurmaSchema.parse(body);
 
-    await Promise.all(data.turma_agenda.map(
-        async (agenda) => {
-            await TurmaRules.validateTurmaUpdate(data, agenda);
-        }));
-
     try {
         return await prisma.$transaction(async (tx) => {
             const turma = await TurmaRepositories.updateTurmaById(tx, id, TurmaMapper.toPrisma(data));
@@ -92,7 +84,7 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
             };
 
             if (data.turma_agenda) {
-                await TurmaHelpers.updateTurmaAgendaIfProvided(tx, turma.id, data.turma_agenda);
+                await TurmaHelpers.updateTurmaAgendaIfProvided(tx, turma.id, data);
             };
 
             return turma;
