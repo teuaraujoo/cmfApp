@@ -74,6 +74,35 @@ export async function createTurma(body: CreateTurmaBody) {
     };
 };
 
+export async function updateTurma(body: CreateTurmaBody, id: number) {
+
+    const data = createTurmaSchema.parse(body);
+
+    await Promise.all(data.turma_agenda.map(
+        async (agenda) => {
+            await TurmaRules.validateTurmaUpdate(data, agenda);
+        }));
+
+    try {
+        return await prisma.$transaction(async (tx) => {
+            const turma = await TurmaRepositories.updateTurmaById(tx, id, TurmaMapper.toPrisma(data));
+
+            if (!turma) {
+                throw new AppError("Error ao atualizar turma!", 500);
+            };
+
+            if (data.turma_agenda) {
+                await TurmaHelpers.updateTurmaAgendaIfProvided(tx, turma.id, data.turma_agenda);
+            };
+
+            return turma;
+        });
+
+    } catch (err) {
+        throw err;
+    };
+};
+
 export async function deleteTurma(id: number) {
     try {
 

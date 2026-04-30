@@ -51,8 +51,21 @@ export class TurmaRules {
         // };
     };
 
+    static async validateTurmaUpdate(data: CreateTurmaBody, agenda: CreateTurmaAgendaBody) {
+        const horarioInicio = TurmaHelpers.toTimeUtc(agenda.horario_inicio);
+        const horarioFim = TurmaHelpers.toTimeUtc(agenda.horario_fim);
+
+        if (horarioInicio >= horarioFim) {
+            throw new AppError("Horário de início é maior ou igual ao horário final!", 400);
+        };
+    };
+
     static async validateTurmaAlunos(alunos: CreateTurmaAlunoPrisma[], newAgenda: CreateTurmaAgendaBody[]) {
-        
+
+        if (!newAgenda?.length) {
+            throw new AppError("Agenda da turma é obrigatória!", 404);
+        };
+
         const alunosIds = alunos.map(aluno => aluno.alunos_id);
         const findAlunos = await AlunosRepositories.findManyByIds(alunosIds);
         const turmasDosAlunos = await TurmaRepositories.findTurmasByAlunosIds(alunosIds);
@@ -85,6 +98,11 @@ export class TurmaRules {
     };
 
     static async validateTurmaProfessores(professores: CreateTurmaProfessorPrisma[], newAgenda: CreateTurmaAgendaBody[]) {
+
+        if (!newAgenda?.length) {
+            throw new AppError("Agenda da turma é obrigatória!", 404);
+        };
+
         const professoresIds = professores.map(professor => professor.professores_id);
         const findProfessores = await ProfessoresRepositories.findManyByIds(professoresIds);
         const turmasDosProfessores = await TurmaRepositories.findTurmasByProfessoresIds(professoresIds);

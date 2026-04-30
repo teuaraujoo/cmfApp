@@ -112,11 +112,16 @@ export class TurmaRepositories {
         return tx.turma_professores.createMany({ data: professor })
     };
 
-    static async deleteById(id: number) {
-        return prisma.turmas.delete({ where: { id } })
-    };
 
     static async newTurmaAgenda(tx: Prisma.TransactionClient, turmaAgenda: Prisma.turma_agendaUncheckedCreateInput[]) {
         return tx.turma_agenda.createMany({ data: turmaAgenda })
+    };
+
+    static async updateTurmaById(tx: Prisma.TransactionClient, id: number, turma: Prisma.turmasUpdateInput) {
+        return tx.turmas.update({ where: { id }, data: turma });
+    };
+
+    static async deleteById(id: number) {
+        return prisma.turmas.delete({ where: { id } })
     };
 };
