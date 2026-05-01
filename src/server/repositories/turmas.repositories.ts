@@ -68,7 +68,7 @@ export class TurmaRepositories {
             }
         })
     };
-    
+
     // Achar todas as turmas que o professor ja esta (create) / achar todas as turmas que o professor esta menos a turma que esta sendo atualizada (update)
     static async findTurmasByProfessoresIds(professoresIds: number[]) {
         return prisma.turmas.findMany({
@@ -134,12 +134,12 @@ export class TurmaRepositories {
         return tx.turmas.create({ data: turma })
     };
 
-    static async newTurmaAluno(tx: Prisma.TransactionClient, aluno: Prisma.turma_alunosUncheckedCreateInput[]) {
-        return tx.turma_alunos.createMany({ data: aluno })
+    static async newTurmaAluno(tx: Prisma.TransactionClient, alunos: Prisma.turma_alunosUncheckedCreateInput[]) {
+        return tx.turma_alunos.createMany({ data: alunos })
     };
 
-    static async newTurmaProfessor(tx: Prisma.TransactionClient, professor: Prisma.turma_professoresUncheckedCreateInput[]) {
-        return tx.turma_professores.createMany({ data: professor })
+    static async newTurmaProfessor(tx: Prisma.TransactionClient, professores: Prisma.turma_professoresUncheckedCreateInput[]) {
+        return tx.turma_professores.createMany({ data: professores })
     };
 
 
@@ -149,6 +149,24 @@ export class TurmaRepositories {
 
     static async updateTurmaById(tx: Prisma.TransactionClient, id: number, turma: Prisma.turmasUpdateInput) {
         return tx.turmas.update({ where: { id }, data: turma });
+    };
+
+    static async deleteTurmaAlunosByTurmaId(tx: Prisma.TransactionClient, turmaId: number) {
+        return tx.turma_alunos.deleteMany({
+            where: { turma_id: turmaId }
+        });
+    };
+
+    static async deleteTurmaAgendaByTurmaId(tx: Prisma.TransactionClient, turmaId: number) {
+        return tx.turma_alunos.deleteMany({
+            where: { turma_id: turmaId }
+        });
+    };
+
+    static async deleteTurmaProfessoresByTurmaId(tx: Prisma.TransactionClient, turmaId: number) {
+        return tx.turma_alunos.deleteMany({
+            where: { turma_id: turmaId }
+        });
     };
 
     static async deleteById(id: number) {

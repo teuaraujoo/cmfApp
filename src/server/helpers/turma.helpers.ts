@@ -24,13 +24,6 @@ export class TurmaHelpers {
         checkCreateManyCount(agendaResult, agenda.length, "Agenda da turma");
     };
     
-    static async updateTurmaAgendaIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaBody) {
-        
-
-
-        await TurmaRules.validateAgenda(data.turma_agenda, data.vigencia_inicio, data.vigencia_fim, turmaId);
-    };
-    
     static async createTurmaAlunoIfProvided(
         tx: Prisma.TransactionClient,
         turmaId: number,

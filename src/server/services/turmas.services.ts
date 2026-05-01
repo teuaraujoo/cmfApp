@@ -84,7 +84,18 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
             };
 
             if (data.turma_agenda) {
-                await TurmaHelpers.updateTurmaAgendaIfProvided(tx, turma.id, data);
+                await TurmaRepositories.deleteTurmaAgendaByTurmaId(tx, turma.id)
+                await TurmaHelpers.createAgendaIfProvided(tx, turma.id, data);
+            };
+
+            if (data.turma_alunos) {
+                await TurmaRepositories.deleteTurmaAlunosByTurmaId(tx, turma.id);
+                await TurmaHelpers.createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda);
+            };
+
+            if (data.turma_professores) {
+                await TurmaRepositories.deleteTurmaProfessoresByTurmaId(tx, turma.id);
+                await TurmaHelpers.createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda);
             };
 
             return turma;
