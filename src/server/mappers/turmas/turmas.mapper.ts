@@ -1,9 +1,11 @@
 import { TurmaHelpers } from "@/server/helpers/turma.helpers";
-import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "@/server/schemas/turmas/turmas.shema";
+import { CreateTurmaAgendaBody, CreateTurmaBody } from "@/server/schemas/turmas/turmas.shema";
+import { TurmaAlunosMapper } from "./turma-alunos/turma-alunos.mapper";
 import { Prisma } from "@/generated/prisma/client";
 import { dateToTime } from "@/server/utils/dateToTime";
+import { TurmaProfessoresMapper } from "./turma-professores/turma-professores.mapper";
 
-type TurmaWithRelations = Prisma.turmasGetPayload<{
+export type TurmaWithRelations = Prisma.turmasGetPayload<{
     include: {
         modalidades: true,
         turma_agenda: true;
@@ -29,8 +31,6 @@ type TurmaWithRelations = Prisma.turmasGetPayload<{
 }>;
 
 type TurmaAgendaWithRelations = TurmaWithRelations["turma_agenda"][number];
-type TurmaAlunoWithRelations = TurmaWithRelations["turma_alunos"][number];
-type TurmaProfessorWithRelations = TurmaWithRelations["turma_professores"][number];
 
 const diasSemana = [
     "Domingo",
@@ -59,21 +59,6 @@ export class TurmaMapper {
             dia_semana: turmaAgenda.dia_semana,
             horario_inicio: TurmaHelpers.toTimeUtc(turmaAgenda.horario_inicio),
             horario_fim: TurmaHelpers.toTimeUtc(turmaAgenda.horario_fim),
-
-        };
-    };
-
-    static toTurmaAlunosPrisma(turmaId: number, turmaAluno: CreateTurmaAlunoBody) {
-        return {
-            turma_id: turmaId,
-            alunos_id: turmaAluno.aluno_id,
-        };
-    };
-
-    static toTurmaProfessoresPrisma(turmaId: number, turmaProfessores: CreateTurmaProfessorBody) {
-        return {
-            turma_id: turmaId,
-            professores_id: turmaProfessores.professor_id
         };
     };
 
@@ -87,8 +72,8 @@ export class TurmaMapper {
             vigencia_fim: turma.vigencia_fim,
             modalidade: turma.modalidades,
             turma_agenda: this.toResponseTurmaAgendaGet(turma.turma_agenda),
-            turma_alunos: this.toResponseTurmaAlunosGet(turma.turma_alunos),
-            turma_professores: this.toResponseTurmaProfessoresGet(turma.turma_professores),
+            turma_alunos: TurmaAlunosMapper.toResponseTurmaAlunosGet(turma.turma_alunos),
+            turma_professores: TurmaProfessoresMapper.toResponseTurmaProfessoresGet(turma.turma_professores),
         };
     };
 
@@ -98,43 +83,5 @@ export class TurmaMapper {
             horario_fim: dateToTime(agenda.horario_fim),
             dia_semana: diasSemana[agenda.dia_semana],
         }))
-    };
-
-    static toResponseTurmaAlunosGet(turmaAluno: TurmaAlunoWithRelations[]) {
-        return turmaAluno.map((aluno) => {
-            return {
-                id: aluno.id,
-                turma_id: aluno.turma_id,
-                alunos_id: aluno.alunos_id,
-                aluno: {
-                    nome: aluno.alunos.users.nome,
-                    email: aluno.alunos.users.email,
-                    tel: aluno.alunos.users.tel,
-                    data_nasc: aluno.alunos.data_nasc,
-                    serie: aluno.alunos.serie,
-                    resp_nome: aluno.alunos.resp_nome,
-                    resp_tel: aluno.alunos.resp_tel,
-                    tempo_aula: aluno.alunos.tempo_aula,
-                    horas_semana: aluno.alunos.horas_semana,
-                    tempo_contrato: aluno.alunos.tempo_contrato,
-                    status: aluno.alunos.status,
-                },
-            };
-        });
-    };
-
-    static toResponseTurmaProfessoresGet(turmaProfessores: TurmaProfessorWithRelations[]) {
-        return turmaProfessores.map((professor) => ({
-            id: professor.professores.id,
-            turma_id: professor.professores.id,
-            professor_id: professor.professores_id,
-            professor: {
-                nome: professor.professores.users.nome,
-                email: professor.professores.users.email,
-                tel: professor.professores.users.tel,
-                materia: professor.professores.materia,
-                status: professor.professores.status
-            }
-        }));
     };
 };

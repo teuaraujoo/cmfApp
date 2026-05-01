@@ -6,6 +6,9 @@ import { TurmaRepositories } from "@/server/repositories/turmas/turmas.repositor
 import { TurmaMapper } from "@/server/mappers/turmas/turmas.mapper";
 import { TurmaHelpers } from "@/server/helpers/turma.helpers";
 import { TurmaRules } from "@/server/rules/turmas/turma.rules";
+import { TurmaProfessoresRepositories } from "@/server/repositories/turmas/turma-professores/turma-professores.repositories";
+import { TurmaAlunosRepositories } from "@/server/repositories/turmas/turma-alunos/turma-alunos.repositoriest";
+import { TurmaAgendaRepositories } from "@/server/repositories/turmas/turma-agenda/turma-agenda.repositories";
 
 export async function getAllTurmas() {
 
@@ -86,17 +89,17 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
             };
 
             if (data.turma_agenda) {
-                await TurmaRepositories.deleteTurmaAgendaByTurmaId(tx, turma.id);
+                await TurmaAgendaRepositories.deleteTurmaAgendaByTurmaId(tx, turma.id);
                 await TurmaHelpers.createAgendaIfProvided(tx, turma.id, data);
             };
 
             if (data.turma_alunos) {
-                await TurmaRepositories.deleteTurmaAlunosByTurmaId(tx, turma.id);
+                await TurmaAlunosRepositories.deleteTurmaAlunosByTurmaId(tx, turma.id);
                 await TurmaHelpers.createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda);
             };
 
             if (data.turma_professores) {
-                await TurmaRepositories.deleteTurmaProfessoresByTurmaId(tx, turma.id);
+                await TurmaProfessoresRepositories.deleteTurmaProfessoresByTurmaId(tx, turma.id);
                 await TurmaHelpers.createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda);
             };
 
