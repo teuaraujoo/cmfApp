@@ -31,6 +31,10 @@ export class ProfessoresRepositories {
         });
     };
 
+    static async findManyByIds(ids: number[]) {
+        return prisma.professores.findMany({ where: { id: { in: ids } } });
+    };
+
     static async createProfessor(tx: Prisma.TransactionClient, professor: Prisma.professoresUncheckedCreateInput) {
         return tx.professores.create({ data: professor });
     };

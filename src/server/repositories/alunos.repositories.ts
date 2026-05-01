@@ -29,6 +29,10 @@ export class AlunosRepositories {
     });
   };
 
+  static async findManyByIds(ids: number[]) {
+    return prisma.alunos.findMany({ where: { id: { in: ids } } });
+  };
+
   static async createAluno(tx: Prisma.TransactionClient, aluno: Prisma.alunosUncheckedCreateInput) {
     return tx.alunos.create({ data: aluno });
   };

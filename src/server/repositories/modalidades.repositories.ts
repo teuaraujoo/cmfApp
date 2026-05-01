@@ -1,22 +1,25 @@
 import { prisma } from "@/libs/prisma";
 import { Prisma } from "@/generated/prisma/client";
 
-export async function getAll() {
-    return prisma.modalidades.findMany();
-};
+export class ModalidadeRepositories {
 
-export async function getById(id: number) {
-    return prisma.modalidades.findUnique({ where: { id } });
-};
+    static async getAll() {
+        return prisma.modalidades.findMany();
+    };
 
-export async function newModalidade(modalidade: Prisma.modalidadesCreateInput) {
-    return prisma.modalidades.create({ data: modalidade });
-};
+    static async getById(id: number) {
+        return prisma.modalidades.findUnique({ where: { id } });
+    };
 
-export async function updateModalidadeById(data: Prisma.modalidadesUpdateInput, id: number) {
-    return prisma.modalidades.update({ where: { id }, data });
-};
+    static async newModalidade(modalidade: Prisma.modalidadesCreateInput) {
+        return prisma.modalidades.create({ data: modalidade });
+    };
 
-export async function deleteModalidadeById(id: number) {
-    return prisma.modalidades.delete({ where: { id } });
+    static async updateModalidadeById(data: Prisma.modalidadesUpdateInput, id: number) {
+        return prisma.modalidades.update({ where: { id }, data });
+    };
+
+    static async deleteModalidadeById(id: number) {
+        return prisma.modalidades.delete({ where: { id } });
+    };
 };

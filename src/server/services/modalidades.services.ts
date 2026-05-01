@@ -1,19 +1,13 @@
-import {
-    getAll,
-    newModalidade,
-    getById,
-    updateModalidadeById,
-    deleteModalidadeById
-} from "../repositories/modalidades.repositories";
+import { ModalidadeRepositories } from "../repositories/modalidades.repositories";
 import { createModalidadeSchema, CreateModalidadeBody } from "../schemas/modalida.schema";
 import { AppError } from "../error/app-errors";
 
 export async function getAllModalidades() {
-    return getAll();
+    return ModalidadeRepositories.getAll();
 };
 
 export async function getModalidadeById(id: number) {
-    return getById(id);
+    return ModalidadeRepositories.getById(id);
 };
 
 export async function createModalidade(body: CreateModalidadeBody) {
@@ -25,7 +19,7 @@ export async function createModalidade(body: CreateModalidadeBody) {
             throw new AppError("Conteúdo obrigatório para criar modalidade", 400);
         };
 
-        return newModalidade(data);
+        return ModalidadeRepositories.newModalidade(data);
 
     } catch (err) {
         throw err;
@@ -41,7 +35,7 @@ export async function updateModalidade(body: CreateModalidadeBody, id: number) {
             throw new AppError("Conteúdo obrigatório para atualizar modalidade", 400);
         };
 
-        return updateModalidadeById(data, id);
+        return ModalidadeRepositories.updateModalidadeById(data, id);
 
     } catch (err) {
         throw err;
@@ -51,13 +45,13 @@ export async function updateModalidade(body: CreateModalidadeBody, id: number) {
 export async function deleteModalidade(id: number) {
     try {
 
-        const modalidade = await getById(id);
+        const modalidade = await ModalidadeRepositories.getById(id);
 
         if (!modalidade) {
             throw new AppError("Modalidade não encontrada!", 404);
         };
 
-        return deleteModalidadeById(id);
+        return ModalidadeRepositories.deleteModalidadeById(id);
 
     } catch (err) {
 

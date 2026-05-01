@@ -2,7 +2,7 @@ import { AppError } from "@/server/error/app-errors";
 import { LoginBody, loginSchema, ChangePasswordBody, changePasswordSchema } from "@/server/schemas/auth.schema";
 import { createClient } from "@/libs/supabase/server";
 import { UserMapper } from "@/server/mappers/users.mapper";
-import { disableMustChangePassword } from "@/server/repositories/users.respositories";
+import { UsersRepositories } from "@/server/repositories/users.respositories";
 import { userHelpers } from "../helpers/users.helpers";
 import { validateLogin } from "../rules/auth.rules";
 
@@ -47,7 +47,7 @@ export async function changePassword(body: ChangePasswordBody) {
     throw new AppError(error.message, 400);
   };
 
-  const updatedUser = await disableMustChangePassword(appUser.id);
+  const updatedUser = await UsersRepositories.disableMustChangePassword(appUser.id);
 
   return UserMapper.toChangePasswordResponse(updatedUser);
 };
