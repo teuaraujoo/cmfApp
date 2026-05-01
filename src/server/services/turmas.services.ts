@@ -11,7 +11,7 @@ export async function getAllTurmas() {
 
     const turmas = await TurmaRepositories.getAll();
 
-    if (!turmas || turmas.length <= 0) {
+    if (!turmas) {
         throw new AppError("Error ao buscar turmas!", 404);
     };
 
@@ -75,6 +75,8 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
 
     const data = createTurmaSchema.parse(body);
 
+    await TurmaRules.validateTurma(data);
+
     try {
         return await prisma.$transaction(async (tx) => {
             const turma = await TurmaRepositories.updateTurmaById(tx, id, TurmaMapper.toPrisma(data));
@@ -84,7 +86,7 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
             };
 
             if (data.turma_agenda) {
-                await TurmaRepositories.deleteTurmaAgendaByTurmaId(tx, turma.id)
+                await TurmaRepositories.deleteTurmaAgendaByTurmaId(tx, turma.id);
                 await TurmaHelpers.createAgendaIfProvided(tx, turma.id, data);
             };
 

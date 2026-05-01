@@ -5,6 +5,7 @@ import { AlunosRepositories } from "../repositories/alunos.repositories";
 import { ProfessoresRepositories } from "../repositories/professores.repositories";
 import { TurmaHelpers } from "../helpers/turma.helpers";
 import { dateToMinutes } from "../utils/dateToMinutes";
+import { ModalidadeRepositories } from "@/server/repositories/modalidades.repositories"
 
 type CreateTurmaAlunoPrisma = {
     turma_id: number;
@@ -20,12 +21,22 @@ type CreateTurmaProfessorPrisma = {
 export class TurmaRules {
 
     static async validateTurma(data: CreateTurmaBody) {
-        const turma = await TurmaRepositories.getByName(data.nome);
+        const turmaNome = await TurmaRepositories.getByName(data.nome);
+        const vigenciaInicioDate = new Date(data.vigencia_inicio);
+        const vigenciaFimDate = new Date(data.vigencia_fim);
+        const modalidade = await ModalidadeRepositories.getById(data.modalidade_id);
         // const matchAgenda = turma!.turma_agenda.some(item => item.dia_semana === agenda.dia_semana);
         // const compareHours = turma?.turma_agenda[0].horario_inicio !== horarioInicio;
 
-        if (turma) {
-            throw new AppError("Turma já existente!", 400);
+        if (vigenciaInicioDate > vigenciaFimDate) {
+            throw new AppError("Vigência inicial não pode ser maior que a final!", 400);
+        };
+        
+        if (!modalidade) {
+            throw new AppError("Modalidade não encontrada!", 400);
+        };
+        if (turmaNome) {
+            throw new AppError("Turma já existente com esse nome!", 400);
         };
 
         if (!data.vigencia_fim || !data.vigencia_inicio) {
@@ -48,10 +59,6 @@ export class TurmaRules {
     static async validateAgenda(newAgenda: CreateTurmaAgendaBody[], vigenciaInicio: string, vigenciaFim: string, turmaId?: number) {
         const vigenciaInicioDate = new Date(vigenciaInicio);
         const vigenciaFimDate = new Date(vigenciaFim);
-
-        if (vigenciaInicioDate > vigenciaFimDate) {
-            throw new AppError("Vigência inicial não pode ser maior que a final!", 400);
-        };
 
         const newSchedules = newAgenda.map((agenda) => ({
             dia_semana: agenda.dia_semana,
@@ -102,7 +109,7 @@ export class TurmaRules {
         };
     };
 
-    static async validateTurmaAlunos(alunos: CreateTurmaAlunoPrisma[], newAgenda: CreateTurmaAgendaBody[]) {
+    static async validateTurmaAlunos(alunos: CreateTurmaAlunoPrisma[], newAgenda: CreateTurmaAgendaBody[], turmaId?: number) {
 
         if (!newAgenda?.length) {
             throw new AppError("Agenda da turma é obrigatória!", 404);
@@ -110,7 +117,7 @@ export class TurmaRules {
 
         const alunosIds = alunos.map(aluno => aluno.alunos_id);
         const findAlunos = await AlunosRepositories.findManyByIds(alunosIds);
-        const turmasDosAlunos = await TurmaRepositories.findTurmasByAlunosIds(alunosIds);
+        const turmasDosAlunos = await TurmaRepositories.findTurmasByAlunosIds(alunosIds, turmaId);
 
         if (!findAlunos || findAlunos.length !== alunosIds.length) {
             throw new AppError("Error ao achar alunos", 400);
@@ -139,7 +146,7 @@ export class TurmaRules {
 
     };
 
-    static async validateTurmaProfessores(professores: CreateTurmaProfessorPrisma[], newAgenda: CreateTurmaAgendaBody[]) {
+    static async validateTurmaProfessores(professores: CreateTurmaProfessorPrisma[], newAgenda: CreateTurmaAgendaBody[], turmaId?: number) {
 
         if (!newAgenda?.length) {
             throw new AppError("Agenda da turma é obrigatória!", 404);
@@ -147,7 +154,7 @@ export class TurmaRules {
 
         const professoresIds = professores.map(professor => professor.professores_id);
         const findProfessores = await ProfessoresRepositories.findManyByIds(professoresIds);
-        const turmasDosProfessores = await TurmaRepositories.findTurmasByProfessoresIds(professoresIds);
+        const turmasDosProfessores = await TurmaRepositories.findTurmasByProfessoresIds(professoresIds, turmaId);
 
         if (!findProfessores || findProfessores.length !== professoresIds.length) {
             throw new AppError("Error ao achar professores!", 400);

@@ -70,9 +70,10 @@ export class TurmaRepositories {
     };
 
     // Achar todas as turmas que o professor ja esta (create) / achar todas as turmas que o professor esta menos a turma que esta sendo atualizada (update)
-    static async findTurmasByProfessoresIds(professoresIds: number[]) {
+    static async findTurmasByProfessoresIds(professoresIds: number[], turmaId?: number) {
         return prisma.turmas.findMany({
             where: {
+                ...(turmaId ? { id: { not:turmaId } } : {}),
                 turma_professores: {
                     some: {
                         professores_id: { in: professoresIds },
@@ -86,9 +87,10 @@ export class TurmaRepositories {
         });
     };
 
-    static async findTurmasByAlunosIds(alunosIds: number[]) {
+    static async findTurmasByAlunosIds(alunosIds: number[], turmaId?: number) {
         return prisma.turmas.findMany({
             where: {
+                ...(turmaId ? { id: { not:turmaId } } : {}),
                 turma_alunos: {
                     some: {
                         alunos_id: { in: alunosIds }
@@ -105,11 +107,11 @@ export class TurmaRepositories {
         diasSemana: number[],
         vigenciaInicio: Date,
         vigenciaFim: Date,
-        TurmaId?: number
+        turmaId?: number
     ) {
         return prisma.turmas.findMany({
             where: {
-                ...(TurmaId ? { id: { not: TurmaId } } : {}),
+                ...(turmaId ? { id: { not: turmaId } } : {}),
                 vigencia_inicio: {
                     lte: vigenciaFim,
                 },
@@ -158,13 +160,13 @@ export class TurmaRepositories {
     };
 
     static async deleteTurmaAgendaByTurmaId(tx: Prisma.TransactionClient, turmaId: number) {
-        return tx.turma_alunos.deleteMany({
+        return tx.turma_agenda.deleteMany({
             where: { turma_id: turmaId }
         });
     };
 
     static async deleteTurmaProfessoresByTurmaId(tx: Prisma.TransactionClient, turmaId: number) {
-        return tx.turma_alunos.deleteMany({
+        return tx.turma_professores.deleteMany({
             where: { turma_id: turmaId }
         });
     };

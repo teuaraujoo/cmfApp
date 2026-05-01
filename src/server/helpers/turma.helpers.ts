@@ -18,7 +18,7 @@ export class TurmaHelpers {
             await TurmaRules.validateAgendaItem(agenda);
         };
 
-        await TurmaRules.validateAgenda(data.turma_agenda, data.vigencia_inicio, data.vigencia_fim);
+        await TurmaRules.validateAgenda(data.turma_agenda, data.vigencia_inicio, data.vigencia_fim, turmaId);
         
         const agendaResult = await TurmaRepositories.newTurmaAgenda(tx, agenda);
         checkCreateManyCount(agendaResult, agenda.length, "Agenda da turma");
@@ -34,7 +34,7 @@ export class TurmaHelpers {
             return TurmaMapper.toTurmaAlunosPrisma(turmaId, aluno);
         });
 
-        await TurmaRules.validateTurmaAlunos(alunos, agenda);
+        await TurmaRules.validateTurmaAlunos(alunos, agenda, turmaId);
 
         const alunosResult = await TurmaRepositories.newTurmaAluno(tx, alunos);
 
@@ -52,7 +52,7 @@ export class TurmaHelpers {
             return TurmaMapper.toTurmaProfessoresPrisma(turmaId, professor);
         });
 
-        await TurmaRules.validateTurmaProfessores(professores, agenda);
+        await TurmaRules.validateTurmaProfessores(professores, agenda, turmaId);
 
         const professorResult = await TurmaRepositories.newTurmaProfessor(tx, professores);
 
