@@ -1,6 +1,6 @@
 import { AppError } from "@/server/error/app-errors";
 import { userHelpers } from "@/server/helpers/users.helpers";
-import { getModalidadeById, updateModalidade, deleteModalidade } from "@/server/services/modalidades.services";
+import { getModalidadeById, updateModalidade, deleteModalidade } from "@/server/services/modalidades/modalidades.services";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { adminMutationRateLimit } from "@/libs/ratelimit";
 

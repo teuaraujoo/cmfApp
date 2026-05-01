@@ -1,4 +1,4 @@
-import { CreateUserBody, UpdateUserBody } from "../schemas/user.schema";
+import { CreateUserBody, UpdateUserBody } from "@/server/schemas/users/user.schema";
 import { public_users } from "@/generated/prisma/client";
 
 export class UserMapper {

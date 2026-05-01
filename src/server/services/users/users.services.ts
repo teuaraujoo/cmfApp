@@ -1,15 +1,15 @@
 import { prisma } from "@/libs/prisma";
 import { createAdminClient } from "@/libs/supabase/admin";
 import { Prisma } from "@/generated/prisma/client";
-import { AppError } from "../error/app-errors";
-import { UserMapper } from "../mappers/users.mapper";
-import { AlunoMapper } from "../mappers/alunos.mapper";
-import { ProfessorMapper } from "../mappers/professores.mapper";
-import { UsersRepositories } from "../repositories/users.respositories";
-import { UsersRules } from "../rules/users.rules";
-import { AlunosRepositories } from "../repositories/alunos.repositories";
-import { ProfessoresRepositories } from "../repositories/professores.repositories";
-import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "../schemas/user.schema";
+import { AppError } from "@/server/error/app-errors";
+import { UserMapper } from "@/server/mappers/users/users.mapper";
+import { AlunoMapper } from "@/server/mappers/users/alunos/alunos.mapper";
+import { ProfessorMapper } from "@/server/mappers/users/professores/professores.mapper";
+import { UsersRepositories } from "@/server/repositories/users/users.respositories";
+import { UsersRules } from "@/server/rules/users/users.rules";
+import { AlunosRepositories } from "@/server/repositories/users/alunos/alunos.repositories";
+import { ProfessoresRepositories } from "@/server/repositories/users/professores/professores.repositories";
+import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "@/server/schemas/users/user.schema";
 
 export async function getAllUsers() {
   return UsersRepositories.getAll();

@@ -1,5 +1,5 @@
 import { AppError } from "@/server/error/app-errors";
-import { getProfessorByUserId } from "@/server/services/professores.services";
+import { getProfessorByUserId } from "@/server/services/users/professores/professores.services";
 import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {

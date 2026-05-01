@@ -3,7 +3,7 @@ import { AppError } from "@/server/error/app-errors";
 import { validateRequestOrigin } from "@/server/helpers/origin.helper";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { adminMutationRateLimit } from "@/libs/ratelimit";
-import { getAllTurmas, createTurma } from "@/server/services/turmas.services";
+import { getAllTurmas, createTurma } from "@/server/services/turmas/turmas.services";
 
 export async function GET() {
   try {

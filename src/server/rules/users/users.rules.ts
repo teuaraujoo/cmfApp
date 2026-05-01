@@ -1,5 +1,5 @@
-import { CreateUserBody, UpdateUserBody } from "@/server/schemas/user.schema";
-import { UsersRepositories } from "@/server/repositories/users.respositories";
+import { CreateUserBody, UpdateUserBody } from "@/server/schemas/users/user.schema";
+import { UsersRepositories } from "@/server/repositories/users/users.respositories";
 import { AppError } from "@/server/error/app-errors";
 
 export class UsersRules {

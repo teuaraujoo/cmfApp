@@ -1,11 +1,11 @@
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/libs/prisma";
-import { createTurmaSchema, CreateTurmaBody } from "../schemas/turmas.shema";
-import { AppError } from "../error/app-errors";
-import { TurmaRepositories } from "../repositories/turmas.repositories";
-import { TurmaMapper } from "../mappers/turmas.mapper";
-import { TurmaHelpers } from "../helpers/turma.helpers";
-import { TurmaRules } from "../rules/turma.rules";
+import { createTurmaSchema, CreateTurmaBody } from "@/server/schemas/turmas/turmas.shema";
+import { AppError } from "@/server/error/app-errors";
+import { TurmaRepositories } from "@/server/repositories/turmas/turmas.repositories";
+import { TurmaMapper } from "@/server/mappers/turmas/turmas.mapper";
+import { TurmaHelpers } from "@/server/helpers/turma.helpers";
+import { TurmaRules } from "@/server/rules/turmas/turma.rules";
 
 export async function getAllTurmas() {
 

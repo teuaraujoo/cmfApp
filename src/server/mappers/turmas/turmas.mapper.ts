@@ -1,7 +1,7 @@
-import { TurmaHelpers } from "../helpers/turma.helpers";
-import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "../schemas/turmas.shema";
+import { TurmaHelpers } from "@/server/helpers/turma.helpers";
+import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "@/server/schemas/turmas/turmas.shema";
 import { Prisma } from "@/generated/prisma/client";
-import { dateToTime } from "../utils/dateToTime";
+import { dateToTime } from "@/server/utils/dateToTime";
 
 type TurmaWithRelations = Prisma.turmasGetPayload<{
     include: {
@@ -138,5 +138,3 @@ export class TurmaMapper {
         }));
     };
 };
-
-;

@@ -1,9 +1,9 @@
 import { Prisma } from "@/generated/prisma/client";
-import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "../schemas/turmas.shema";
-import { TurmaMapper } from "../mappers/turmas.mapper";
-import { TurmaRepositories } from "../repositories/turmas.repositories";
+import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "@/server/schemas/turmas/turmas.shema";
+import { TurmaMapper } from "@/server/mappers/turmas/turmas.mapper";
+import { TurmaRepositories } from "@/server/repositories/turmas/turmas.repositories";
 import { checkCreateManyCount } from "./check-createmany";
-import { TurmaRules } from "../rules/turma.rules";
+import { TurmaRules } from "@/server/rules/turmas/turma.rules";
 export class TurmaHelpers {
 
     static async createAgendaIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaBody) {

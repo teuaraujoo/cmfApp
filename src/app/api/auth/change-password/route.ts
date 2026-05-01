@@ -1,4 +1,4 @@
-import { changePassword } from "@/server/services/auth.services";
+import { changePassword } from "@/server/services/auth/auth.services";
 import { AppError } from "@/server/error/app-errors";
 import { authenticatedUserRateLimit } from "@/libs/ratelimit";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";

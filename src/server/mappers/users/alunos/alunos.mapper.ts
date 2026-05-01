@@ -1,4 +1,4 @@
-import { CreateUserBody, UpdateUserBody } from "../schemas/user.schema";
+import { CreateUserBody, UpdateUserBody } from "@/server/schemas/users/user.schema";
 import { Prisma } from "@/generated/prisma/client";
 
 export class AlunoMapper {

@@ -1,6 +1,6 @@
-import { AlunosRepositories } from "../repositories/alunos.repositories";
-import { AlunoMapper } from "../mappers/alunos.mapper";
-import { AppError } from "../error/app-errors";
+import { AlunosRepositories } from "@/server/repositories/users/alunos/alunos.repositories";
+import { AlunoMapper } from "@/server/mappers/users/alunos/alunos.mapper";
+import { AppError } from "@/server/error/app-errors";
 
 export async function getAllAlunos() {
   const alunos = await AlunosRepositories.getAll();
