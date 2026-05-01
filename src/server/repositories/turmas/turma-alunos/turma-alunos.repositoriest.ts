@@ -3,6 +3,21 @@ import { Prisma } from "@/generated/prisma/client";
 
 export class TurmaAlunosRepositories {
 
+    static async findAlunoByTurmaId(turmaId: number) {
+        return prisma.turma_alunos.findMany({
+            where: { 
+                turma_id: turmaId 
+            },
+            include: {
+                alunos: {
+                    include: {
+                        users: true
+                    }
+                }
+            },
+        });
+    };
+
     static async newTurmaAluno(tx: Prisma.TransactionClient, alunos: Prisma.turma_alunosUncheckedCreateInput[]) {
         return tx.turma_alunos.createMany({ data: alunos })
     };

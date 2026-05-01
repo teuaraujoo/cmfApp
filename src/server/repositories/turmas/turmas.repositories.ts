@@ -98,7 +98,8 @@ export class TurmaRepositories {
                 }
             },
             include: {
-                turma_agenda: true
+                turma_agenda: true,
+                modalidades: true
             }
         });
     };

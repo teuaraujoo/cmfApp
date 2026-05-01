@@ -37,6 +37,21 @@ export async function getTurmaById(id: number) {
     };
 };
 
+export async function getTurmasByAlunoId(alunoId: number[]) {
+    try {
+        const turmas = await TurmaRepositories.findTurmasByAlunosIds(alunoId);
+
+        if (!turmas) {
+            throw new AppError("Turmas não encontradas", 404);
+        };
+
+        return turmas.map((turma) => TurmaMapper.toResponseTurmasOfAlunoGet(turma));
+
+    } catch (err) {
+        throw err;
+    };
+};
+
 export async function createTurma(body: CreateTurmaBody) {
     const data = createTurmaSchema.parse(body);
 

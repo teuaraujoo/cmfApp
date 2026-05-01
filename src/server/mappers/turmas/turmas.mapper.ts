@@ -1,9 +1,8 @@
-import { TurmaHelpers } from "@/server/helpers/turma.helpers";
-import { CreateTurmaAgendaBody, CreateTurmaBody } from "@/server/schemas/turmas/turmas.shema";
+import { CreateTurmaBody } from "@/server/schemas/turmas/turmas.shema";
 import { TurmaAlunosMapper } from "./turma-alunos/turma-alunos.mapper";
 import { Prisma } from "@/generated/prisma/client";
-import { dateToTime } from "@/server/utils/dateToTime";
 import { TurmaProfessoresMapper } from "./turma-professores/turma-professores.mapper";
+import { TurmaAgendaMapper } from "./turma-agenda/turma-agenda.mapper";
 
 export type TurmaWithRelations = Prisma.turmasGetPayload<{
     include: {
@@ -30,17 +29,12 @@ export type TurmaWithRelations = Prisma.turmasGetPayload<{
     };
 }>;
 
-type TurmaAgendaWithRelations = TurmaWithRelations["turma_agenda"][number];
-
-const diasSemana = [
-    "Domingo",
-    "Segunda-feira",
-    "Terça-feira",
-    "Quarta-feira",
-    "Quinta-feira",
-    "Sexta-feira",
-    "Sábado"
-];
+export type TurmaOfAluno = Prisma.turmasGetPayload<{
+    include: {
+        turma_agenda: true,
+        modalidades: true
+    }
+}>;
 export class TurmaMapper {
 
     static toPrisma(turma: CreateTurmaBody) {
@@ -53,15 +47,6 @@ export class TurmaMapper {
         }
     };
 
-    static toTurmaAgenda(turmaId: number, turmaAgenda: CreateTurmaAgendaBody) {
-        return {
-            turma_id: turmaId,
-            dia_semana: turmaAgenda.dia_semana,
-            horario_inicio: TurmaHelpers.toTimeUtc(turmaAgenda.horario_inicio),
-            horario_fim: TurmaHelpers.toTimeUtc(turmaAgenda.horario_fim),
-        };
-    };
-
     static toResponseTurmasGet(turma: TurmaWithRelations) {
         return {
             id: turma.id,
@@ -71,17 +56,21 @@ export class TurmaMapper {
             vigencia_inicio: turma.vigencia_inicio,
             vigencia_fim: turma.vigencia_fim,
             modalidade: turma.modalidades,
-            turma_agenda: this.toResponseTurmaAgendaGet(turma.turma_agenda),
+            turma_agenda: TurmaAgendaMapper.toResponseTurmaAgendaGet(turma.turma_agenda),
             turma_alunos: TurmaAlunosMapper.toResponseTurmaAlunosGet(turma.turma_alunos),
             turma_professores: TurmaProfessoresMapper.toResponseTurmaProfessoresGet(turma.turma_professores),
         };
     };
 
-    static toResponseTurmaAgendaGet(turmaAgenda: TurmaAgendaWithRelations[]) {
-        return turmaAgenda.map((agenda) => ({
-            horario_inicio: dateToTime(agenda.horario_inicio),
-            horario_fim: dateToTime(agenda.horario_fim),
-            dia_semana: diasSemana[agenda.dia_semana],
-        }))
+    static toResponseTurmasOfAlunoGet(turma: TurmaOfAluno) {
+        return {
+            id: turma.id,
+            nome: turma.nome,
+            horas_semana: turma.horas_semana,
+            vigencia_inicio: turma.vigencia_inicio,
+            vigencia_fim: turma.vigencia_fim,
+            modalidade: turma.modalidades?.tipo,
+            turma_agenda: TurmaAgendaMapper.toResponseTurmaAgendaGet(turma.turma_agenda)
+        };
     };
 };
