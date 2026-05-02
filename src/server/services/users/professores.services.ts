@@ -1,6 +1,6 @@
 import { AppError } from "@/server/error/app-errors";
-import { ProfessorMapper } from "@/server/mappers/users/professores/professores.mapper";
-import { ProfessoresRepositories } from "@/server/repositories/users/professores/professores.repositories";
+import { ProfessorMapper } from "@/server/mappers/users/professores.mapper";
+import { ProfessoresRepositories } from "@/server/repositories/users/professores.repositories";
 
 export async function getAllProfessores() {
   const professores = await ProfessoresRepositories.getAll();

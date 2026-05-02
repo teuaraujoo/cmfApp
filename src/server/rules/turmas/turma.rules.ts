@@ -1,8 +1,8 @@
 import { CreateTurmaBody, CreateTurmaAgendaBody } from "@/server/schemas/turmas/turmas.shema";
 import { AppError } from "@/server/error/app-errors";
 import { TurmaRepositories } from "@/server/repositories/turmas/turmas.repositories";
-import { AlunosRepositories } from "@/server/repositories/users/alunos/alunos.repositories";
-import { ProfessoresRepositories } from "@/server/repositories/users/professores/professores.repositories";
+import { AlunosRepositories } from "@/server/repositories/users/alunos.repositories";
+import { ProfessoresRepositories } from "@/server/repositories/users/professores.repositories";
 import { TurmaHelpers } from "@/server/helpers/turma.helpers";
 import { dateToMinutes } from "@/server/utils/dateToMinutes";
 import { ModalidadeRepositories } from "@/server/repositories/modalidades/modalidades.repositories"

@@ -3,12 +3,12 @@ import { createAdminClient } from "@/libs/supabase/admin";
 import { Prisma } from "@/generated/prisma/client";
 import { AppError } from "@/server/error/app-errors";
 import { UserMapper } from "@/server/mappers/users/users.mapper";
-import { AlunoMapper } from "@/server/mappers/users/alunos/alunos.mapper";
-import { ProfessorMapper } from "@/server/mappers/users/professores/professores.mapper";
+import { AlunoMapper } from "@/server/mappers/users/alunos.mapper";
+import { ProfessorMapper } from "@/server/mappers/users/professores.mapper";
 import { UsersRepositories } from "@/server/repositories/users/users.respositories";
 import { UsersRules } from "@/server/rules/users/users.rules";
-import { AlunosRepositories } from "@/server/repositories/users/alunos/alunos.repositories";
-import { ProfessoresRepositories } from "@/server/repositories/users/professores/professores.repositories";
+import { AlunosRepositories } from "@/server/repositories/users/alunos.repositories";
+import { ProfessoresRepositories } from "@/server/repositories/users/professores.repositories";
 import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "@/server/schemas/users/user.schema";
 
 export async function getAllUsers() {

@@ -6,9 +6,9 @@ import { TurmaRepositories } from "@/server/repositories/turmas/turmas.repositor
 import { TurmaMapper } from "@/server/mappers/turmas/turmas.mapper";
 import { TurmaHelpers } from "@/server/helpers/turma.helpers";
 import { TurmaRules } from "@/server/rules/turmas/turma.rules";
-import { TurmaProfessoresRepositories } from "@/server/repositories/turmas/turma-professores/turma-professores.repositories";
-import { TurmaAlunosRepositories } from "@/server/repositories/turmas/turma-alunos/turma-alunos.repositoriest";
-import { TurmaAgendaRepositories } from "@/server/repositories/turmas/turma-agenda/turma-agenda.repositories";
+import { TurmaProfessoresRepositories } from "@/server/repositories/turmas/turma-professores.repositories";
+import { TurmaAlunosRepositories } from "@/server/repositories/turmas/turma-alunos.repositoriest";
+import { TurmaAgendaRepositories } from "@/server/repositories/turmas/turma-agenda.repositories";
 
 export async function getAllTurmas() {
 

@@ -1,6 +1,6 @@
 import { AppError } from "@/server/error/app-errors";
 import { TurmaAlunosMapper } from "@/server/mappers/turmas/turma-alunos.mapper";
-import { TurmaAlunosRepositories } from "@/server/repositories/turmas/turma-alunos/turma-alunos.repositoriest";
+import { TurmaAlunosRepositories } from "@/server/repositories/turmas/turma-alunos.repositoriest";
 
 export async function getAlunosByTurmaId(turmaId: number) {
     try {

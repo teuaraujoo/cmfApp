@@ -1,5 +1,5 @@
 import { AppError } from "@/server/error/app-errors";
-import { getTotalProfessores } from "@/server/services/users/professores/professores.services";
+import { getTotalProfessores } from "@/server/services/users/professores.services";
 import { userHelpers } from "@/server/helpers/users.helpers";
 
 export async function GET() {

@@ -1,5 +1,5 @@
-import { AlunosRepositories } from "@/server/repositories/users/alunos/alunos.repositories";
-import { AlunoMapper } from "@/server/mappers/users/alunos/alunos.mapper";
+import { AlunosRepositories } from "@/server/repositories/users/alunos.repositories";
+import { AlunoMapper } from "@/server/mappers/users/alunos.mapper";
 import { AppError } from "@/server/error/app-errors";
 
 export async function getAllAlunos() {
