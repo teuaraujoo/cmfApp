@@ -5,9 +5,9 @@ import { TurmaRules } from "@/server/rules/turmas/turma.rules";
 import { TurmaProfessoresRepositories } from "../repositories/turmas/turma-professores/turma-professores.repositories";
 import { TurmaAlunosRepositories } from "../repositories/turmas/turma-alunos/turma-alunos.repositoriest";
 import { TurmaAgendaRepositories } from "../repositories/turmas/turma-agenda/turma-agenda.repositories";
-import { TurmaAlunosMapper } from "../mappers/turmas/turma-alunos/turma-alunos.mapper";
-import { TurmaProfessoresMapper } from "../mappers/turmas/turma-professores/turma-professores.mapper";
-import { TurmaAgendaMapper } from "../mappers/turmas/turma-agenda/turma-agenda.mapper";
+import { TurmaAlunosMapper } from "../mappers/turmas/turma-alunos.mapper";
+import { TurmaProfessoresMapper } from "../mappers/turmas/turma-professores.mapper";
+import { TurmaAgendaMapper } from "../mappers/turmas/turma-agenda.mapper";
 export class TurmaHelpers {
 
     static async createAgendaIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaBody) {

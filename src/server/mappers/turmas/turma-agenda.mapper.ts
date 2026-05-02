@@ -2,7 +2,7 @@
 import { dateToTime } from "@/server/utils/dateToTime";
 import { CreateTurmaAgendaBody } from "@/server/schemas/turmas/turmas.shema";
 import { TurmaHelpers } from "@/server/helpers/turma.helpers";
-import { TurmaWithRelations } from "../turmas.mapper";
+import { TurmaWithRelations } from "./turmas.mapper";
 
 type TurmaAgendaWithRelations = TurmaWithRelations["turma_agenda"][number];
 

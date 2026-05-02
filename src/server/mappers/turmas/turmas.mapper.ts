@@ -1,8 +1,8 @@
 import { CreateTurmaBody } from "@/server/schemas/turmas/turmas.shema";
-import { TurmaAlunosMapper } from "./turma-alunos/turma-alunos.mapper";
+import { TurmaAlunosMapper } from "./turma-alunos.mapper";
 import { Prisma } from "@/generated/prisma/client";
-import { TurmaProfessoresMapper } from "./turma-professores/turma-professores.mapper";
-import { TurmaAgendaMapper } from "./turma-agenda/turma-agenda.mapper";
+import { TurmaProfessoresMapper } from "./turma-professores.mapper";
+import { TurmaAgendaMapper } from "./turma-agenda.mapper";
 
 export type TurmaWithRelations = Prisma.turmasGetPayload<{
     include: {

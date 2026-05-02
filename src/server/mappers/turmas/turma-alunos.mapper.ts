@@ -1,5 +1,5 @@
 import { CreateTurmaAlunoBody } from "@/server/schemas/turmas/turmas.shema";
-import { TurmaWithRelations } from "../turmas.mapper";
+import { TurmaWithRelations } from "./turmas.mapper";
 
 type TurmaAlunoWithRelations = TurmaWithRelations["turma_alunos"][number];
 

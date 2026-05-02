@@ -2,7 +2,7 @@
 
 import { AppError } from "@/server/error/app-errors";
 import { userHelpers } from "@/server/helpers/users.helpers";
-import { getAlunosByTurmaId } from "@/server/services/turmas/turma-alunos/turma-alunos.services"
+import { getAlunosByTurmaId } from "@/server/services/turmas/turma-alunos.services"
 
 export async function GET(
     _request: Request,

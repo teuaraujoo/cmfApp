@@ -1,5 +1,5 @@
 import { AppError } from "@/server/error/app-errors";
-import { TurmaProfessoresMapper } from "@/server/mappers/turmas/turma-professores/turma-professores.mapper";
+import { TurmaProfessoresMapper } from "@/server/mappers/turmas/turma-professores.mapper";
 import { TurmaProfessoresRepositories } from "@/server/repositories/turmas/turma-professores/turma-professores.repositories";
 
 export async function getProfessoresByTurmaId(turmaId: number) {

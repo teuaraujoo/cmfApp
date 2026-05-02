@@ -1,5 +1,5 @@
 import { CreateTurmaProfessorBody } from "@/server/schemas/turmas/turmas.shema";
-import { TurmaWithRelations } from "../turmas.mapper";
+import { TurmaWithRelations } from "./turmas.mapper";
 
 type TurmaProfessorWithRelations = TurmaWithRelations["turma_professores"][number];
 
