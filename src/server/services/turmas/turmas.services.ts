@@ -45,7 +45,22 @@ export async function getTurmasByAlunoId(alunoId: number[]) {
             throw new AppError("Turmas não encontradas", 404);
         };
 
-        return turmas.map((turma) => TurmaMapper.toResponseTurmasOfAlunoGet(turma));
+        return turmas.map((turma) => TurmaMapper.toResponseTurmasOfUsersGet(turma));
+
+    } catch (err) {
+        throw err;
+    };
+};
+
+export async function getTurmasByProfessorId(alunoId: number[]) {
+    try {
+        const turmas = await TurmaRepositories.findTurmasByProfessoresIds(alunoId);
+
+        if (!turmas) {
+            throw new AppError("Turmas não encontradas", 404);
+        };
+
+        return turmas.map((turma) => TurmaMapper.toResponseTurmasOfUsersGet(turma));
 
     } catch (err) {
         throw err;

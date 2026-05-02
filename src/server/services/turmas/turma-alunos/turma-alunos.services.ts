@@ -4,7 +4,7 @@ import { TurmaAlunosRepositories } from "@/server/repositories/turmas/turma-alun
 
 export async function getAlunosByTurmaId(turmaId: number) {
     try {
-        const alunos = await TurmaAlunosRepositories.findAlunoByTurmaId(turmaId);
+        const alunos = await TurmaAlunosRepositories.findAlunosByTurmaId(turmaId);
 
         if (!alunos) {
             throw new AppError("Alunos não encontrados", 404);

@@ -82,7 +82,7 @@ export class TurmaRepositories {
             },
             include: {
                 turma_agenda: true,
-                turma_professores: true,
+                modalidades: true
             },
         });
     };

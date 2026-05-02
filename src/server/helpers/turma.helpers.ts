@@ -1,6 +1,5 @@
 import { Prisma } from "@/generated/prisma/client";
 import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "@/server/schemas/turmas/turmas.shema";
-import { TurmaMapper } from "@/server/mappers/turmas/turmas.mapper";
 import { checkCreateManyCount } from "./check-createmany";
 import { TurmaRules } from "@/server/rules/turmas/turma.rules";
 import { TurmaProfessoresRepositories } from "../repositories/turmas/turma-professores/turma-professores.repositories";
@@ -8,6 +7,7 @@ import { TurmaAlunosRepositories } from "../repositories/turmas/turma-alunos/tur
 import { TurmaAgendaRepositories } from "../repositories/turmas/turma-agenda/turma-agenda.repositories";
 import { TurmaAlunosMapper } from "../mappers/turmas/turma-alunos/turma-alunos.mapper";
 import { TurmaProfessoresMapper } from "../mappers/turmas/turma-professores/turma-professores.mapper";
+import { TurmaAgendaMapper } from "../mappers/turmas/turma-agenda/turma-agenda.mapper";
 export class TurmaHelpers {
 
     static async createAgendaIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaBody) {
@@ -15,7 +15,7 @@ export class TurmaHelpers {
         if (!data.turma_agenda?.length) return;
         
         const agenda = data.turma_agenda.map((item) => {
-            return TurmaMapper.toTurmaAgenda(turmaId, item);
+            return TurmaAgendaMapper.toTurmaAgenda(turmaId, item);
         });
 
         for (const agenda of data.turma_agenda) {

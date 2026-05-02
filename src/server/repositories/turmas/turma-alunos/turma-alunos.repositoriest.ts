@@ -3,7 +3,7 @@ import { Prisma } from "@/generated/prisma/client";
 
 export class TurmaAlunosRepositories {
 
-    static async findAlunoByTurmaId(turmaId: number) {
+    static async findAlunosByTurmaId(turmaId: number) {
         return prisma.turma_alunos.findMany({
             where: { 
                 turma_id: turmaId 

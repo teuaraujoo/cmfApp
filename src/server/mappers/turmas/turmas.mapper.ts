@@ -29,7 +29,7 @@ export type TurmaWithRelations = Prisma.turmasGetPayload<{
     };
 }>;
 
-export type TurmaOfAluno = Prisma.turmasGetPayload<{
+export type TurmaOfUsers = Prisma.turmasGetPayload<{
     include: {
         turma_agenda: true,
         modalidades: true
@@ -62,7 +62,7 @@ export class TurmaMapper {
         };
     };
 
-    static toResponseTurmasOfAlunoGet(turma: TurmaOfAluno) {
+    static toResponseTurmasOfUsersGet(turma: TurmaOfUsers) {
         return {
             id: turma.id,
             nome: turma.nome,
