@@ -1,7 +1,6 @@
 
-import { dateToTime } from "@/server/utils/dateToTime";
+import { DateUtils } from "@/server/utils/dateUtils";
 import { CreateTurmaAgendaBody } from "@/server/schemas/turmas/turmas.shema";
-import { TurmaHelpers } from "@/server/helpers/turma.helpers";
 import { TurmaWithRelations } from "./turmas.mapper";
 
 type TurmaAgendaWithRelations = TurmaWithRelations["turma_agenda"][number];
@@ -21,15 +20,15 @@ export class TurmaAgendaMapper {
         return {
             turma_id: turmaId,
             dia_semana: turmaAgenda.dia_semana,
-            horario_inicio: TurmaHelpers.toTimeUtc(turmaAgenda.horario_inicio),
-            horario_fim: TurmaHelpers.toTimeUtc(turmaAgenda.horario_fim),
+            horario_inicio: DateUtils.toTimeUtc(turmaAgenda.horario_inicio),
+            horario_fim: DateUtils.toTimeUtc(turmaAgenda.horario_fim),
         };
     };
 
     static toResponseTurmaAgendaGet(turmaAgenda: TurmaAgendaWithRelations[]) {
         return turmaAgenda.map((agenda) => ({
-            horario_inicio: dateToTime(agenda.horario_inicio),
-            horario_fim: dateToTime(agenda.horario_fim),
+            horario_inicio: DateUtils.dateToTime(agenda.horario_inicio),
+            horario_fim: DateUtils.dateToTime(agenda.horario_fim),
             dia_semana: diasSemana[agenda.dia_semana],
         }))
     };

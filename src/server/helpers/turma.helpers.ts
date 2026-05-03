@@ -1,6 +1,6 @@
 import { Prisma } from "@/generated/prisma/client";
 import { CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaBody, CreateTurmaProfessorBody } from "@/server/schemas/turmas/turmas.shema";
-import { checkCreateManyCount } from "./check-createmany";
+import { checkCreateManyCount } from "@/server/utils/check-createmany";
 import { TurmaRules } from "@/server/rules/turmas/turma.rules";
 import { TurmaProfessoresRepositories } from "../repositories/turmas/turma-professores.repositories";
 import { TurmaAlunosRepositories } from "../repositories/turmas/turma-alunos.repositoriest";
@@ -61,22 +61,5 @@ export class TurmaHelpers {
         const professorResult = await TurmaProfessoresRepositories.newTurmaProfessor(tx, professores);
 
         checkCreateManyCount(professorResult, professores.length, "Professores da turma");
-    };
-
-    static toTimeUtc(time: string) {
-        const [hours, minutes] = time.split(':').map(Number);
-
-        return new Date(Date.UTC(1970, 0, 1, hours, minutes, 0));
-    };
-
-    static hasConflit(
-        fresh: { dia_semana: number; inicio: number; fim: number },
-        current: { dia_semana: number; inicio: number; fim: number }
-    ) {
-        return (
-            fresh.dia_semana === current.dia_semana &&
-            fresh.inicio < current.fim &&
-            current.inicio < fresh.fim
-        );
     };
 };

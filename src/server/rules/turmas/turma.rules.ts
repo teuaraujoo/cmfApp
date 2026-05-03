@@ -3,8 +3,8 @@ import { AppError } from "@/server/error/app-errors";
 import { TurmaRepositories } from "@/server/repositories/turmas/turmas.repositories";
 import { AlunosRepositories } from "@/server/repositories/users/alunos.repositories";
 import { ProfessoresRepositories } from "@/server/repositories/users/professores.repositories";
-import { TurmaHelpers } from "@/server/helpers/turma.helpers";
-import { dateToMinutes } from "@/server/utils/dateToMinutes";
+import { DateUtils } from "@/server/utils/dateUtils";
+import { hasConflit } from "@/server/utils/hasConflit";
 import { ModalidadeRepositories } from "@/server/repositories/modalidades/modalidades.repositories"
 
 type CreateTurmaAlunoPrisma = {
@@ -62,13 +62,13 @@ export class TurmaRules {
 
         const newSchedules = newAgenda.map((agenda) => ({
             dia_semana: agenda.dia_semana,
-            inicio: dateToMinutes(TurmaHelpers.toTimeUtc(agenda.horario_inicio)),
-            fim: dateToMinutes(TurmaHelpers.toTimeUtc(agenda.horario_fim))
+            inicio: DateUtils.dateToMinutes(DateUtils.toTimeUtc(agenda.horario_inicio)),
+            fim: DateUtils.dateToMinutes(DateUtils.toTimeUtc(agenda.horario_fim))
         }));
 
         for (let i = 0; i < newSchedules.length; i++) {
             for (let j = i + 1; j < newSchedules.length; j++) {
-                if (TurmaHelpers.hasConflit(newSchedules[i], newSchedules[j])) {
+                if (hasConflit(newSchedules[i], newSchedules[j])) {
                     throw new AppError("A agenda da turma possuo horários conflitantes!", 400);
                 };
             };
@@ -87,13 +87,13 @@ export class TurmaRules {
             turma.turma_agenda.map((agenda) => ({
                 turma_id: turma.id,
                 dia_semana: agenda.dia_semana,
-                inicio: dateToMinutes(agenda.horario_inicio),
-                fim: dateToMinutes(agenda.horario_fim),
+                inicio: DateUtils.dateToMinutes(agenda.horario_inicio),
+                fim: DateUtils.dateToMinutes(agenda.horario_fim),
             })));
 
         for (const fresh of newSchedules) {
             for (const current of currentSchedules) {
-                if (TurmaHelpers.hasConflit(fresh, current)) {
+                if (hasConflit(fresh, current)) {
                     throw new AppError("Já existe turma cadastrada nesse dia e horário", 400);
                 };
             };
@@ -101,8 +101,8 @@ export class TurmaRules {
     };
 
     static async validateAgendaItem(agenda: CreateTurmaAgendaBody) {
-        const horarioInicio = TurmaHelpers.toTimeUtc(agenda.horario_inicio);
-        const horarioFim = TurmaHelpers.toTimeUtc(agenda.horario_fim);
+        const horarioInicio = DateUtils.toTimeUtc(agenda.horario_inicio);
+        const horarioFim = DateUtils.toTimeUtc(agenda.horario_fim);
 
         if (horarioInicio >= horarioFim) {
             throw new AppError("Horário de início é maior ou igual ao horário final!", 400);
@@ -125,20 +125,20 @@ export class TurmaRules {
 
         const newSchedules = newAgenda.map((item) => ({
             dia_semana: item.dia_semana,
-            inicio: dateToMinutes(TurmaHelpers.toTimeUtc(item.horario_inicio)),
-            fim: dateToMinutes(TurmaHelpers.toTimeUtc(item.horario_fim))
+            inicio: DateUtils.dateToMinutes(DateUtils.toTimeUtc(item.horario_inicio)),
+            fim: DateUtils.dateToMinutes(DateUtils.toTimeUtc(item.horario_fim))
         }));
 
         const currentSchedules = turmasDosAlunos.flatMap((turma) => turma.turma_agenda.map((agenda) => ({
             turma_id: turma.id,
             dia_semana: agenda.dia_semana,
-            inicio: dateToMinutes(agenda.horario_inicio),
-            fim: dateToMinutes(agenda.horario_fim)
+            inicio: DateUtils.dateToMinutes(agenda.horario_inicio),
+            fim: DateUtils.dateToMinutes(agenda.horario_fim)
         })));
 
         for (const fresh of newSchedules) {
             for (const current of currentSchedules) {
-                if (TurmaHelpers.hasConflit(fresh, current)) {
+                if (hasConflit(fresh, current)) {
                     throw new AppError("Aluno já possui turma nesse dia e horário", 400);
                 };
             };
@@ -162,20 +162,20 @@ export class TurmaRules {
 
         const newSchedules = newAgenda.map((item) => ({
             dia_semana: item.dia_semana,
-            inicio: dateToMinutes(TurmaHelpers.toTimeUtc(item.horario_inicio)),
-            fim: dateToMinutes(TurmaHelpers.toTimeUtc(item.horario_fim)),
+            inicio: DateUtils.dateToMinutes(DateUtils.toTimeUtc(item.horario_inicio)),
+            fim: DateUtils.dateToMinutes(DateUtils.toTimeUtc(item.horario_fim)),
         }));
 
         const currentSchedules = turmasDosProfessores.flatMap((turma) => turma.turma_agenda.map((agenda) => ({
             turma_id: turma.id,
             dia_semana: agenda.dia_semana,
-            inicio: dateToMinutes(agenda.horario_inicio),
-            fim: dateToMinutes(agenda.horario_fim),
+            inicio: DateUtils.dateToMinutes(agenda.horario_inicio),
+            fim: DateUtils.dateToMinutes(agenda.horario_fim),
         })));
 
         for (const fresh of newSchedules) {
             for (const current of currentSchedules) {
-                if (TurmaHelpers.hasConflit(fresh, current)) {
+                if (hasConflit(fresh, current)) {
                     throw new AppError("Professor já possui turma nesse dia e horário", 400);
                 };
             };
