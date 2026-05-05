@@ -1,8 +1,8 @@
 import { AppError } from "@/server/error/app-errors";
 import { adminMutationRateLimit } from "@/libs/ratelimit";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
-import { createUser, getAllUsers } from "@/server/services/users/users.services";
-import { userHelpers } from "@/server/helpers/users.helpers";
+import { createUser, getAllUsers } from "@/server/users/users.services";
+import { userHelpers } from "@/server/users/users.helpers";
 import { validateRequestOrigin } from "@/server/helpers/origin.helper";
 
 export async function GET() {

@@ -1,8 +1,8 @@
 // find turma by aluno id --> Em quais turmas esse aluno esta? --> único (todas as turma de UM aluno)
 
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/helpers/users.helpers";
-import { getTurmasByAlunoId } from "@/server/services/turmas/turmas.services"
+import { userHelpers } from "@/server/users/users.helpers";
+import { getTurmasByAlunoId } from "@/server/turmas/turmas.services"
 
 export async function GET(
     _request: Request,

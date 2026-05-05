@@ -1,6 +1,6 @@
 import { AppError } from "@/server/error/app-errors";
-import { getAlunoByUserId } from "@/server/services/users/alunos.services";
-import { userHelpers } from "@/server/helpers/users.helpers";
+import { getAlunoByUserId } from "@/server/users/users.services";
+import { userHelpers } from "@/server/users/users.helpers";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {

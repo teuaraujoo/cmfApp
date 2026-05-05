@@ -1,9 +1,9 @@
-import { userHelpers } from "@/server/helpers/users.helpers";
+import { userHelpers } from "@/server/users/users.helpers";
 import { AppError } from "@/server/error/app-errors";
 import { validateRequestOrigin } from "@/server/helpers/origin.helper";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { adminMutationRateLimit } from "@/libs/ratelimit";
-import { getAllTurmas, createTurma } from "@/server/services/turmas/turmas.services";
+import { getAllTurmas, createTurma } from "@/server/turmas/turmas.services";
 
 export async function GET() {
   try {

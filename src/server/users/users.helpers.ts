@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { AppError } from "@/server/error/app-errors";
-import { UsersRepositories } from "@/server/repositories/users/users.respositories";
+import { UsersRepositories } from "@/server/users/users.respositories";
 
 export class userHelpers {
     

@@ -1,8 +1,8 @@
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/helpers/users.helpers";
+import { userHelpers } from "@/server/users/users.helpers";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { adminMutationRateLimit } from "@/libs/ratelimit";
-import { deleteTurma, getTurmaById, updateTurma } from "@/server/services/turmas/turmas.services";
+import { deleteTurma, getTurmaById, updateTurma } from "@/server/turmas/turmas.services";
 
 export async function GET(
     _request: Request,

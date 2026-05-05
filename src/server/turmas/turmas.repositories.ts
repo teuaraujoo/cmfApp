@@ -145,3 +145,78 @@ export class TurmaRepositories {
         return prisma.turmas.delete({ where: { id } })
     };
 };
+
+/* =================    TURMA ALUNOS     =================*/
+
+export class TurmaAlunosRepositories {
+
+    static async findAlunosByTurmaId(turmaId: number) {
+        return prisma.turma_alunos.findMany({
+            where: { 
+                turma_id: turmaId 
+            },
+            include: {
+                alunos: {
+                    include: {
+                        users: true
+                    }
+                }
+            },
+        });
+    };
+
+    static async newTurmaAluno(tx: Prisma.TransactionClient, alunos: Prisma.turma_alunosUncheckedCreateInput[]) {
+        return tx.turma_alunos.createMany({ data: alunos })
+    };
+
+    static async deleteTurmaAlunosByTurmaId(tx: Prisma.TransactionClient, turmaId: number) {
+        return tx.turma_alunos.deleteMany({
+            where: { turma_id: turmaId }
+        });
+    };
+};
+
+/* =================    TURMA PROFESSORES   =================*/
+
+export class TurmaProfessoresRepositories {
+
+    static async findProfessoresByTurmaId(turmaId: number) {
+        return prisma.turma_professores.findMany({
+            where: {
+                turma_id: turmaId
+            },
+            include: {
+                professores: {
+                    include: {
+                        users: true
+                    }
+                }
+            },
+        });
+    };
+
+    static async newTurmaProfessor(tx: Prisma.TransactionClient, professores: Prisma.turma_professoresUncheckedCreateInput[]) {
+        return tx.turma_professores.createMany({ data: professores })
+    };
+
+    static async deleteTurmaProfessoresByTurmaId(tx: Prisma.TransactionClient, turmaId: number) {
+        return tx.turma_professores.deleteMany({
+            where: { turma_id: turmaId }
+        });
+    };
+};
+
+/* =================    TURMA AGENDA   =================*/
+
+export class TurmaAgendaRepositories {
+    
+    static async newTurmaAgenda(tx: Prisma.TransactionClient, turmaAgenda: Prisma.turma_agendaUncheckedCreateInput[]) {
+        return tx.turma_agenda.createMany({ data: turmaAgenda })
+    };
+
+    static async deleteTurmaAgendaByTurmaId(tx: Prisma.TransactionClient, turmaId: number) {
+        return tx.turma_agenda.deleteMany({
+            where: { turma_id: turmaId }
+        });
+    };
+};

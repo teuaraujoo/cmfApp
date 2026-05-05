@@ -2,7 +2,7 @@ import { AppError } from "@/server/error/app-errors";
 import { loginRateLimitByEmail, loginRateLimitByIp } from "@/libs/ratelimit";
 import { rateLimitByIdentifier, rateLimitByIp } from "@/server/helpers/rate-limit.helper";
 import { validateRequestOrigin } from "@/server/helpers/origin.helper";
-import { loginUser } from "@/server/services/auth/auth.services";
+import { loginUser } from "@/server/auth/auth.services";
 
 export async function POST(request: Request) {
   try {

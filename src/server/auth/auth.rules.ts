@@ -1,5 +1,5 @@
 import { AppError } from "@/server/error/app-errors";
-import { UsersRepositories } from "@/server/repositories/users/users.respositories";
+import { UsersRepositories } from "@/server/users/users.respositories";
 import { AuthError, User } from "@supabase/supabase-js";
 import { createClient } from "@/libs/supabase/server";
 

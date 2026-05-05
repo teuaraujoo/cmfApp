@@ -1,10 +1,10 @@
 import { AppError } from "@/server/error/app-errors";
-import { LoginBody, loginSchema, ChangePasswordBody, changePasswordSchema } from "@/server/schemas/auth/auth.schema";
+import { LoginBody, loginSchema, ChangePasswordBody, changePasswordSchema } from "@/server/auth/auth.schema";
 import { createClient } from "@/libs/supabase/server";
-import { UserMapper } from "@/server/mappers/users/users.mapper";
-import { UsersRepositories } from "@/server/repositories/users/users.respositories";
-import { userHelpers } from "@/server/helpers/users.helpers";
-import { validateLogin } from "@/server/rules/auth/auth.rules";
+import { UserMapper } from "@/server/users/users.mapper";
+import { UsersRepositories } from "@/server/users/users.respositories";
+import { userHelpers } from "@/server/users/users.helpers";
+import { validateLogin } from "@/server/auth/auth.rules";
 
 export async function loginUser(body: LoginBody) {
   const data = loginSchema.parse(body);

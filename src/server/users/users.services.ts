@@ -2,14 +2,16 @@ import { prisma } from "@/libs/prisma";
 import { createAdminClient } from "@/libs/supabase/admin";
 import { Prisma } from "@/generated/prisma/client";
 import { AppError } from "@/server/error/app-errors";
-import { UserMapper } from "@/server/mappers/users/users.mapper";
-import { AlunoMapper } from "@/server/mappers/users/alunos.mapper";
-import { ProfessorMapper } from "@/server/mappers/users/professores.mapper";
-import { UsersRepositories } from "@/server/repositories/users/users.respositories";
-import { UsersRules } from "@/server/rules/users/users.rules";
-import { AlunosRepositories } from "@/server/repositories/users/alunos.repositories";
-import { ProfessoresRepositories } from "@/server/repositories/users/professores.repositories";
-import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "@/server/schemas/users/user.schema";
+import { UserMapper } from "@/server/users/users.mapper";
+import { AlunoMapper } from "@/server/users/users.mapper";
+import { ProfessorMapper } from "@/server/users/users.mapper";
+import { UsersRepositories } from "@/server/users/users.respositories";
+import { AlunosRepositories } from "@/server/users/users.respositories";
+import { ProfessoresRepositories } from "@/server/users/users.respositories";
+import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "@/server/users/user.schema";
+
+
+/* =================    USERS     =================*/
 
 export async function getAllUsers() {
   return UsersRepositories.getAll();
@@ -22,7 +24,7 @@ export async function getUserById(id: number) {
 export async function createUser(body: CreateUserBody) {
   const data = createUserSchema.parse(body);
 
-  await UsersRules.validateUser(data);
+  await validateUser(data);
 
   const adminSupabase = createAdminClient();
 
@@ -76,7 +78,7 @@ export async function updateUser(body: UpdateUserBody, id: number) {
   try {
     const data = updateUserSchema.parse(body);
 
-    const authUserId = await UsersRules.validateUpdateUser(data, id);
+    const authUserId = await validateUpdateUser(data, id);
 
     const adminSupabase = createAdminClient();
 
@@ -95,7 +97,7 @@ export async function updateUser(body: UpdateUserBody, id: number) {
     };
 
     return await prisma.$transaction(async (tx) => {
-     const user = await UsersRepositories.updateUserById(tx, UserMapper.toPrismaUserUpdate(data), id);
+      const user = await UsersRepositories.updateUserById(tx, UserMapper.toPrismaUserUpdate(data), id);
 
       if (data.role === "PROFESSOR") {
         await ProfessoresRepositories.updateProfessor(tx, ProfessorMapper.toPrismaProfessor(id, data), id);
@@ -169,4 +171,102 @@ export async function activeUser(id: number) {
 
     throw err;
   };
+};
+
+/* =================    ALUNO     =================*/
+
+export async function getAllAlunos() {
+  const alunos = await AlunosRepositories.getAll();
+
+  if (!alunos) {
+    throw new AppError("Error ao encontrar alunos!", 404);
+  };
+
+  return alunos.map((aluno) => AlunoMapper.toResponseAlunoGet(aluno, aluno.users));
+};
+
+export async function getTotalAlunos() {
+  return AlunosRepositories.getTotal();
+};
+
+export async function getAlunoByUserId(userId: number) {
+  const aluno = await AlunosRepositories.getByUserId(userId);
+
+  if (!aluno) {
+    throw new AppError("Error ao encontrar aluno!", 404);
+  };
+
+  return AlunoMapper.toResponseAlunoGet(aluno, aluno.users);
+};
+
+/* =================    PROFESSOR     =================*/
+
+export async function getAllProfessores() {
+  const professores = await ProfessoresRepositories.getAll();
+
+  if (!professores) {
+    throw new AppError("Error ao encontrar professores", 404);
+  };
+
+  return professores.map((professor) => ProfessorMapper.toResponseProfessorGet(professor, professor.users, professor.modalidades));
+};
+
+export async function getTotalProfessores() {
+  return ProfessoresRepositories.getTotal();
+};
+
+export async function getProfessorByUserId(id: number) {
+  const professor = await ProfessoresRepositories.getByUserId(id);
+
+  if (!professor) {
+    throw new AppError("Não foi possível encontrar professor!", 404);
+  };
+
+  return ProfessorMapper.toResponseProfessorGet(professor, professor.users, professor.modalidades);
+};
+
+
+// VALIDATIONS 
+
+async function validateUser(data: CreateUserBody) {
+  const findEmail = await UsersRepositories.getByEmail(data.email);
+
+  if (findEmail) {
+    throw new AppError("Email já cadastrado!", 409);
+  };
+
+  if (data.role === "ALUNO" && !data.aluno) {
+    throw new AppError("Dados do aluno são obrigatórios!", 400);
+  };
+
+  if (data.role === "PROFESSOR" && !data.professor) {
+    throw new AppError("Dados do professor são obrigatórios!", 400);
+  };
+};
+
+async function validateUpdateUser(data: UpdateUserBody, id: number) {
+  const findEmail = await UsersRepositories.getByEmail(data.email);
+  const findUser = await UsersRepositories.getById(id);
+
+  if (!findUser) {
+    throw new AppError("Usuário não encontrado!", 404);
+  };
+
+  if (findEmail && findEmail.id !== id) {
+    throw new AppError("Email já cadastrado!", 409);
+  };
+
+  if (data.role !== findUser.role) {
+    throw new AppError("Alteração de role ainda não é suportada nesta rota.", 400);
+  };
+
+  if (data.role === "ALUNO" && !data.aluno) {
+    throw new AppError("Dados do aluno são obrigatórios!", 400);
+  };
+
+  if (data.role === "PROFESSOR" && !data.professor) {
+    throw new AppError("Dados do professor são obrigatórios!", 400);
+  };
+
+  return findUser.auth_user_id;
 };

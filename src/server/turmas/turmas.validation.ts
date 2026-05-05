@@ -1,11 +1,11 @@
-import { CreateTurmaBody, CreateTurmaAgendaBody } from "@/server/schemas/turmas/turmas.shema";
+import { CreateTurmaBody, CreateTurmaAgendaBody } from "./turmas.shema";
 import { AppError } from "@/server/error/app-errors";
-import { TurmaRepositories } from "@/server/repositories/turmas/turmas.repositories";
-import { AlunosRepositories } from "@/server/repositories/users/alunos.repositories";
-import { ProfessoresRepositories } from "@/server/repositories/users/professores.repositories";
+import { TurmaRepositories } from "./turmas.repositories";
+import { AlunosRepositories } from "@/server/users/users.respositories";
+import { ProfessoresRepositories } from "@/server/users/users.respositories";
 import { DateUtils } from "@/server/utils/dateUtils";
 import { hasConflit } from "@/server/utils/hasConflit";
-import { ModalidadeRepositories } from "@/server/repositories/modalidades/modalidades.repositories"
+import { ModalidadeRepositories } from "@/server/modalidades/modalidades.repositories"
 
 type CreateTurmaAlunoPrisma = {
     turma_id: number;
@@ -17,9 +17,10 @@ type CreateTurmaProfessorPrisma = {
     professores_id: number;
 };
 
-//REMEMBER: Verificação de agenda/horários de turmas é opcional, depende do negócio.
-export class TurmaRules {
+export class TurmaValidation {
 
+
+    //REMEMBER: Verificação de agenda/horários de turmas é opcional, depende do negócio.
     static async validateTurma(data: CreateTurmaBody) {
         const turmaNome = await TurmaRepositories.getByName(data.nome);
         const vigenciaInicioDate = new Date(data.vigencia_inicio);
@@ -31,7 +32,7 @@ export class TurmaRules {
         if (vigenciaInicioDate > vigenciaFimDate) {
             throw new AppError("Vigência inicial não pode ser maior que a final!", 400);
         };
-        
+
         if (!modalidade) {
             throw new AppError("Modalidade não encontrada!", 400);
         };
@@ -182,4 +183,4 @@ export class TurmaRules {
         };
 
     };
-};
+}
