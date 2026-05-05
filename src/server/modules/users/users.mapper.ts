@@ -1,4 +1,4 @@
-import { CreateUserBody, UpdateUserBody } from "@/server/users/user.schema";
+import { CreateUserBody, UpdateUserBody } from "@/server/modules/users/user.schema";
 import { public_users } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 

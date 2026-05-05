@@ -1,6 +1,6 @@
 import { AppError } from "@/server/error/app-errors";
-import { getAllProfessores } from "@/server/users/users.services";
-import { userHelpers } from "@/server/users/users.helpers";
+import { getAllProfessores } from "@/server/modules/users/users.services";
+import { userHelpers } from "@/server/modules/users/users.helpers";
 
 export async function GET() {
     try {

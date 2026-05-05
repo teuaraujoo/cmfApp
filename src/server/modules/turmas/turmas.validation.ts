@@ -1,11 +1,11 @@
 import { CreateTurmaBody, CreateTurmaAgendaBody } from "./turmas.shema";
 import { AppError } from "@/server/error/app-errors";
 import { TurmaRepositories } from "./turmas.repositories";
-import { AlunosRepositories } from "@/server/users/users.respositories";
-import { ProfessoresRepositories } from "@/server/users/users.respositories";
+import { AlunosRepositories } from "@/server/modules/users/users.respositories";
+import { ProfessoresRepositories } from "@/server/modules/users/users.respositories";
 import { DateUtils } from "@/server/utils/dateUtils";
 import { hasConflit } from "@/server/utils/hasConflit";
-import { ModalidadeRepositories } from "@/server/modalidades/modalidades.repositories"
+import { ModalidadeRepositories } from "@/server/modules/modalidades/modalidades.repositories"
 
 type CreateTurmaAlunoPrisma = {
     turma_id: number;

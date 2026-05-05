@@ -2,8 +2,8 @@ import { AppError } from "@/server/error/app-errors";
 import { adminMutationRateLimit } from "@/libs/ratelimit";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { validateRequestOrigin } from "@/server/helpers/origin.helper";
-import { userHelpers } from "@/server/users/users.helpers";
-import { getUserById, inactiveUser, activeUser, updateUser } from "@/server/users/users.services";
+import { userHelpers } from "@/server/modules/users/users.helpers";
+import { getUserById, inactiveUser, activeUser, updateUser } from "@/server/modules/users/users.services";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {

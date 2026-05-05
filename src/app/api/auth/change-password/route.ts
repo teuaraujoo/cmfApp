@@ -1,9 +1,9 @@
-import { changePassword } from "@/server/auth/auth.services";
+import { changePassword } from "@/server/modules/auth/auth.services";
 import { AppError } from "@/server/error/app-errors";
 import { authenticatedUserRateLimit } from "@/libs/ratelimit";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { validateRequestOrigin } from "@/server/helpers/origin.helper";
-import { userHelpers } from "@/server/users/users.helpers";
+import { userHelpers } from "@/server/modules/users/users.helpers";
 
 export async function POST(request: Request) {
   try {

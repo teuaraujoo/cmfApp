@@ -1,5 +1,5 @@
-import { ModalidadeRepositories } from "@/server/modalidades/modalidades.repositories";
-import { createModalidadeSchema, CreateModalidadeBody } from "@/server/modalidades/modalida.schema";
+import { ModalidadeRepositories } from "@/server/modules/modalidades/modalidades.repositories";
+import { createModalidadeSchema, CreateModalidadeBody } from "@/server/modules/modalidades/modalida.schema";
 import { AppError } from "@/server/error/app-errors";
 
 export async function getAllModalidades() {

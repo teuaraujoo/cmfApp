@@ -2,13 +2,13 @@ import { prisma } from "@/libs/prisma";
 import { createAdminClient } from "@/libs/supabase/admin";
 import { Prisma } from "@/generated/prisma/client";
 import { AppError } from "@/server/error/app-errors";
-import { UserMapper } from "@/server/users/users.mapper";
-import { AlunoMapper } from "@/server/users/users.mapper";
-import { ProfessorMapper } from "@/server/users/users.mapper";
-import { UsersRepositories } from "@/server/users/users.respositories";
-import { AlunosRepositories } from "@/server/users/users.respositories";
-import { ProfessoresRepositories } from "@/server/users/users.respositories";
-import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "@/server/users/user.schema";
+import { UserMapper } from "@/server/modules/users/users.mapper";
+import { AlunoMapper } from "@/server/modules/users/users.mapper";
+import { ProfessorMapper } from "@/server/modules/users/users.mapper";
+import { UsersRepositories } from "@/server/modules/users/users.respositories";
+import { AlunosRepositories } from "@/server/modules/users/users.respositories";
+import { ProfessoresRepositories } from "@/server/modules/users/users.respositories";
+import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "@/server/modules/users/user.schema";
 
 
 /* =================    USERS     =================*/

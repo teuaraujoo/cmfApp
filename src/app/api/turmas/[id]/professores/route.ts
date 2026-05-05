@@ -1,8 +1,8 @@
 // find professores by turma id -> nessa turma tem quais professores? -> geral (todos os professores da turma)
 
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/users/users.helpers";
-import { getProfessoresByTurmaId } from "@/server/turmas/turmas.services";
+import { userHelpers } from "@/server/modules/users/users.helpers";
+import { getProfessoresByTurmaId } from "@/server/modules/turmas/turmas.services";
 
 export async function GET(
     _request: Request,

@@ -1,9 +1,9 @@
-import { userHelpers } from "@/server/users/users.helpers";
+import { userHelpers } from "@/server/modules/users/users.helpers";
 import { AppError } from "@/server/error/app-errors";
 import { validateRequestOrigin } from "@/server/helpers/origin.helper";
 import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
 import { adminMutationRateLimit } from "@/libs/ratelimit";
-import { getAllModalidades, createModalidade } from "@/server/modalidades/modalidades.services";
+import { getAllModalidades, createModalidade } from "@/server/modules/modalidades/modalidades.services";
 
 export async function GET() {
   try {

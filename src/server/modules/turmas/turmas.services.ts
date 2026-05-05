@@ -3,9 +3,9 @@ import { prisma } from "@/libs/prisma";
 import { AppError } from "@/server/error/app-errors";
 import { createTurmaSchema, CreateTurmaBody, CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaProfessorBody } from "./turmas.shema";
 import { TurmaRepositories, TurmaProfessoresRepositories, TurmaAgendaRepositories, TurmaAlunosRepositories } from "./turmas.repositories";
-import { TurmaMapper, TurmaAlunosMapper, TurmaProfessoresMapper, TurmaAgendaMapper } from "@/server/turmas/turmas.mapper";
+import { TurmaMapper, TurmaAlunosMapper, TurmaProfessoresMapper, TurmaAgendaMapper } from "@/server/modules/turmas/turmas.mapper";
 import { TurmaValidation } from "./turmas.validation";
-import { checkCreateManyCount } from "../utils/check-createmany";
+import { checkCreateManyCount } from "../../utils/check-createmany";
 
 export async function getAllTurmas() {
 
