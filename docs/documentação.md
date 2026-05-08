@@ -1,353 +1,196 @@
-SISTEMA DE GERENCIAMENTO DE CURSO DE REFORCO E GERENCIAMENTO DE FREQUENCIA
+## Visao Geral
 
-Sistema feito para o Curso Matematica Facil, localizado em Aracaju-SE. O sistema possui cadastro de alunos, turmas e professores. Alem disso, os alunos do curso podem registrar presenca ou ausencia nas aulas e os professores podem marcar inicio e fim da aula.
+Sistema de gerenciamento do Curso Matematica Facil, com foco em:
 
-STACKS
+- autenticacao e controle de acesso
+- cadastro de usuarios, alunos e professores
+- modalidades
+- turmas recorrentes com agenda semanal
+- aulas individuais com data real
+- presenca e execucao de aulas
+
+## Stack Atual
 
 - Next.js
+- React
+- TypeScript
 - PostgreSQL
 - Prisma
 - Supabase Auth
+- Upstash Redis
+- Zod
 - Tailwind CSS
-- Shadcn
-- TypeScript
-- Redis
-- Upstash
+- Docker apenas para ambiente de desenvolvimento
 
-OBJETIVO DESTA DOCUMENTACAO
+## Estado Atual do Projeto
 
-Este arquivo centraliza o que foi implementado no backend ate agora, especialmente:
+### Backend implementado em maior profundidade
 
-- criacao de usuarios por admin
-- login
-- logout
-- troca obrigatoria de senha no primeiro acesso
-- bloqueio de rotas protegidas enquanto `must_change_password = true`
-- vinculo entre `public.users` e `auth.users`
+- autenticacao
+- usuarios, alunos e professores
+- modalidades
+- turmas
+- validacoes de agenda e conflito
+- seguranca de rotas e sessao
 
-ARQUITETURA DE AUTENTICACAO
+### Backend em fase inicial
 
-O projeto agora separa autenticacao de perfil de negocio:
+- `aulas_individuais`
+- frequencia
+- fluxos completos de execucao de aula
 
-- `auth.users`
-  responsavel por email, senha, sessao e cookies do Supabase
-- `public.users`
-  responsavel pelos dados de negocio da aplicacao
+### Frontend
 
-RELACAO ENTRE AS TABELAS
+Ainda esta muito inicial. O App Router existe, mas o foco atual do projeto esta na consolidacao do backend e da modelagem de negocio.
 
-- `public.users.auth_user_id -> auth.users.id`
-- `public.users.must_change_password`
-  controla se o usuario ainda esta usando senha provisoria
+## Organizacao Atual
 
-REGRAS ATUAIS
+### Pastas principais
 
-- usuarios sao criados pelo admin
-- nao existe auto cadastro publico
-- o primeiro login pode acontecer com senha provisoria
-- enquanto `must_change_password = true`, o usuario fica bloqueado nas rotas protegidas
-- as rotas livres para esse usuario sao:
-  - login
-  - logout
-  - change-password
+- `src/app`
+  frontend e route handlers do App Router
+- `src/server/modules`
+  backend organizado por dominio
+- `src/libs`
+  clients e integracoes de infraestrutura
+- `src/generated/prisma`
+  Prisma Client gerado
+- `prisma`
+  schema Prisma
+- `docs`
+  documentacao funcional e tecnica
 
-VARIAVEIS DE AMBIENTE NECESSARIAS
+### Modulos do backend
+
+- `auth`
+  login, logout e troca de senha
+- `users`
+  usuarios, alunos e professores
+- `modalidades`
+  CRUD de modalidades
+- `turmas`
+  turmas, agenda e relacionamentos
+- `aulas`
+  estrutura inicial das aulas individuais
+
+## Autenticacao
+
+O sistema usa Supabase Auth, mas mantem os perfis em `public.users`.
+
+### Estrategia atual
+
+- autenticacao no `auth.users`
+- perfil da aplicacao em `public.users`
+- ligacao por `auth_user_id`
+- controle de primeiro acesso por `must_change_password`
+
+### Rotas implementadas
+
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `POST /api/auth/change-password`
+
+## Seguranca
+
+Ja existe endurecimento basico no projeto:
+
+- headers HTTP de seguranca
+- CSP em `Report-Only`
+- cookies SSR do Supabase com `httpOnly`, `secure` e `sameSite: 'lax'`
+- validacao de `Origin` nas rotas mutaveis
+- rate limit com Upstash por email, id do usuario ou id do admin, conforme o endpoint
+
+## Ambiente
+
+### Variaveis de ambiente principais
 
 - `DATABASE_URL`
 - `DIRECT_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+- `APP_ORIGIN`
 
-CLIENTS DO SUPABASE
-
-Existem tres clients com responsabilidades diferentes:
-
-1. `src/libs/supabase/client.ts`
-   client do browser
-
-2. `src/libs/supabase/server.ts`
-   client SSR/server para ler e atualizar sessao por cookies
-
-3. `src/libs/supabase/admin.ts`
-   client server-only com `service_role`
-   usado para:
-   - criar usuarios no Supabase Auth
-   - remover usuario do Auth em compensacao de falha
-
-ROTAS DE AUTENTICACAO IMPLEMENTADAS
-
-1. `POST /api/auth/login`
-2. `POST /api/auth/logout`
-3. `POST /api/auth/change-password`
-
-ROTA DE USUARIOS IMPLEMENTADA
+### Docker de desenvolvimento
 
-1. `GET /api/users`
-   exige admin autenticado e com onboarding concluido
-2. `POST /api/users`
-   exige admin autenticado e com onboarding concluido
+Arquivos presentes:
 
-FLUXO DE CRIACAO DE USUARIO PELO ADMIN
+- `Dockerfile.dev`
+- `docker-compose.yml`
+- `.dockerignore`
 
-1. admin autenticado chama `POST /api/users`
-2. payload e validado por `createUserSchema`
-3. regras de dominio verificam:
-   - email unico
-   - dados obrigatorios de aluno
-   - dados obrigatorios de professor
-4. o backend cria primeiro o usuario em `auth.users` via `adminSupabase.auth.admin.createUser`
-5. o retorno do Supabase vem em `authData`
-6. `authData.user.id` e salvo em `public.users.auth_user_id`
-7. o backend cria:
-   - `public.users`
-   - `alunos`, se role = `ALUNO`
-   - `professores`, se role = `PROFESSOR`
-8. se a escrita local falhar depois da criacao no Auth, o backend tenta compensar removendo o usuario no Supabase
+Uso atual:
 
-OBSERVACAO IMPORTANTE
+- sobe apenas a aplicacao
+- nao sobe Postgres local
+- nao sobe Redis local
+- Supabase e Upstash continuam externos
 
-O objeto `authData` nao vem do frontend. Ele e a resposta do Supabase Auth ao executar `createUser`.
+## Rotas atualmente presentes
 
-FLUXO DE LOGIN
+### Autenticacao
 
-1. usuario envia email e senha para `POST /api/auth/login`
-2. o backend usa `supabase.auth.signInWithPassword`
-3. se o login der certo, o backend busca o perfil local em `public.users` via `auth_user_id`
-4. se o usuario nao existir em `public.users`, a sessao e encerrada
-5. se `status != ATIVO`, a sessao e encerrada
-6. a resposta devolve:
-   - `id`
-   - `auth_user_id`
-   - `nome`
-   - `email`
-   - `role`
-   - `status`
-   - `must_change_password`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `POST /api/auth/change-password`
 
-FLUXO DE TROCA DE SENHA NO PRIMEIRO ACESSO
+### Users
 
-1. usuario faz login com senha provisoria
-2. a resposta de login devolve `must_change_password = true`
-3. o frontend deve redirecionar obrigatoriamente para a tela de troca de senha
-4. o usuario chama `POST /api/auth/change-password`
-5. o backend:
-   - valida a sessao atual
-   - valida `newPassword` e `confirmPassword`
-   - chama `supabase.auth.updateUser({ password: newPassword })`
-   - atualiza `public.users.must_change_password = false`
-6. a partir desse ponto o usuario deixa de ficar bloqueado
+- `GET /api/users`
+- `POST /api/users`
+- `GET /api/users/[id]`
+- `PUT /api/users/[id]`
+- `DELETE /api/users/[id]`
+- `PATCH /api/users/[id]`
 
-FLUXO DE LOGOUT
-
-1. usuario chama `POST /api/auth/logout`
-2. o backend executa `supabase.auth.signOut()`
-3. a sessao atual e encerrada
-
-BLOQUEIO DE PRIMEIRO ACESSO
-
-O bloqueio foi centralizado em `src/server/helpers/users.helpers.ts`.
-
-HELPERS IMPLEMENTADOS
-
-1. `getCurrentAppUser()`
-   faz:
-   - le usuario autenticado do Supabase via cookies
-   - busca o perfil local em `public.users`
-   - valida se o usuario existe
-   - valida se `status = ATIVO`
-
-2. `requireOnboardedUser()`
-   faz:
-   - chama `getCurrentAppUser()`
-   - bloqueia se `must_change_password = true`
-
-3. `requireAdminUser()`
-   faz:
-   - chama `requireOnboardedUser()`
-   - valida se `role = ADMIN`
-
-4. `checkPasswordAlreadyChange()`
-   faz:
-   - lanca erro `403` se `must_change_password = true`
-
-EFEITO PRATICO DESSES HELPERS
-
-- um aluno/professor criado pelo admin entra inicialmente com senha provisoria
-- esse usuario consegue fazer login
-- mas nao consegue acessar rotas protegidas antes da troca de senha
-- isso acontece antes mesmo da validacao de role
-
-MAPPERS IMPLEMENTADOS
-
-Arquivo:
-
-- `src/server/mappers/users.mapper.ts`
-
-Responsabilidades:
-
-- `toPrismaUser`
-- `toPrismaAluno`
-- `toPrismaProfessor`
-- `toUserCreationResponseAdmin`
-- `toLoginResponse`
-- `toChangePasswordResponse`
-
-Esses mappers evitam montar respostas manualmente em cada service e ajudam a manter o contrato de resposta estavel.
-
-SCHEMAS DE VALIDACAO IMPLEMENTADOS
-
-1. `src/server/schemas/user.schema.ts`
-   usado para criacao de usuarios por admin
-
-Campos principais:
-
-- `nome`
-- `email`
-- `temporary_password`
-- `role`
-- `tel`
-- `aluno`
-- `professor`
-
-2. `src/server/schemas/auth.schema.ts`
-   usado para:
-   - login
-   - change-password
-
-VALIDACOES IMPORTANTES
-
-- senha temporaria com minimo de 8 caracteres
-- senha temporaria com pelo menos uma letra
-- senha temporaria com pelo menos um numero
-- nova senha com as mesmas regras
-
-PAYLOADS
-
-CRIACAO DE USUARIO
-
-Para ALUNO:
-
-```json
-{
-  "nome": "Ana Souza",
-  "email": "ana@email.com",
-  "temporary_password": "Temp1234",
-  "role": "ALUNO",
-  "tel": "79999999999",
-  "aluno": {
-    "data_nasc": "2009-03-15",
-    "serie": "9 ano",
-    "resp_tel": "79988887777",
-    "resp_nome": "Joao Souza",
-    "modalidade_id": 1,
-    "tempo_aula": 60,
-    "horas_semana": 3,
-    "tempo_contrato": 6
-  }
-}
-```
+### Alunos
 
-Para PROFESSOR:
+- `GET /api/alunos`
+- `GET /api/alunos/total-alunos`
+- `GET /api/alunos/[id]`
+- `GET /api/alunos/[id]/turmas`
 
-```json
-{
-  "nome": "Carlos Lima",
-  "email": "carlos@email.com",
-  "temporary_password": "Temp1234",
-  "role": "PROFESSOR",
-  "tel": "79999999999",
-  "professor": {
-    "materia": "Matematica",
-    "modalidade_id": 1
-  }
-}
-```
-
-Para ADMIN:
-
-```json
-{
-  "nome": "Admin Novo",
-  "email": "admin2@email.com",
-  "temporary_password": "Temp1234",
-  "role": "ADMIN",
-  "tel": "79999999999"
-}
-```
-
-LOGIN
-
-```json
-{
-  "email": "teste@gmail.com",
-  "password": "senha123"
-}
-```
-
-TROCA DE SENHA
-
-```json
-{
-  "newPassword": "NovaSenha123",
-  "confirmPassword": "NovaSenha123"
-}
-```
-
-COMO TESTAR A CRIACAO E LISTAGEM DE USUARIOS
-
-Para testar `POST /api/users` e `GET /api/users`, e necessario ter antes um admin funcional.
-
-PASSO A PASSO
-
-1. criar o primeiro admin em `auth.users`
-   pode ser pelo painel do Supabase em `Authentication > Users`
-
-2. criar o perfil correspondente em `public.users`
-   com:
-   - mesmo email
-   - `role = ADMIN`
-   - `status = ATIVO`
-   - `must_change_password = false`
-   - `auth_user_id = auth.users.id`
-
-3. fazer login com `POST /api/auth/login`
-
-4. manter os cookies da sessao
-
-5. chamar:
-   - `GET /api/users`
-   - `POST /api/users`
-
-IMPORTANTE
-
-Sem esse primeiro admin bootstrapado, as rotas administrativas nao podem ser usadas.
-
-PRIMEIRO ADMIN
-
-Atualmente nao existe signup publico. Isso e intencional.
-
-O primeiro admin deve ser criado por bootstrap controlado, por exemplo:
-
-- manualmente no painel do Supabase + insert em `public.users`
-- script interno
-- rota temporaria protegida por segredo de ambiente
-
-RESUMO DO ESTADO ATUAL
-
-Ja implementado:
-
-- login
-- logout
-- change-password
-- criacao de usuarios por admin
-- bloqueio de primeiro acesso
-- validacao por role de admin
-- integracao entre `auth.users` e `public.users`
-
-Ainda depende de frontend para experiencia completa:
-
-- tela de login
-- tela obrigatoria de troca de senha
-- redirecionamento por `must_change_password`
-- redirecionamento por `role`
+### Professores
+
+- `GET /api/professores`
+- `GET /api/professores/total-professores`
+- `GET /api/professores/[id]`
+- `GET /api/professores/[id]/turmas`
+
+### Modalidades
+
+- `GET /api/modalidades`
+- `POST /api/modalidades`
+- `GET /api/modalidades/[id]`
+- `PUT /api/modalidades/[id]`
+- `DELETE /api/modalidades/[id]`
+
+### Turmas
+
+- `GET /api/turmas`
+- `POST /api/turmas`
+- `GET /api/turmas/[id]`
+- `PUT /api/turmas/[id]`
+- `DELETE /api/turmas/[id]`
+- `GET /api/turmas/[id]/alunos`
+- `GET /api/turmas/[id]/professores`
+
+### Aulas
+
+- `GET /api/aulas`
+- `POST /api/aulas`
+- `DELETE /api/aulas/[id]`
+
+Observacao:
+
+As rotas de `aulas` ja existem, mas o modulo ainda nao foi finalizado.
+
+## Padroes Relevantes
+
+- mappers para request e response
+- validacao de negocio separada da service
+- repositories encapsulando Prisma
+- transacoes do Prisma para operacoes multi-tabela
+- `deleteMany + createMany` para atualizar relacoes agregadas de turmas

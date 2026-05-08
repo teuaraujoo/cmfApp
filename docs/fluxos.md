@@ -1,294 +1,174 @@
-USERS
-Criação
-faz:
-criar registro em users
-precisa tratar:
-email único
-role válida (admin, aluno, professor)
-senha criptografada
-depois da criação:
-se role = aluno → criar registro em alunos
-se role = professor → criar registro em professores
+## Fluxo de Autenticacao
 
-Atualização
-faz:
-atualizar users
-precisa tratar:
-validar email único (se alterado)
-manter integridade do role
-depois da atualização:
-se houver dados relacionados → atualizar alunos ou professores
+### Login
 
-Deleção
-faz:
-soft delete em users (status)
-precisa tratar:
-verificar vínculos com aluno/professor
-depois da deleção:
-desativar registro em alunos ou professores
+1. cliente envia email e senha para `POST /api/auth/login`
+2. backend usa `supabase.auth.signInWithPassword`
+3. backend busca `public.users` pelo `auth_user_id`
+4. se o usuario nao existir localmente, a sessao e encerrada
+5. se `status != ATIVO`, o acesso e bloqueado
+6. a resposta devolve os dados necessarios para o frontend decidir:
+   - role
+   - status
+   - `must_change_password`
 
-ALUNOS
-Criação
-faz:
-criar registro em users
-criar registro em alunos
-precisa tratar:
-modalidade válida
-dados obrigatórios preenchidos
-depois da criação:
-aluno disponível para vincular em turma_alunos
+### Logout
 
-Atualização
-faz:
-atualizar users
-atualizar alunos
-precisa tratar:
-consistência entre dados pessoais e acadêmicos
-modalidade válida
-depois da atualização:
-refletir alterações em telas e vínculos
+1. cliente chama `POST /api/auth/logout`
+2. backend usa `supabase.auth.signOut`
+3. cookies de sessao sao invalidados
 
-Deleção
-faz:
-soft delete em users
-soft delete em alunos
-precisa tratar:
-verificar vínculos em turma_alunos
-depois da deleção:
-remover ou inativar vínculos em turmas
+### Troca obrigatoria de senha
 
-PROFESSORES
-Criação
-faz:
-criar registro em users
-criar registro em professores
-precisa tratar:
-modalidade válida
-matéria válida
-depois da criação:
-professor disponível para vincular em turma_professores
+1. usuario entra com senha provisoria
+2. backend retorna `must_change_password = true`
+3. frontend deve redirecionar para troca de senha
+4. cliente chama `POST /api/auth/change-password`
+5. backend atualiza a senha no Supabase Auth
+6. backend marca `public.users.must_change_password = false`
 
-Atualização
-faz:
-atualizar users
-atualizar professores
-precisa tratar:
-consistência dos dados
-modalidade válida
-depois da atualização:
-refletir alterações nas turmas vinculadas
+## Fluxo de Criacao de Usuario
 
-Deleção
-faz:
-soft delete em users
-soft delete em professores
-precisa tratar:
-verificar vínculos em turma_professores
-depois da deleção:
-remover ou inativar vínculos com turmas
+1. admin autenticado chama `POST /api/users`
+2. payload e validado por Zod
+3. service valida:
+   - email unico
+   - dados obrigatorios por role
+4. backend cria o usuario no Supabase Auth
+5. backend abre transacao no Prisma
+6. cria `public.users`
+7. se `role = ALUNO`, cria `alunos`
+8. se `role = PROFESSOR`, cria `professores`
+9. se a parte local falhar, o usuario criado no Auth e removido
 
-MODALIDADES
-Criação
-faz:
-criar registro em modalidades
-precisa tratar:
-evitar duplicidade de tipo
-depois da criação:
-disponível para uso em alunos e professores
+## Fluxo de Atualizacao de Usuario
 
-Atualização
-faz:
-atualizar modalidades
-precisa tratar:
-impacto em alunos e professores vinculados
-depois da atualização:
-refletir mudança em todos os vínculos
+1. admin chama `PUT /api/users/[id]`
+2. payload e validado
+3. backend verifica:
+   - usuario existe
+   - email nao conflita com outro usuario
+   - role nao esta sendo alterada se o fluxo nao suportar isso
+4. backend atualiza o usuario no Supabase Auth
+5. backend atualiza `public.users`
+6. backend atualiza `alunos` ou `professores` conforme o role
 
-Deleção
-faz:
-deletar registro em modalidades
-precisa tratar:
-verificar uso em:
-alunos
-professores
-depois da deleção:
-bloquear ou exigir substituição antes da remoção
+## Fluxo de Ativacao e Inativacao de Usuario
 
-TURMAS
-Criação
-faz:
-criar registro em turmas
-precisa tratar:
-validar horas semana
-nome da turma
-depois da criação:
-permitir criação de:
-turma_agenda
-turma_alunos
-turma_professores
+1. admin chama `PATCH /api/users/[id]`
+2. backend altera `public.users.status`
+3. backend altera o status do perfil relacionado:
+   - `alunos`
+   - `professores`
 
-Atualização
-faz:
-atualizar turmas
-precisa tratar:
-impacto em agenda e vínculos
-depois da atualização:
-refletir alterações em:
-agenda
-alunos vinculados
-professores vinculados
+## Fluxo de Criacao de Modalidade
 
-Deleção
-faz:
-deletar ou inativar turmas
-precisa tratar:
-vínculos existentes:
-turma_agenda
-turma_alunos
-turma_professores
-frequências
-depois da deleção:
-remover ou inativar todos os vínculos
+1. admin chama `POST /api/modalidades`
+2. backend valida o payload
+3. repository cria a modalidade
 
-TURMA_AGENDA
-Criação
-faz:
-criar registro em turma_agenda
-precisa tratar:
-turma existente
-dia da semana válido
-horário válido
-depois da criação:
-agenda disponível para frequência
+## Fluxo de Criacao de Turma
 
-Atualização
-faz:
-atualizar turma_agenda
-precisa tratar:
-impacto em frequências já registradas
-depois da atualização:
-refletir alteração no calendário da turma
+1. admin chama `POST /api/turmas`
+2. payload e validado por `createTurmaSchema`
+3. rules validam:
+   - nome da turma
+   - vigencia
+   - modalidade existente
+   - conflitos dentro da propria agenda
+   - conflitos da agenda com outras turmas
+   - conflitos de agenda de alunos
+   - conflitos de agenda de professores
+4. backend abre transacao
+5. cria `turmas`
+6. cria `turma_agenda` com `createMany`
+7. cria `turma_alunos` com `createMany`
+8. cria `turma_professores` com `createMany`
+9. se qualquer etapa falhar, a transacao inteira e revertida
 
-Deleção
-faz:
-deletar turma_agenda
-precisa tratar:
-existência de:
-frequencia_aluno
-frequencia_professor
-depois da deleção:
-bloquear ou manter histórico
+## Fluxo de Atualizacao de Turma
 
-TURMA_ALUNOS
-Criação
-faz:
-criar vínculo em turma_alunos
-precisa tratar:
-turma existente
-aluno existente
-evitar duplicidade
-depois da criação:
-aluno passa a fazer parte da turma
+1. admin chama `PUT /api/turmas/[id]`
+2. payload e validado
+3. backend valida as mesmas regras principais do create, ignorando a propria turma nas comparacoes quando necessario
+4. backend abre transacao
+5. atualiza `turmas`
+6. apaga agenda antiga da turma
+7. recria `turma_agenda`
+8. apaga vinculos antigos de alunos
+9. recria `turma_alunos`
+10. apaga vinculos antigos de professores
+11. recria `turma_professores`
 
-Atualização
-faz:
-atualizar vínculo (se houver campos extras)
-precisa tratar:
-consistência do vínculo
-depois da atualização:
-refletir alteração no relacionamento
+Observacao:
 
-Deleção
-faz:
-deletar vínculo em turma_alunos
-precisa tratar:
-impacto em frequências
-depois da deleção:
-aluno deixa de fazer parte da turma
+O padrao atual do update de turma e substituir o conjunto relacionado usando:
 
-TURMA_PROFESSORES
-Criação
-faz:
-criar vínculo em turma_professores
-precisa tratar:
-turma existente
-professor existente
-evitar duplicidade
-depois da criação:
-professor passa a atuar na turma
+- `deleteMany`
+- `createMany`
 
-Atualização
-faz:
-atualizar vínculo (se houver campos extras)
-precisa tratar:
-consistência do vínculo
-depois da atualização:
-refletir alteração no relacionamento
+## Fluxo de Validacao de Agenda de Turma
 
-Deleção
-faz:
-deletar vínculo em turma_professores
-precisa tratar:
-impacto em aulas e frequência
-depois da deleção:
-professor deixa de atuar na turma
+### Agenda interna da propria turma
 
-FREQUENCIA_ALUNO
-Criação
-faz:
-criar registro em frequencia_aluno
-precisa tratar:
-turma_agenda_id válido
-aluno pertence à turma
-evitar duplicidade de registro
-depois da criação:
-registrar presença ou ausência
+O backend transforma cada item da agenda em uma estrutura de comparacao:
 
-Atualização
-faz:
-atualizar frequencia_aluno
-precisa tratar:
-consistência do status
-depois da atualização:
-refletir alteração no histórico
+- `dia_semana`
+- `inicio`
+- `fim`
 
-Deleção
-faz:
-não recomendado deletar
-precisa tratar:
-manter histórico
-depois da deleção:
-preferir atualização ao invés de exclusão
+Depois compara os proprios itens da nova agenda para evitar sobreposicao interna.
 
-FREQUENCIA_PROFESSOR
-Criação
-faz:
-criar registro em frequencia_professor
-precisa tratar:
-turma_agenda_id válido
-professor pertence à turma
-evitar duplicidade
-depois da criação:
-registrar início da aula
+### Agenda contra outras turmas
 
-Atualização
-faz:
-atualizar frequencia_professor
-precisa tratar:
-preenchimento correto de:
-ended_at
-notas
-depois da atualização:
-registrar finalização da aula
+O backend:
 
-Deleção
-faz:
-não recomendado deletar
-precisa tratar:
-manter histórico
-depois da deleção:
-preferir atualização ao invés de exclusão 
+1. extrai os `diasSemana` usados na nova agenda
+2. busca apenas turmas candidatas por:
+   - interseccao de vigencia
+   - mesmo `dia_semana`
+3. compara os horarios em memoria
 
+### Agenda de alunos e professores
 
-Fluxo das camadas aplicação
-route -> services -> schema -> rules -> mapper -> repository 
+O backend:
+
+1. busca turmas ja vinculadas aos alunos ou professores informados
+2. carrega a agenda dessas turmas
+3. compara a nova agenda com as agendas existentes
+
+## Fluxo de Listagem de Turmas
+
+O repository ja traz `include` aninhado para:
+
+- `modalidades`
+- `turma_agenda`
+- `turma_alunos -> alunos -> users`
+- `turma_professores -> professores -> users`
+
+Depois o mapper formata a resposta para o frontend, convertendo:
+
+- horarios
+- dias da semana
+- dados expandidos de aluno/professor
+
+## Fluxo de Aulas Individuais
+
+Estado atual:
+
+- tabela `aulas_individuais` ja existe no schema
+- rotas de `aulas` ja existem
+- implementacao do modulo ainda esta incompleta
+
+Fluxo esperado:
+
+1. criar aula com `aluno_id`, `professor_id`, `modalidade_id`, `started_at`, `ended_at`
+2. validar conflito real de horario do professor
+3. persistir a aula individual
+
+## Fluxo do Docker em Desenvolvimento
+
+1. `docker compose up --build` na primeira execucao ou quando mudar Dockerfile/dependencias
+2. `docker compose up` no dia a dia
+3. codigo e montado por volume local
+4. Supabase e Upstash continuam externos ao container

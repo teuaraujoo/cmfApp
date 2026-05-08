@@ -1,120 +1,216 @@
-1. USERS
-id
-name
-email
-password_hash
-role
-phone
-status
-created_at
-updated_at
+## Visao Geral
 
-2. ALUNOS
-id
-user_id
-data_nasc
-serie
-resp_tel
-resp_nome
-modalidade_id
-tempo_aula
-horas_semana
-tempo_contrato
-status
-created_at
-updated_at
+O banco principal e PostgreSQL, acessado via Prisma. A autenticacao é separada em dois schemas:
 
-3. PROFESSORES
-id
-user_id
-materia
-modalidade_id
-created_at
-updated_at
+- `auth`
+  controlado pelo Supabase Auth.
+- `public`
+  controlado pela aplicacao.
 
+## Entidades Principais
 
-4. MODALIDADES
-id
-tipo
+### `public.users`
 
-5. TURMAS
-id
-nome
-horas_semana
-status
-created_at
-updated_at
+Perfil principal do sistema.
 
-6. TURMA_AGENDA
-id
-turma_id
-dia_semana
-horario_inicio
-horario_fim
-created_at
-updated_at
+Campos importantes:
 
-7. TURMA_ALUNOS
-id
-turma_id
-alunos_id
-created_at
+- `id`
+- `nome`
+- `email`
+- `role`
+- `tel`
+- `status`
+- `auth_user_id`
+- `must_change_password`
 
-8. TURMA_PROFESSORES
-id
-turma_id
-professores_id
-created_at
+Observacoes:
 
-9. FREQUENCIA_ALUNO
-id
-turma_agenda_id
-confirmed_at
-status
+- `auth_user_id` referencia `auth.users.id`
+- `must_change_password` controla o onboarding de primeiro acesso
 
-10. FREQUENCIA_PROFESSOR
-id
-turma_agenda_id
-started_at
-ended_at
-notas
+### `alunos`
 
-## RELACIONAMENTOS
+Extensao de `public.users` para perfil de aluno.
 
-#### relacionamentos 1:1
+Campos importantes:
 
-users 1:1 alunos
-users 1:1 professores
+- `id`
+- `user_id`
+- `data_nasc`
+- `serie`
+- `resp_tel`
+- `resp_nome`
+- `modalidade_id`
+- `tempo_aula`
+- `horas_semana`
+- `tempo_contrato`
+- `status`
 
-#### relacionamentos 1:N
+### `professores`
 
-modalidades 1:N alunos
-modalidades 1:N professores
-turmas 1:N turma_agenda
-turmas 1:N turma_alunos
-turmas 1:N turma_professores
-turma_agenda 1:N frequencia_aluno
-turma_agenda 1:N frequencia_professor
-alunos 1:N frequencia_aluno
-professores 1:N frequencia_professor
+Extensao de `public.users` para perfil de professor.
 
-#### relacionamentos N:N
+Campos importantes:
 
-turmas N:N alunos via turma_alunos
-turmas N:N professores via turma_professores
+- `id`
+- `user_id`
+- `materia`
+- `modalidade_id`
+- `status`
 
-## RESUMO
+### `modalidades`
 
-users se relaciona com alunos em 1:1
-users se relaciona com professores em 1:1
-modalidades se relaciona com alunos em 1:N
-modalidades se relaciona com professores em 1:N
-turmas se relaciona com turma_agenda em 1:N
-turmas se relaciona com turma_alunos em 1:N
-turmas se relaciona com turma_professores em 1:N
-turmas se relaciona com alunos em N:N por meio de turma_alunos
-turmas se relaciona com professores em N:N por meio de turma_professores
-turma_agenda se relaciona com frequencia_aluno em 1:N
-turma_agenda se relaciona com frequencia_professor em 1:N
-alunos se relaciona com frequencia_aluno em 1:N
-professores se relaciona com frequencia_professor em 1:N
+Tabela de dominio para o tipo de modalidade.
+
+Campos:
+
+- `id`
+- `tipo`
+
+### `turmas`
+
+Agregado principal de turmas recorrentes.
+
+Campos importantes:
+
+- `id`
+- `nome`
+- `horas_semana`
+- `status`
+- `vigencia_inicio`
+- `vigencia_fim`
+- `modalidade_id`
+
+Observacoes:
+
+- `vigencia_inicio` e `vigencia_fim` sao datas reais de validade da turma
+- agenda recorrente nao depende mais apenas de data ficticia
+
+### `turma_agenda`
+
+Representa os horarios recorrentes da turma.
+
+Campos:
+
+- `id`
+- `turma_id`
+- `dia_semana`
+- `horario_inicio`
+- `horario_fim`
+
+Observacoes:
+
+- `horario_inicio` e `horario_fim` sao `TIME`
+- no backend, a comparacao e feita via conversao controlada para UTC
+
+### `turma_alunos`
+
+Tabela de relacao N:N entre turma e aluno.
+
+Campos:
+
+- `id`
+- `turma_id`
+- `alunos_id`
+
+### `turma_professores`
+
+Tabela de relacao N:N entre turma e professor.
+
+Campos:
+
+- `id`
+- `turma_id`
+- `professores_id`
+
+### `aulas_individuais`
+
+Nova entidade adicionada para aulas individuais com data real.
+
+Campos:
+
+- `id`
+- `aluno_id`
+- `professor_id`
+- `modalidade_id`
+- `started_at`
+- `ended_at`
+- `created_at`
+- `updated_at`
+
+Observacoes:
+
+- usa `timestamp with time zone`
+- serve para agenda real de aulas fora do modelo recorrente de turmas
+
+### `frequencia_aluno`
+
+Presenca do aluno por item de agenda da turma.
+
+Campos:
+
+- `id`
+- `turma_agenda_id`
+- `aluno_id`
+- `status`
+- `confirmed_at`
+
+### `frequencia_professor`
+
+Registro de execucao da aula pelo professor.
+
+Campos:
+
+- `id`
+- `turma_agenda_id`
+- `professor_id`
+- `started_at`
+- `ended_at`
+- `notas`
+
+## Relacionamentos
+
+### 1:1
+
+- `public.users` -> `alunos`
+- `public.users` -> `professores`
+
+### 1:N
+
+- `modalidades` -> `alunos`
+- `modalidades` -> `professores`
+- `modalidades` -> `turmas`
+- `modalidades` -> `aulas_individuais`
+- `turmas` -> `turma_agenda`
+- `turmas` -> `turma_alunos`
+- `turmas` -> `turma_professores`
+- `turma_agenda` -> `frequencia_aluno`
+- `turma_agenda` -> `frequencia_professor`
+- `alunos` -> `frequencia_aluno`
+- `professores` -> `frequencia_professor`
+- `alunos` -> `aulas_individuais`
+- `professores` -> `aulas_individuais`
+
+### N:N
+
+- `turmas` <-> `alunos` via `turma_alunos`
+- `turmas` <-> `professores` via `turma_professores`
+
+## Regras de Modelagem Relevantes
+
+- `turma_professores` possui unicidade composta por `turma_id + professores_id`
+- `turma_agenda` possui unicidade composta por:
+  - `turma_id`
+  - `dia_semana`
+  - `horario_inicio`
+  - `horario_fim`
+- update de relacoes de turma esta sendo tratado por substituicao do conjunto:
+  - `deleteMany`
+  - `createMany`
+
+## Observacoes Sobre Tipos de Data
+
+- `vigencia_inicio` e `vigencia_fim` usam `DATE`
+- `started_at` e `ended_at` de `aulas_individuais` usam `TIMESTAMPTZ`
+- `horario_inicio` e `horario_fim` de `turma_agenda` usam `TIME`

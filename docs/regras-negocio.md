@@ -1,76 +1,115 @@
- USUÁRIOS E ACESSO
-todo usuário deve ter email único
-todo usuário deve ter um role definido (admin, aluno, professor)
-um usuário só pode ter um perfil ativo
-controle de acesso deve respeitar o role
+## Usuarios e Acesso
 
-ALUNOS
-todo aluno deve estar vinculado a um usuário
-aluno deve possuir responsável e telefone
-aluno deve estar vinculado a uma modalidade
-aluno só pode acessar aulas das turmas em que está vinculado
-aluno pode estar em uma ou mais turmas (definição do sistema)
+- todo usuario deve ter email unico
+- todo usuario deve ter um role valido
+- autenticacao e feita no Supabase Auth
+- perfil de negocio precisa existir em `public.users`
+- usuario inativo nao pode acessar rotas protegidas
+- usuario com `must_change_password = true` nao pode acessar funcionalidades protegidas antes de trocar a senha
+- apenas admin pode criar e gerenciar usuarios
 
-PROFESSORES
-todo professor deve estar vinculado a um usuário
-professor deve possuir matéria e modalidade
-professor pode estar vinculado a várias turmas
+## Alunos
 
-MODALIDADES
-modalidades devem ser cadastradas previamente
-alunos e professores devem possuir modalidade
-turmas devem respeitar a modalidade definida
+- todo aluno deve estar vinculado a `public.users`
+- aluno deve possuir modalidade
+- aluno deve possuir responsavel e telefone quando exigido pelo fluxo de negocio
+- aluno nao pode ser vinculado a turma em horario que conflite com outra turma ja existente
+- aluno participa de turmas via `turma_alunos`
+- aluno pode participar de aulas individuais via `aulas_individuais`
 
-TURMAS
-toda turma deve possuir nome e carga horária semanal
-uma turma deve ter pelo menos 1 aluno e 1 professor *
-uma turma pode ter vários alunos e professores
-uma turma pode estar ativa ou inativa
+## Professores
 
-AGENDA DA TURMA
-cada turma deve ter dias fixos de aula
-cada aula deve possuir horário de início e fim
-não pode haver conflito de horário para o mesmo professor
-uma turma pode ter mais de um dia de aula por semana
+- todo professor deve estar vinculado a `public.users`
+- professor deve possuir materia
+- professor deve possuir modalidade
+- professor nao pode ser vinculado a turma em horario que conflite com outra turma ja existente
+- professor participa de turmas via `turma_professores`
+- professor pode participar de aulas individuais via `aulas_individuais`
 
-PRESENÇA DO ALUNO
-presença está vinculada à aula (turma_agenda)
-aluno só pode confirmar presença se estiver vinculado à turma
-aluno só pode confirmar presença uma vez por aula
-confirmação deve ocorrer antes ou próximo ao início da aula (regra configurável)
+## Modalidades
 
-EXECUÇÃO DA AULA
-professor só pode iniciar aula se estiver vinculado à turma
-aula só pode ser iniciada uma vez
-aula só pode ser finalizada após iniciar
-não é permitido finalizar aula não iniciada
-pode haver mais de um professor por aula
+- modalidade deve existir antes de ser vinculada a aluno, professor, turma ou aula individual
+- tipo de modalidade deve ser unico
 
-FREQUÊNCIA DO PROFESSOR
-frequência está vinculada à aula
-professor só pode registrar presença nas aulas que participa
-início da aula registra horário de início
-final da aula registra horário de término
+## Turmas
 
+- turma deve possuir nome unico
+- turma deve possuir carga horaria semanal
+- turma deve possuir vigencia
+- vigencia inicial nao pode ser maior que a vigencia final
+- turma deve possuir modalidade valida
+- turma pode ter varios alunos
+- turma pode ter varios professores
+- agenda da turma e recorrente por dia da semana
 
+## Agenda da Turma
 
+- cada item deve ter `dia_semana`, `horario_inicio` e `horario_fim`
+- horario de inicio deve ser menor que horario de fim
+- a propria agenda da turma nao pode ter conflitos internos
+- uma turma nao pode conflitar com outra turma no mesmo dia e horario, dentro da vigencia relevante
+- no update da turma, a validacao deve ignorar a propria turma nas comparacoes
 
-STATUS DA AULA
-uma aula só pode estar em um estado por vez:
-aguardando
-presença confirmada
-iniciada
-finalizada
-a ordem das ações deve ser:
-aluno confirma presença
-professor inicia aula
-professor finaliza aula
+## Regras de Conflito de Agenda
 
-VALIDAÇÕES GERAIS
-não permitir duplicidade de:
-presença
-vínculo turma-aluno
-vínculo turma-professor
-não permitir ações fora de contexto (ex: aluno em turma errada)
-todas as ações devem respeitar os vínculos definidos
+### Conflito entre itens de agenda
 
+Existe conflito quando:
+
+- `dia_semana` e o mesmo
+- `inicio < fimExistente`
+- `inicioExistente < fimNovo`
+
+### Conflito com professor
+
+- professor nao pode ficar em duas turmas com horario sobreposto
+- a validacao considera:
+  - professor informado no payload
+  - agenda da nova turma
+  - vigencia da turma
+  - turmas ja vinculadas ao professor
+
+### Conflito com aluno
+
+- aluno nao pode ficar em duas turmas com horario sobreposto
+- a validacao considera:
+  - aluno informado no payload
+  - agenda da nova turma
+  - vigencia da turma
+  - turmas ja vinculadas ao aluno
+
+## Aulas Individuais
+
+- aula individual deve ter `aluno_id`, `professor_id`, `modalidade_id`, `started_at` e `ended_at`
+- `started_at` deve ser menor que `ended_at`
+- professor nao pode ter conflito entre aula individual e outra ocupacao existente
+- aluno tambem pode ser validado contra conflito, conforme regra de negocio
+
+## Atualizacao de Turma
+
+- update da entidade principal usa `update`
+- update de agenda, alunos e professores usa substituicao do conjunto
+- o padrao atual e:
+  - `deleteMany`
+  - `createMany`
+- como essa operacao ocorre em transacao, qualquer falha faz rollback de tudo
+
+## Presenca e Execucao de Aula
+
+### Frequencia do aluno
+
+- frequencia do aluno e vinculada a `turma_agenda`
+- aluno so pode registrar presenca se fizer parte da turma
+
+### Frequencia do professor
+
+- professor so pode iniciar/finalizar aula se estiver vinculado a turma
+- `started_at` e `ended_at` representam a execucao da aula
+
+## Seguranca e Integridade
+
+- rotas mutaveis validam origem em producao
+- login sofre rate limit por email e IP
+- mutacoes autenticadas sofrem rate limit por id do usuario ou admin
+- criacao de usuario usa compensacao entre Supabase Auth e banco 
+- criacao e update de turma dependem de transacao unica no banco

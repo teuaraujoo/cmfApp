@@ -4,7 +4,7 @@ import { createClient } from "@/libs/supabase/server";
 import { UserMapper } from "@/server/modules/users/users.mapper";
 import { UsersRepositories } from "@/server/modules/users/users.respositories";
 import { userHelpers } from "@/server/modules/users/users.helpers";
-import { validateLogin } from "@/server/modules/auth/auth.rules";
+import { validateLogin } from "@/server/modules/auth/auth.validation";
 
 export async function loginUser(body: LoginBody) {
   const data = loginSchema.parse(body);
