@@ -19,6 +19,12 @@ const contentSecurityPolicy = cspDirectives.join("; ");
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // Usa polling no dev para o Next detectar mudanças via bind mount no Docker/Windows.
+  watchOptions: isDev
+    ? {
+        pollIntervalMs: 1000,
+      }
+    : undefined,
 
   async headers() {
     return [
