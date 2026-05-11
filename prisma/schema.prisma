@@ -534,6 +534,8 @@ model aulas_individuais {
   ended_at      DateTime    @db.Timestamptz(6)
   created_at    DateTime    @default(now()) @db.Timestamptz(6)
   updated_at    DateTime    @default(now()) @db.Timestamptz(6)
+  notas         String?
+  encerrada     Boolean     @default(false)
   alunos        alunos      @relation(fields: [aluno_id], references: [id], map: "fk_aulas_individuais_aluno")
   modalidades   modalidades @relation(fields: [modalidade_id], references: [id], map: "fk_aulas_individuais_modalidade")
   professores   professores @relation(fields: [professor_id], references: [id], map: "fk_aulas_individuais_professor")

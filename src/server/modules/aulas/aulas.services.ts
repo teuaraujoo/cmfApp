@@ -1,7 +1,8 @@
 import { AppError } from "@/server/error/app-errors";
 import { AulasRepositories } from "./aulas.repositories";
 import { AulasMapper } from "./aulas.mapper";
-import { CreateAulasBody, createAulasSchema } from "./aulas.schemas";
+import { CreateAulasBody, createAulasSchema, updateAulaSchema } from "./aulas.schemas";
+import { AulaValidation } from "./aulas.validation";
 
 export async function getAulas() {
 
@@ -10,4 +11,44 @@ export async function getAulas() {
     if (!aulas) return new AppError("Error ao encontrar aulas!");
 
     return aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
+};
+
+export async function createAula(body: CreateAulasBody) {
+    const data = createAulasSchema.parse(body);
+    await AulaValidation.validateAula(data);
+
+    try {
+        const aula = await AulasRepositories.createAula(data);
+
+        return aula;
+
+    } catch (err) {
+        throw err;
+    };
+};
+
+export async function deleteAula(aulaId: number) {
+    try {
+
+        const aula = await AulasRepositories.getAulaById(aulaId);
+
+        if (!aula) throw new AppError("Aula não encontrada!");
+
+        return await AulasRepositories.deleteAula(aulaId);
+    } catch (err) {
+        throw err;
+    };
+};
+
+export async function concludeAula(aulaId: number, body: string) {
+    try {
+        const data = updateAulaSchema.parse(body);
+
+        const aula = AulasRepositories.concludeAula(aulaId, data.notas!);
+
+        return aula;
+
+    } catch (err) {
+        throw err;
+    };
 };

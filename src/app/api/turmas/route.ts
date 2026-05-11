@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     await validateRequestOrigin(request);
 
     const session = await userHelpers.requireAdminUser();
-    await rateLimitByIdentifier(`users:create:admin:${session.appUser.id}`, adminMutationRateLimit);
+    await rateLimitByIdentifier(`turmas:create:admin:${session.appUser.id}`, adminMutationRateLimit);
 
     const body = await request.json();
 

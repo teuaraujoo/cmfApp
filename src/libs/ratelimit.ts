@@ -24,7 +24,7 @@ export const loginRateLimitByIp = new Ratelimit({
 // limitadores mais específicos por rota ou por papel de usuário.
 export const generalRateLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(20, "1 m"),
+  limiter: Ratelimit.slidingWindow(5, "1 m"),
   prefix: "ratelimit:general",
 });
 

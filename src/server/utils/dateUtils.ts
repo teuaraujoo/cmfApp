@@ -24,4 +24,20 @@ export class DateUtils {
 
         return new Date(Date.UTC(1970, 0, 1, hours, minutes, 0));
     };
+
+    static timestampToMinutes(date: Date) {
+        const current = new Date(date);
+
+        return current.getHours() * 60 + current.getMinutes();
+    }
+
+    static toDateOnlyValue(date: Date) {
+        const current = new Date(date);
+
+        return new Date(
+            current.getFullYear(),
+            current.getMonth(),
+            current.getDate()
+        ).getTime();
+    }
 };

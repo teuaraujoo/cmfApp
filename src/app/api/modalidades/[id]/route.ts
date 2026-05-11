@@ -44,7 +44,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     const session = await userHelpers.requireAdminUser();
 
-    await rateLimitByIdentifier(`users:create:admin:${session.appUser.id}`, adminMutationRateLimit);
+    await rateLimitByIdentifier(`modalidades:update:admin:${session.appUser.id}`, adminMutationRateLimit);
 
     const { id } = await params;
     const body = await request.json();
@@ -82,7 +82,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
 
     const session = await userHelpers.requireAdminUser();
 
-    await rateLimitByIdentifier(`users:create:admin:${session.appUser.id}`, adminMutationRateLimit);
+    await rateLimitByIdentifier(`modalidades:delete:admin:${session.appUser.id}`, adminMutationRateLimit);
 
     const { id } = await params;
 
