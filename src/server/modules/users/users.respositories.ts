@@ -87,6 +87,10 @@ export class AlunosRepositories {
     });
   };
 
+  static async getById(id: number) {
+    return prisma.alunos.findUnique({ where: { id } });
+  };
+
   static async findManyByIds(ids: number[]) {
     return prisma.alunos.findMany({ where: { id: { in: ids } } });
   };
@@ -126,6 +130,10 @@ export class ProfessoresRepositories {
 
     static async getTotal() {
         return prisma.professores.count();
+    };
+
+    static async getById(id: number) {
+      return prisma.professores.findUnique({ where: { id } });
     };
 
     static async getByUserId(id: number) {

@@ -32,6 +32,40 @@ export class AulasRepositories {
     static async getAulaById(aulaId: number) {
         return prisma.aulas_individuais.findUnique({ where: { id: aulaId } });
     };
+    
+    /* 
+        lt --> Less Than
+        gt --> Greater Than
+    */
+    static async findConflictingAulasByProfessorId(professorId: number, startedAt: Date, endedAt: Date) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                professor_id: professorId,
+                encerrada: false,
+                started_at: {
+                    lt: endedAt
+                },
+                ended_at: {
+                    gt: startedAt,
+                },
+            },
+        });
+    };
+
+    static async findConflictingAulasByAlunoId(alunoId: number, startedAt: Date, endedAt: Date) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                aluno_id: alunoId,
+                encerrada: false,
+                started_at: {
+                    lt: endedAt
+                },
+                ended_at: {
+                    gt: startedAt,
+                },
+            },
+        });
+    };
 
     static async createAula(aula: Prisma.aulas_individuaisUncheckedCreateInput) {
         return prisma.aulas_individuais.create({ data: aula });

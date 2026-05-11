@@ -1,5 +1,5 @@
 import { CreateTurmaBody, CreateTurmaAlunoBody, CreateTurmaProfessorBody, CreateTurmaAgendaBody } from "./turmas.shema";
-import { DateUtils } from "@/server/utils/dateUtils";
+import { DateUtils } from "@/server/utils/date-utils";
 import { Prisma } from "@/generated/prisma/client";
 
 export type TurmaWithRelations = Prisma.turmasGetPayload<{

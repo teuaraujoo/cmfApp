@@ -3,7 +3,7 @@ import { AppError } from "@/server/error/app-errors";
 import { TurmaRepositories } from "./turmas.repositories";
 import { AlunosRepositories } from "@/server/modules/users/users.respositories";
 import { ProfessoresRepositories } from "@/server/modules/users/users.respositories";
-import { DateUtils } from "@/server/utils/dateUtils";
+import { DateUtils } from "@/server/utils/date-utils";
 import { ModalidadeRepositories } from "@/server/modules/modalidades/modalidades.repositories"
 
 type CreateTurmaAlunoPrisma = {

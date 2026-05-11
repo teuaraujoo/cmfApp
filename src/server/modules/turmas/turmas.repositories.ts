@@ -73,7 +73,7 @@ export class TurmaRepositories {
     static async findTurmasByProfessoresIds(professoresIds: number[], turmaId?: number) {
         return prisma.turmas.findMany({
             where: {
-                ...(turmaId ? { id: { not:turmaId } } : {}),
+                ...(turmaId ? { id: { not: turmaId } } : {}),
                 turma_professores: {
                     some: {
                         professores_id: { in: professoresIds },
@@ -90,7 +90,7 @@ export class TurmaRepositories {
     static async findTurmasByAlunosIds(alunosIds: number[], turmaId?: number) {
         return prisma.turmas.findMany({
             where: {
-                ...(turmaId ? { id: { not:turmaId } } : {}),
+                ...(turmaId ? { id: { not: turmaId } } : {}),
                 turma_alunos: {
                     some: {
                         alunos_id: { in: alunosIds }
@@ -104,6 +104,70 @@ export class TurmaRepositories {
         });
     };
 
+    static async findCandidateTurmasByProfessorAndDate(professorId: number, diaSemana: number, dataAula: Date) {
+        return prisma.turmas.findMany({
+            where: {
+                vigencia_inicio: {
+                    lte: dataAula,
+                },
+                vigencia_fim: {
+                    gte: dataAula,
+                },
+                turma_professores: {
+                    some: {
+                        professores_id: professorId,
+                    },
+                },
+                turma_agenda: {
+                    some: {
+                        dia_semana: diaSemana,
+                    },
+                },
+            },
+            include: {
+                turma_agenda: {
+                    where: {
+                        dia_semana: diaSemana,
+                    },
+                },
+            },
+        });
+    };
+
+    static async findCandidateTurmasByAlunoAndDate(alunoId: number, diaSemana: number, dataAula: Date) {
+        return prisma.turmas.findMany({
+            where: {
+                vigencia_inicio: {
+                    lte: dataAula,
+                },
+                vigencia_fim: {
+                    gte: dataAula,
+                },
+                turma_alunos: {
+                    some: {
+                        alunos_id: alunoId,
+                    },
+                },
+                turma_agenda: {
+                    some: {
+                        dia_semana: diaSemana,
+                    },
+                },
+            },
+            include: {
+                turma_agenda: {
+                    where: {
+                        dia_semana: diaSemana,
+                    },
+                },
+            },
+        });
+    };
+
+    /* 
+        lte --> Less Than or Equal
+        gte --> Greater Than or Equal
+    */
     static async findTurmasByAgendaCandidates(
         diasSemana: number[],
         vigenciaInicio: Date,
@@ -152,8 +216,8 @@ export class TurmaAlunosRepositories {
 
     static async findAlunosByTurmaId(turmaId: number) {
         return prisma.turma_alunos.findMany({
-            where: { 
-                turma_id: turmaId 
+            where: {
+                turma_id: turmaId
             },
             include: {
                 alunos: {
@@ -209,7 +273,7 @@ export class TurmaProfessoresRepositories {
 /* =================    TURMA AGENDA   =================*/
 
 export class TurmaAgendaRepositories {
-    
+
     static async newTurmaAgenda(tx: Prisma.TransactionClient, turmaAgenda: Prisma.turma_agendaUncheckedCreateInput[]) {
         return tx.turma_agenda.createMany({ data: turmaAgenda })
     };
