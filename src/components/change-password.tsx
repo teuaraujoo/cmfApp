@@ -2,14 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 
-export default function LoginForm() {
+export default function ChangePasswordForm() {
   return (
     <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
       <div className="pointer-events-none absolute inset-0 right-0 overflow-hidden md:block hidden">
@@ -22,21 +20,12 @@ export default function LoginForm() {
       <div className="py-10 md:py-20 max-w-lg px-4 sm:px-0 mx-auto w-full">
         <Card className="max-w-lg px-6 py-8 sm:p-12 relative gap-6">
           <CardHeader className="text-center gap-6 p-0">
-            <div className="mx-auto">
-              <a href="">
-                <Image src="/images/logocmf.png" width={100}
-                  height={100}
-                  alt="CMF logo" 
-                  loading="eager"
-                  />
-              </a>
-            </div>
             <div className="flex flex-col gap-1">
               <CardTitle className="text-2xl font-medium text-card-foreground">
-                Bem vindo a CMF!
+                Primeiro acesso por aqui
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground font-normal">
-                Entre na sua conta agora.
+                Troque sua senha agora
               </CardDescription>
             </div>
           </CardHeader>
@@ -46,31 +35,31 @@ export default function LoginForm() {
                 <div className="flex flex-col gap-4">
                   <Field className="gap-1.5">
                     <FieldLabel
-                      htmlFor="email"
+                      htmlFor="newPassword"
                       className="text-sm text-muted-foreground font-normal"
                     >
-                      Email
+                      Nova senha
                     </FieldLabel>
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="example@cmfapp.com"
+                      id="newPassword"
+                      type="password"
+                      placeholder="Digite sua nova senha"
                       required
                       className="dark:bg-background h-9 shadow-xs"
                     />
                   </Field>
                   <Field className="gap-1.5">
                     <FieldLabel
-                      htmlFor="password"
+                      htmlFor="confirmPassword"
                       className="text-sm text-muted-foreground font-normal"
                     >
-                      Senha
+                      Confirme Nova senha
                     </FieldLabel>
 
                     <Input
-                      id="password"
+                      id="confirmPassword"
                       type="password"
-                      placeholder="Digite sua senha"
+                      placeholder="Digite sua nova senha"
                       required
                       className="dark:bg-background h-9 shadow-xs"
                     />
@@ -78,17 +67,8 @@ export default function LoginForm() {
                 </div>
                 <Field className="gap-4">
                   <Button type="submit" size={"lg"} className="rounded-lg h-10 hover:bg-primary/80 cursor-pointer">
-                    Entrar
+                    Trocar senha
                   </Button>
-                  <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
-                    Esqueceu seu login e/ou senha?{" "}
-                    <a
-                      href="#"
-                      className="font-medium text-card-foreground no-underline!"
-                    >
-                      Fale com o administrador
-                    </a>
-                  </FieldDescription>
                 </Field>
               </FieldGroup>
             </form>
