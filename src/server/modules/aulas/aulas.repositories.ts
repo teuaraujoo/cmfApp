@@ -1,9 +1,10 @@
 import { prisma } from "@/libs/prisma";
 import { Prisma } from "@/generated/prisma/client";
+import { DateUtils } from "@/server/utils/date-utils";
 
 export class AulasRepositories {
 
-    static async getAulas() {
+    static async getAllAulas() {
         return prisma.aulas_individuais.findMany({
             include: {
                 professores: {
@@ -21,18 +22,83 @@ export class AulasRepositories {
         })
     };
 
-    static async getAulasNotFinished() {
+    static async getAulasWeek() {
+        const { start, end } = DateUtils.getCurrentWeekRangeUTC();
+
         return prisma.aulas_individuais.findMany({
             where: {
+                started_at: {
+                    gte: start,
+                    lt: end
+                },
                 encerrada: false
             },
+            include: {
+                professores: {
+                    include: {
+                        users: true
+                    }
+                },
+                alunos: {
+                    include: {
+                        users: true
+                    }
+                },
+                modalidades: true
+            }
         });
     };
 
     static async getAulaById(aulaId: number) {
         return prisma.aulas_individuais.findUnique({ where: { id: aulaId } });
     };
-    
+
+    static async getAulasByProfessorId(professorId: number) {
+        const { start, end } = DateUtils.getCurrentWeekRangeUTC();
+
+        return prisma.aulas_individuais.findMany({
+            where: {
+                professor_id: professorId,
+                started_at: {
+                    gte: start,
+                    lt: end,
+                },
+                encerrada: false
+            },
+            include: {
+                modalidades: true,
+                alunos: {
+                    include: {
+                        users: true
+                    }
+                },
+            },
+        });
+    };
+
+    static async getAulasByAlunoId(alunoId: number) {
+        const { start, end } = DateUtils.getCurrentWeekRangeUTC();
+
+        return prisma.aulas_individuais.findMany({
+            where: {
+                aluno_id: alunoId,
+                started_at: {
+                    gte: start,
+                    lt: end,
+                },
+                encerrada: false
+            },
+            include: {
+                modalidades: true,
+                professores: {
+                    include: {
+                        users: true
+                    }
+                },
+            },
+        });
+    };
+
     /* 
         lt --> Less Than
         gt --> Greater Than

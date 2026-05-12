@@ -6,11 +6,27 @@ import { AulaValidation } from "./aulas.validation";
 
 export async function getAulas() {
 
-    const aulas = await AulasRepositories.getAulas()
+    const aulas = await AulasRepositories.getAulasWeek();
 
     if (!aulas) return new AppError("Error ao encontrar aulas!");
 
     return aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
+};
+
+export async function getAulasByProfessorId(professorId: number) {
+    const aulas = await AulasRepositories.getAulasByProfessorId(professorId);
+
+    if (!aulas) return new AppError("Error ao encontrar aulas!");
+
+    return aulas.map((aula) => AulasMapper.toResponseAulasProfessorGet(aula));
+};
+
+export async function getAulasByAlunoId(alunoId: number) {
+    const aulas = await AulasRepositories.getAulasByAlunoId(alunoId);
+
+    if (!aulas) return new AppError("Error ao encontrar aulas!");
+
+    return aulas.map((aula) => AulasMapper.toResponseAulasAlunoGet(aula));
 };
 
 export async function createAula(body: CreateAulasBody) {

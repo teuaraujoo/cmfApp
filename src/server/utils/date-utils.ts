@@ -40,4 +40,19 @@ export class DateUtils {
             current.getDate()
         ).getTime();
     }
+
+    static getCurrentWeekRangeUTC() {
+        const now = new Date();
+        const start = new Date(now);
+
+        start.setUTCHours(0, 0, 0, 0);
+
+        const end = new Date(start);
+        end.setUTCDate(start.getUTCDate() + 7);
+
+        return {
+            start,
+            end,
+        };
+    }
 };
