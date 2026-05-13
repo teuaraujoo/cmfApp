@@ -8,6 +8,7 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import Image from "next/image"
 
 export default function AdminLoginForm({
     className,
@@ -57,10 +58,14 @@ export default function AdminLoginForm({
                         </FieldDescription>
                     </form>
                     <div className="relative hidden bg-muted md:block">
-                        <img
-                            src="/placeholder.svg"
-                            alt="Image"
-                            className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                        <Image
+                            src="/images/estudo.jpeg"
+                            alt="Foto sala da CMF"
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            loading="eager"
+                            className="absolute inset-0 h-full w-full object-cover brightness-50"
                         />
                     </div>
                 </CardContent>

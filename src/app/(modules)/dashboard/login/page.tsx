@@ -1,11 +1,11 @@
 import AdminLoginForm from "@/components/admin-login-form"
+import { BackgroundCircle } from "@/components/ui/circlebackground";
 
 export default function LoginDashboardPage() {
     return (
-        <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
-            <div className="w-full max-w-sm md:max-w-4xl">
-                <AdminLoginForm />
-            </div>
-        </div>
+        <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
+            <BackgroundCircle />
+            <AdminLoginForm />
+        </section>
     );
 };
