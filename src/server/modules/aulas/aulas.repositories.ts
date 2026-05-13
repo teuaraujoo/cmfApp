@@ -49,11 +49,32 @@ export class AulasRepositories {
         });
     };
 
+    static async getAulasNotFinished() {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                encerrada: false
+            },
+            include: {
+                professores: {
+                    include: {
+                        users: true
+                    }
+                },
+                alunos: {
+                    include: {
+                        users: true
+                    }
+                },
+                modalidades: true
+            },
+        });
+    };
+
     static async getAulaById(aulaId: number) {
         return prisma.aulas_individuais.findUnique({ where: { id: aulaId } });
     };
 
-    static async getAulasByProfessorId(professorId: number) {
+    static async getAulasWeekByProfessorId(professorId: number) {
         const { start, end } = DateUtils.getCurrentWeekRangeUTC();
 
         return prisma.aulas_individuais.findMany({
@@ -76,7 +97,40 @@ export class AulasRepositories {
         });
     };
 
-    static async getAulasByAlunoId(alunoId: number) {
+    static async getAllAulasByProfessorId(professorId: number) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                professor_id: professorId
+            },
+            include: {
+                alunos: {
+                    include: {
+                        users: true
+                    }
+                },
+                modalidades: true
+            }
+        })
+    };
+
+    static async getAulasNotFinishedByProfessorId(professorId: number) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                professor_id: professorId,
+                encerrada: false,
+            },
+            include: {
+                alunos: {
+                    include: {
+                        users: true
+                    }
+                },
+                modalidades: true
+            },
+        });
+    };
+
+    static async getAulasWeekByAlunoId(alunoId: number) {
         const { start, end } = DateUtils.getCurrentWeekRangeUTC();
 
         return prisma.aulas_individuais.findMany({
@@ -99,10 +153,44 @@ export class AulasRepositories {
         });
     };
 
+    static async getAllAulasByAlunoId(alunoId: number) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                aluno_id: alunoId,
+            },
+            include: {
+                modalidades: true,
+                professores: {
+                    include: {
+                        users: true
+                    }
+                },
+            },
+        });
+    };
+
+    static async getAulasNotFinishedByAlunoId(alunoId: number) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                aluno_id: alunoId,
+                encerrada: false,
+            },
+            include: {
+                professores: {
+                    include: {
+                        users: true
+                    }
+                },
+                modalidades: true
+            },
+        });
+    };
+
     /* 
         lt --> Less Than
         gt --> Greater Than
     */
+
     static async findConflictingAulasByProfessorId(professorId: number, startedAt: Date, endedAt: Date) {
         return prisma.aulas_individuais.findMany({
             where: {

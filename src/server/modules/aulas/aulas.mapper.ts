@@ -47,6 +47,7 @@ export class AulasMapper {
             modalidade: aula.modalidades.tipo,
             inicio: aula.started_at,
             fim: aula.ended_at,
+            encerrada: aula.encerrada,
             aluno: {
                 nome: aula.alunos.users.nome,
                 serie: aula.alunos.serie,
@@ -66,6 +67,7 @@ export class AulasMapper {
             modalidade: aula.modalidades.tipo,
             inicio: aula.started_at,
             fim: aula.ended_at,
+            encerrada: aula.encerrada,
             aluno: {
                 nome: aula.alunos.users.nome,
                 serie: aula.alunos.serie
@@ -81,6 +83,7 @@ export class AulasMapper {
             modalidade: aula.modalidades.tipo,
             inicio: aula.started_at,
             fim: aula.ended_at,
+            encerrada: aula.encerrada,
             profesor: {
                 nome: aula.professores.users.nome,
                 materia: aula.professores.materia

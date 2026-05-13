@@ -13,18 +13,71 @@ export async function getAulas() {
     return aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
 };
 
+export async function getAllAulas() {
+    const aulas = await AulasRepositories.getAllAulas();
+
+    if (!aulas) throw new AppError("Aulas não encontradas!");
+
+    return aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
+};
+
+export async function getAulasNotFinished() {
+    const aulas = await AulasRepositories.getAulasNotFinished();
+
+    if (!aulas) throw new AppError("Aulas não encontradas!");
+
+    return aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
+};
+
+/* =================   PROFESSOR     =================*/
+
 export async function getAulasByProfessorId(professorId: number) {
-    const aulas = await AulasRepositories.getAulasByProfessorId(professorId);
+    const aulas = await AulasRepositories.getAulasWeekByProfessorId(professorId);
 
     if (!aulas) return new AppError("Error ao encontrar aulas!");
 
     return aulas.map((aula) => AulasMapper.toResponseAulasProfessorGet(aula));
 };
 
+export async function getAulasNotFinishedByProfessorId(professorId: number) {
+    const aulas = await AulasRepositories.getAulasNotFinishedByProfessorId(professorId);
+
+    if (!aulas) throw new AppError("Aulas não encontradas!");
+
+    return aulas.map((aula) => AulasMapper.toResponseAulasProfessorGet(aula));
+};
+
+export async function getAllAulasByProfessorId(professorId: number) {
+    const aulas = await AulasRepositories.getAllAulasByProfessorId(professorId);
+
+    if (!aulas) throw new AppError("Aulas não encontrads!");
+
+    return aulas.map((aula) => AulasMapper.toResponseAulasProfessorGet(aula));
+
+};
+
+/* =================   ALUNOS     =================*/
+
 export async function getAulasByAlunoId(alunoId: number) {
-    const aulas = await AulasRepositories.getAulasByAlunoId(alunoId);
+    const aulas = await AulasRepositories.getAulasWeekByAlunoId(alunoId);
 
     if (!aulas) return new AppError("Error ao encontrar aulas!");
+
+    return aulas.map((aula) => AulasMapper.toResponseAulasAlunoGet(aula));
+};
+
+export async function getAllAulasByAlunoId(alunoId: number) {
+    const aulas = await AulasRepositories.getAllAulasByAlunoId(alunoId);
+
+    if (!aulas) throw new AppError("Aulas não encontradas!");
+
+    return aulas.map((aula) => AulasMapper.toResponseAulasAlunoGet(aula));
+};
+
+export async function getAulasNotFinishedByAlunoId(alunoId: number) {
+    const aulas = await AulasRepositories.getAulasNotFinishedByAlunoId(alunoId);
+
+    if (!aulas) throw new AppError("Aulas não encontradas!");
 
     return aulas.map((aula) => AulasMapper.toResponseAulasAlunoGet(aula));
 };
