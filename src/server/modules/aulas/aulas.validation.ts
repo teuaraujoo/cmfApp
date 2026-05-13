@@ -17,6 +17,7 @@ type AulaValidationContext = {
     };
 };
 export class AulaValidation {
+    
     static async validateAula(aula: CreateAulasBody) {
         const context = this.buildContext(aula);
 
@@ -64,9 +65,7 @@ export class AulaValidation {
             context.endedAt
         );
 
-        if (conflicts.length > 0) {
-            throw new AppError("Professor já possui aula nesse horário!", 400);
-        }
+        if (conflicts.length > 0) throw new AppError("Professor já possui aula nesse horário!", 400);
     };
 
     private static async validateAlunoAulaConflicts(
