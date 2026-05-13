@@ -108,6 +108,10 @@ export async function updateUser(body: UpdateUserBody, id: number) {
       };
 
       return UserMapper.toResponseAdmin(user);
+    }, {
+      maxWait: 5000,
+      timeout: 10000,
+      isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
     });
 
   } catch (err) {
@@ -136,6 +140,10 @@ export async function inactiveUser(id: number) {
       };
 
       return UserMapper.toResponseAdmin(userDel);
+    }, {
+      maxWait: 5000,
+      timeout: 10000,
+      isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
     });
 
   } catch (err) {
@@ -165,6 +173,10 @@ export async function activeUser(id: number) {
       };
 
       return UserMapper.toResponseAdmin(userAct);
+    }, {
+      maxWait: 5000,
+      timeout: 10000,
+      isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
     });
 
   } catch (err) {

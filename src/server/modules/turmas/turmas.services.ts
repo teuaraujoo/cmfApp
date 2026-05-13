@@ -131,6 +131,10 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
             };
 
             return turma;
+        }, {
+            maxWait: 5000,
+            timeout: 10000,
+            isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
         });
 
     } catch (err) {
