@@ -1,7 +1,7 @@
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/modules/users/users.helpers";
-import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
-import { adminMutationRateLimit } from "@/libs/ratelimit";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
+import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
+import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 import { deleteTurma, getTurmaById, updateTurma } from "@/server/modules/turmas/turmas.services";
 
 export async function GET(
@@ -9,7 +9,7 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> },
 ) {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const { id } = await params;
         const turma = await getTurmaById(Number(id));
@@ -42,7 +42,7 @@ export async function GET(
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
 
-        const session = await userHelpers.requireAdminUser();
+        const session = await requireAdminUser();
 
         await rateLimitByIdentifier(`turmas:update:admin:${session.appUser.id}`, adminMutationRateLimit);
 
@@ -80,7 +80,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
 
-        const session = await userHelpers.requireAdminUser();
+        const session = await requireAdminUser();
 
         await rateLimitByIdentifier(`turmas:delete:admin:${session.appUser.id}`, adminMutationRateLimit);
 

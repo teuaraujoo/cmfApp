@@ -4,7 +4,7 @@ import { AppError } from "../error/app-errors";
 // Extrai o IP mais confiável disponível na request.
 // Em produção atrás de proxy, o primeiro valor de x-forwarded-for
 // costuma representar o cliente original.
-export function getRequestIp(request: Request) {
+function getRequestIp(request: Request) {
   const forwardedFor = request.headers.get("x-forwarded-for");
   const realIp = request.headers.get("x-real-ip");
 

@@ -1,7 +1,7 @@
 // find alunos by turma id -> nessa turma tem quais alunos? -> geral (todos os alunos da turma)
 
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getAlunosByTurmaId } from "@/server/modules/turmas/turmas.services";
 
 export async function GET(
@@ -9,7 +9,7 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const { id } = await params;
         const turmas = await getAlunosByTurmaId(Number(id));

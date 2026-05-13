@@ -1,15 +1,15 @@
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getModalidadeById, updateModalidade, deleteModalidade } from "@/server/modules/modalidades/modalidades.services";
-import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
-import { adminMutationRateLimit } from "@/libs/ratelimit";
+import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
+import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    await userHelpers.requireAdminUser();
+    await requireAdminUser();
 
     const { id } = await params;
     const modalidade = await getModalidadeById(Number(id));
@@ -42,7 +42,7 @@ export async function GET(
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
 
-    const session = await userHelpers.requireAdminUser();
+    const session = await requireAdminUser();
 
     await rateLimitByIdentifier(`modalidades:update:admin:${session.appUser.id}`, adminMutationRateLimit);
 
@@ -80,7 +80,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
 
-    const session = await userHelpers.requireAdminUser();
+    const session = await requireAdminUser();
 
     await rateLimitByIdentifier(`modalidades:delete:admin:${session.appUser.id}`, adminMutationRateLimit);
 

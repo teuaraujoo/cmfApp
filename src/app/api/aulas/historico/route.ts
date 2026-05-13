@@ -1,12 +1,12 @@
 // achar todas as aulas 
 
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getAllAulas } from "@/server/modules/aulas/aulas.services";
 
 export async function GET() {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const turmas = await getAllAulas()
 

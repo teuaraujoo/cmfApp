@@ -1,7 +1,7 @@
 import { AppError } from "@/server/error/app-errors";
 import { UsersRepositories } from "@/server/modules/users/users.respositories";
 import { AuthError, User } from "@supabase/supabase-js";
-import { createClient } from "@/libs/supabase/server";
+import { createClient } from "@/server/libs/supabase/server";
 
 export async function validateLogin(error: AuthError| null, authUser: User | null, supabase: Awaited<ReturnType<typeof createClient>>) {
 

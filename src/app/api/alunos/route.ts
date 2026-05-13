@@ -1,10 +1,10 @@
 import { AppError } from "@/server/error/app-errors";
 import { getAllAlunos } from "@/server/modules/users/users.services";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 
 export async function GET() {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const data = await getAllAlunos();
         

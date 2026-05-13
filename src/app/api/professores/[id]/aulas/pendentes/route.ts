@@ -1,14 +1,14 @@
 // achar todas as aulas pendentes pelo id do professor
 
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getAulasNotFinishedByProfessorId } from "@/server/modules/aulas/aulas.services";
 
 export async function GET(_request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const { id } = await params;
         const turmas = await getAulasNotFinishedByProfessorId(Number(id));

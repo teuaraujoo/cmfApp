@@ -1,4 +1,4 @@
-import { prisma } from "@/libs/prisma";
+import { prisma } from "@/server/libs/prisma";
 import { Prisma } from "@/generated/prisma/client";
 
 export class TurmaRepositories {

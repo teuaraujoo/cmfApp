@@ -1,15 +1,15 @@
 //  GET BY DATE / A cada semana tem um get 
 
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { AppError } from "@/server/error/app-errors";
 import { getAulas, createAula } from "@/server/modules/aulas/aulas.services";
-import { validateRequestOrigin } from "@/server/helpers/origin.helper";
-import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
-import { adminMutationRateLimit } from "@/libs/ratelimit";
+import { validateRequestOrigin } from "@/server/security/origin.helper";
+import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
+import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 
 export async function GET() {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const aula = await getAulas();
 
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
 
         await validateRequestOrigin(request);
 
-        const session = await userHelpers.requireAdminUser();
+        const session = await requireAdminUser();
         await rateLimitByIdentifier(`aulas:create:admin:${session.appUser.id}`, adminMutationRateLimit);
 
         const body = await request.json();

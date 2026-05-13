@@ -1,5 +1,5 @@
-import { prisma } from "@/libs/prisma";
-import { createAdminClient } from "@/libs/supabase/admin";
+import { prisma } from "@/server/libs/prisma";
+import { createAdminClient } from "@/server/libs/supabase/admin";
 import { Prisma } from "@/generated/prisma/client";
 import { AppError } from "@/server/error/app-errors";
 import { UserMapper } from "@/server/modules/users/users.mapper";

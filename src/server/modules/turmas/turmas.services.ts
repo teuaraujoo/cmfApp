@@ -1,5 +1,5 @@
 import { Prisma } from "@/generated/prisma/client";
-import { prisma } from "@/libs/prisma";
+import { prisma } from "@/server/libs/prisma";
 import { AppError } from "@/server/error/app-errors";
 import { createTurmaSchema, CreateTurmaBody, CreateTurmaAgendaBody, CreateTurmaAlunoBody, CreateTurmaProfessorBody } from "./turmas.shema";
 import { TurmaRepositories, TurmaProfessoresRepositories, TurmaAgendaRepositories, TurmaAlunosRepositories } from "./turmas.repositories";

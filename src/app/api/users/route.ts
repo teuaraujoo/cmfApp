@@ -1,13 +1,13 @@
 import { AppError } from "@/server/error/app-errors";
-import { adminMutationRateLimit } from "@/libs/ratelimit";
-import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
+import { adminMutationRateLimit } from "@/server/libs/ratelimit";
+import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { createUser, getAllUsers } from "@/server/modules/users/users.services";
-import { userHelpers } from "@/server/modules/users/users.helpers";
-import { validateRequestOrigin } from "@/server/helpers/origin.helper";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
+import { validateRequestOrigin } from "@/server/security/origin.helper";
 
 export async function GET() {
   try {
-    await userHelpers.requireAdminUser();
+    await requireAdminUser();
 
     const users = await getAllUsers();
 
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 
     await validateRequestOrigin(request);
     
-    const session = await userHelpers.requireAdminUser();
+    const session = await requireAdminUser();
     await rateLimitByIdentifier(`users:create:admin:${session.appUser.id}`, adminMutationRateLimit);
 
     const body = await request.json();

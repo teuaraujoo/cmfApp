@@ -1,7 +1,7 @@
 // find turma by professor id --> Em quais turmas esse professor esta? --> único (todas as turma de UM professor)
 
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getTurmasByProfessorId } from "@/server/modules/turmas/turmas.services";
 
 export async function GET(
@@ -9,7 +9,7 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const { id } = await params;
         const turmas = await getTurmasByProfessorId([Number(id)]);

@@ -1,8 +1,8 @@
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/modules/users/users.helpers";
-import { validateRequestOrigin } from "@/server/helpers/origin.helper";
-import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
-import { adminMutationRateLimit } from "@/libs/ratelimit";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
+import { validateRequestOrigin } from "@/server/security/origin.helper";
+import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
+import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 import { deleteAula, concludeAula } from "@/server/modules/aulas/aulas.services";
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -10,7 +10,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
         await validateRequestOrigin(request);
 
-        const session = await userHelpers.requireAdminUser();
+        const session = await requireAdminUser();
         await rateLimitByIdentifier(`aulas:delete:admin:${session.appUser.id}`, adminMutationRateLimit);
 
         const { id } = await params;
@@ -40,7 +40,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
         await validateRequestOrigin(request);
 
-        const session = await userHelpers.requireAdminUser();
+        const session = await requireAdminUser();
         await rateLimitByIdentifier(`aulas:complete:admin:${session.appUser.id}`, adminMutationRateLimit);
 
         const body = await request.json();

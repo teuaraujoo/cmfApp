@@ -1,13 +1,13 @@
 import { AppError } from "@/server/error/app-errors";
-import { adminMutationRateLimit } from "@/libs/ratelimit";
-import { rateLimitByIdentifier } from "@/server/helpers/rate-limit.helper";
-import { validateRequestOrigin } from "@/server/helpers/origin.helper";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { adminMutationRateLimit } from "@/server/libs/ratelimit";
+import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
+import { validateRequestOrigin } from "@/server/security/origin.helper";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getUserById, inactiveUser, activeUser, updateUser } from "@/server/modules/users/users.services";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
         
         const { id } = await params;
         const user = await getUserById(Number(id));
@@ -38,7 +38,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
         await validateRequestOrigin(request);
 
-        const session = await userHelpers.requireAdminUser();
+        const session = await requireAdminUser();
         await rateLimitByIdentifier(`users:delete:admin:${session.appUser.id}`, adminMutationRateLimit);
 
         const { id } = await params;
@@ -64,7 +64,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
         await validateRequestOrigin(request);
         
-        const session = await userHelpers.requireAdminUser();
+        const session = await requireAdminUser();
         await rateLimitByIdentifier(`users:update:admin:${session.appUser.id}`, adminMutationRateLimit);
 
         const body = await request.json();
@@ -94,7 +94,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     try {
         await validateRequestOrigin(request);
 
-        const session = await userHelpers.requireAdminUser();
+        const session = await requireAdminUser();
         await rateLimitByIdentifier(`users:patch:admin:${session.appUser.id}`, adminMutationRateLimit);
 
         const { id } = await params;

@@ -1,7 +1,7 @@
 // find aulas by aluno id -> quais aulas esse aluno possui?
 
 import { AppError } from "@/server/error/app-errors";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getAulasByAlunoId } from "@/server/modules/aulas/aulas.services";
 
 export async function GET(
@@ -9,7 +9,7 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const { id } = await params;
         const turmas = await getAulasByAlunoId(Number(id));

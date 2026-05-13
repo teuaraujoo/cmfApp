@@ -1,10 +1,10 @@
 import { AppError } from "@/server/error/app-errors";
 import { getProfessorByUserId } from "@/server/modules/users/users.services";
-import { userHelpers } from "@/server/modules/users/users.helpers";
+import { requireAdminUser } from "@/server/modules/auth/auth.services";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        await userHelpers.requireAdminUser();
+        await requireAdminUser();
 
         const { id } = await params;
         const data = await getProfessorByUserId(Number(id));

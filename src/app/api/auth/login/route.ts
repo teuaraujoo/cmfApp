@@ -1,7 +1,7 @@
 import { AppError } from "@/server/error/app-errors";
-import { loginRateLimitByEmail, loginRateLimitByIp } from "@/libs/ratelimit";
-import { rateLimitByIdentifier, rateLimitByIp } from "@/server/helpers/rate-limit.helper";
-import { validateRequestOrigin } from "@/server/helpers/origin.helper";
+import { loginRateLimitByEmail, loginRateLimitByIp } from "@/server/libs/ratelimit";
+import { rateLimitByIdentifier, rateLimitByIp } from "@/server/security/rate-limit.helper";
+import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { loginUser } from "@/server/modules/auth/auth.services";
 
 export async function POST(request: Request) {
