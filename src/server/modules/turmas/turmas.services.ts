@@ -82,11 +82,11 @@ export async function createTurma(body: CreateTurmaBody) {
             };
 
             if (data.turma_alunos) {
-                await createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda);
+                await createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda, data.vigencia_inicio, data.vigencia_fim);
             };
 
             if (data.turma_professores) {
-                await createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda);
+                await createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda, data.vigencia_inicio, data.vigencia_fim);
             };
 
             return turma;
@@ -122,12 +122,12 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
 
             if (data.turma_alunos) {
                 await TurmaAlunosRepositories.deleteTurmaAlunosByTurmaId(tx, turma.id);
-                await createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda);
+                await createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda,  data.vigencia_inicio, data.vigencia_fim);
             };
 
             if (data.turma_professores) {
                 await TurmaProfessoresRepositories.deleteTurmaProfessoresByTurmaId(tx, turma.id);
-                await createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda);
+                await createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda,  data.vigencia_inicio, data.vigencia_fim);
             };
 
             return turma;
@@ -216,13 +216,16 @@ async function createTurmaAlunoIfProvided(
     tx: Prisma.TransactionClient,
     turmaId: number,
     data: CreateTurmaAlunoBody[],
-    agenda: CreateTurmaAgendaBody[]
+    agenda: CreateTurmaAgendaBody[],
+    vigenciaInicio: string,
+    vigenciaFim: string
 ) {
     const alunos = data.map((aluno) => {
         return TurmaAlunosMapper.toTurmaAlunosPrisma(turmaId, aluno);
     });
 
     await TurmaValidation.validateTurmaAlunos(alunos, agenda, turmaId);
+    await TurmaValidation.validateTurmaAlunosAulas(alunos, agenda, new Date(vigenciaInicio), new Date(vigenciaFim));
 
     const alunosResult = await TurmaAlunosRepositories.newTurmaAluno(tx, alunos);
 
@@ -233,7 +236,9 @@ async function createTurmaProfessorIfProvided(
     tx: Prisma.TransactionClient,
     turmaId: number,
     data: CreateTurmaProfessorBody[],
-    agenda: CreateTurmaAgendaBody[]
+    agenda: CreateTurmaAgendaBody[],
+    vigenciaInicio: string,
+    vigenciaFim: string
 ) {
 
     const professores = data.map((professor) => {
@@ -241,6 +246,7 @@ async function createTurmaProfessorIfProvided(
     });
 
     await TurmaValidation.validateTurmaProfessores(professores, agenda, turmaId);
+    await TurmaValidation.validateTurmaProfessoresAulas(professores, agenda, new Date(vigenciaInicio), new Date(vigenciaFim));
 
     const professorResult = await TurmaProfessoresRepositories.newTurmaProfessor(tx, professores);
 

@@ -4,6 +4,7 @@ import { TurmaRepositories } from "./turmas.repositories";
 import { AlunosRepositories, ProfessoresRepositories } from "@/server/modules/users/users.respositories";
 import { DateUtils } from "@/server/utils/date-utils";
 import { ModalidadeRepositories } from "@/server/modules/modalidades/modalidades.repositories"
+import { AulasRepositories } from "../aulas/aulas.repositories";
 
 type CreateTurmaAlunoPrisma = {
     turma_id: number;
@@ -180,6 +181,92 @@ export class TurmaValidation {
             groupedCurrentSchedules,
             "Professor já possui turma nesse dia e horário!"
         );
+    };
+
+    static async validateTurmaProfessoresAulas(
+        professores: CreateTurmaProfessorPrisma[],
+        newAgenda: CreateTurmaAgendaBody[],
+        vigenciaInicio: Date,
+        vigenciaFim: Date
+    ) {
+
+        if (!newAgenda?.length) throw new AppError("Agenda da turma é obrigatória!", 404);
+
+        const professoresIds = professores.map(professor => professor.professores_id);
+
+        const groupedNewSchedules = this.groupSchedulesByDay(
+            this.buildNewSchedules(newAgenda)
+        );
+
+        const aulasDosProfessores = await AulasRepositories.findCandidateAulasByProfessoresIds(
+            professoresIds,
+            vigenciaInicio,
+            vigenciaFim
+        );
+
+        const groupedCurrentSchedules = this.groupSchedulesByDay(
+            aulasDosProfessores.map((aula) =>
+                this.buildCurrentScheduleFromAula(
+                    aula.started_at,
+                    aula.ended_at
+                )
+            )
+        );
+
+        this.assertNoConflictsAgainstCurrent(
+            groupedNewSchedules,
+            groupedCurrentSchedules,
+            "Professor já possui aula nesse dia e horário!"
+        );
+
+    };
+
+    static async validateTurmaAlunosAulas(
+        alunos: CreateTurmaAlunoPrisma[],
+        newAgenda: CreateTurmaAgendaBody[],
+        vigenciaInicio: Date,
+        vigenciaFim: Date
+    ) {
+
+        if (!newAgenda?.length) throw new AppError("Agenda da turma é obrigatória!", 404);
+
+        const alunosIds = alunos.map(aluno => aluno.alunos_id);
+
+        const groupedNewSchedules = this.groupSchedulesByDay(
+            this.buildNewSchedules(newAgenda)
+        );
+
+        const aulasDosAlunos = await AulasRepositories.findCandidateAulasByAlunosIds(
+            alunosIds,
+            vigenciaInicio,
+            vigenciaFim
+        );
+
+        const groupedCurrentSchedules = this.groupSchedulesByDay(
+            aulasDosAlunos.map((aula) =>
+                this.buildCurrentScheduleFromAula(
+                    aula.started_at,
+                    aula.ended_at
+                )
+            )
+        );
+
+        this.assertNoConflictsAgainstCurrent(
+            groupedNewSchedules,
+            groupedCurrentSchedules,
+            "Aluno já possui aula nesse dia e horário!"
+        );
+    }
+
+    private static buildCurrentScheduleFromAula(
+        startedAt: Date,
+        endedAt: Date
+    ) {
+        return {
+            dia_semana: new Date(startedAt).getDay(),
+            inicio: DateUtils.timestampToMinutes(startedAt),
+            fim: DateUtils.timestampToMinutes(endedAt)
+        };
     };
 
     private static buildNewSchedules(

@@ -221,6 +221,40 @@ export class AulasRepositories {
         });
     };
 
+    static async findCandidateAulasByAlunosIds(alunosIds: number[], vigenciaInicio: Date, vigenciaFim: Date) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                aluno_id: {
+                    in: alunosIds
+                },
+                encerrada: false,
+                started_at: {
+                    lte: vigenciaFim
+                },
+                ended_at: {
+                    gte: vigenciaInicio
+                }
+            }
+        });
+    };
+
+    static async findCandidateAulasByProfessoresIds(professoresIds: number[], vigenciaInicio: Date, vigenciaFim: Date) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                professor_id: {
+                    in: professoresIds
+                },
+                encerrada: false,
+                started_at: {
+                    lte: vigenciaFim
+                },
+                ended_at: {
+                    gte: vigenciaInicio
+                }
+            }
+        });
+    };
+
     static async createAula(aula: Prisma.aulas_individuaisUncheckedCreateInput) {
         return prisma.aulas_individuais.create({ data: aula });
     };
