@@ -80,7 +80,7 @@ export default function LoginForm() {
                     Esqueceu seu login e/ou senha?{" "}
                     <a
                       href="#"
-                      className="font-medium text-card-foreground no-underline!"
+                      className="font-medium text-card-foreground !no-underline"
                     >
                       Fale com o administrador
                     </a>

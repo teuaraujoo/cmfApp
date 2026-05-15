@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -13,7 +14,7 @@ import Image from "next/image"
 export default function AdminLoginForm({
     className,
     ...props
-}: React.ComponentProps<"div">) {
+}: ComponentProps<"div">) {
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card className="overflow-hidden p-0">
@@ -36,12 +37,8 @@ export default function AdminLoginForm({
                                 />
                             </Field>
                             <Field>
-                                <Field className="gap-4">
-                                    <Field>
-                                        <FieldLabel htmlFor="password">Senha</FieldLabel>
-                                        <Input id="password" type="password" required />
-                                    </Field>
-                                </Field>
+                                <FieldLabel htmlFor="password">Senha</FieldLabel>
+                                <Input id="password" type="password" placeholder="Digite sua senha" required />
                             </Field>
                             <Field className="mb-4">
                                 <Button className="rounded-lg h-10 hover:bg-primary/80 cursor-pointer" type="submit">Entrar</Button>
@@ -51,7 +48,7 @@ export default function AdminLoginForm({
                             Esqueceu seu login e/ou senha?{" "}
                             <a
                                 href="#"
-                                className="font-medium text-card-foreground no-underline!"
+                                className="font-medium text-card-foreground !no-underline"
                             >
                                 Fale com o administrador
                             </a>
