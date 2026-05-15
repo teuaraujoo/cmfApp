@@ -19,9 +19,19 @@ export default function AdminLoginForm({
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card className="overflow-hidden p-0">
                 <CardContent className="grid p-0 md:grid-cols-2">
+
                     <form className="p-6 md:p-8">
                         <FieldGroup>
                             <div className="flex flex-col items-center gap-2 text-center">
+                                <div className="mx-auto">
+                                    <a href="">
+                                        <Image src="/images/logocmf.png" width={100}
+                                            height={100}
+                                            alt="CMF logo"
+                                            loading="eager"
+                                        />
+                                    </a>
+                                </div>
                                 <h1 className="text-2xl font-bold">Entre no seu dashboard, Cristiane!</h1>
                                 <p className="text-sm text-balance text-muted-foreground">
                                     Coloque seu email e senha

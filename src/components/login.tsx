@@ -22,9 +22,9 @@ export default function LoginForm() {
               <a href="">
                 <Image src="/images/logocmf.png" width={100}
                   height={100}
-                  alt="CMF logo" 
+                  alt="CMF logo"
                   loading="eager"
-                  />
+                />
               </a>
             </div>
             <div className="flex flex-col gap-1">
@@ -73,9 +73,18 @@ export default function LoginForm() {
                   </Field>
                 </div>
                 <Field className="gap-4">
+
+                  <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
+                    Ao entrar no sistema, você concorda com
+                    <a href="/legal/termos" className="font-medium text-card-foreground !no-underline"> Termos de Uso </a>
+                    e nossa
+                    <a href="/legal/politica-privacidade" className="font-medium text-card-foreground !no-underline"> Política de Privacidade</a>
+                  </FieldDescription>
+
                   <Button type="submit" size={"lg"} className="rounded-lg h-10 hover:bg-primary/80 cursor-pointer">
                     Entrar
                   </Button>
+
                   <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
                     Esqueceu seu login e/ou senha?{" "}
                     <a
@@ -85,6 +94,7 @@ export default function LoginForm() {
                       Fale com o administrador
                     </a>
                   </FieldDescription>
+
                 </Field>
               </FieldGroup>
             </form>
