@@ -2,7 +2,16 @@ node_modules
 .next
 .git
 dist
-README.md
 docs
 aprendizados
+.env
+.pnp.cjs
+.pnp.loader.mjs
+tsconfig.tsbuildinfo
+README.md
+AGENTS.md
+DESIGN.md
+payloads.json
+CMF.sql
+LICENSE.md
 teste.js

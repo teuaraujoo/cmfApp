@@ -20,7 +20,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     <div className="relative">
       <button
         onClick={toggleDropdown} 
-        className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
+        className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle cursor-pointer"
       >
         <span className="block mr-1 font-medium text-theme-sm">Cristiane</span>
 
