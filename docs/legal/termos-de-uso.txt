@@ -1,0 +1,172 @@
+TERMOS DE USO - CURSO MATEMATICA FACIL
+
+Ultima atualizacao: 15 de maio de 2026
+
+1. Identificacao da plataforma
+
+O sistema do "Curso Matematica Facil" é uma aplicacao web voltada a gestao academica e administrativa do curso, com recursos de autenticacao, cadastro de usuários, cadastro de alunos e professores, modalidades, turmas, agenda semanal, aulas individuais e registros vinculados a frequencia e acompanhamento operacional.
+
+Controlador e responsavel pela Plataforma:
+- Curso Matematica Facil
+- CNPJ/CPF: [PREENCHER]
+- E-mail de contato: [PREENCHER]
+
+2. Aceitacao destes termos
+
+Ao acessar, navegar, autenticar-se ou utilizar a Plataforma, o usuário declara que leu, compreendeu e concorda com estes Termos de Uso e com a Politica de Privacidade aplicavel.
+
+Se o usuário nao concordar com estes termos, nao deve utilizar a Plataforma.
+
+3. Finalidade e escopo de uso
+
+A Plataforma e destinada ao suporte das atividades do Curso Matematica Facil, especialmente para:
+- autenticacao e controle de acesso;
+- administracao de usuários e perfis;
+- organizacao de modalidades, turmas e agendas;
+- registro de aulas individuais;
+- registro de aulas em turma;
+- apoio ao controle academico e administrativo.
+
+O uso da Plataforma não transfere ao usuário qualquer direito sobre o codigo-fonte, estrutura interna, banco de dados ou demais ativos do sistema.
+
+4. Quem pode usar a Plataforma
+
+Podem utilizar a Plataforma apenas pessoas autorizadas pelo Curso Matematica Facil, conforme o perfil de acesso disponibilizado pelo controlador.
+
+O projeto possui, no estado atual, perfis e cadastros vinculados a:
+- ADMIN;
+- PROFESSOR;
+- ALUNO.
+
+O simples cadastro em banco ou vinculacao ao curso não garante acesso irrestrito. O nivel de acesso depende das permissoes efetivamente habilitadas pelo controlador e das regras técnicas vigentes em cada modulo.
+
+5. Conta, credenciais e primeiro acesso
+
+O acesso depende de conta individual e credenciais pessoais.
+
+O usuário concorda em:
+- fornecer dados verdadeiros, atualizados e completos;
+- manter a confidencialidade da senha;
+- não compartilhar credenciais com terceiros;
+- comunicar o controlador caso identifique uso indevido, suspeita de acesso não autorizado ou vazamento de credenciais.
+
+No estado atual do sistema, usuários podem ser obrigados a trocar a senha provisoria no primeiro acesso antes de utilizar funcionalidades internas.
+
+6. Regras de acesso e uso permitido
+
+O usuário deve utilizar a Plataforma apenas para finalidades legítimas, educacionais, acadêmicas, administrativas e operacionais relacionadas ao Curso Matematica Facil.
+
+É permitido, entre outros usos legítimos:
+- consultar e operar informacões conforme o perfil liberado;
+- usar a Plataforma para apoio a aulas, turmas e gestão interna.
+
+7. Usos proibidos
+
+É proibido:
+- acessar ou tentar acessar áreas, contas, APIs ou dados sem autorizacão;
+- compartilhar login, senha ou sessão com terceiros;
+- contornar restricões técnicas, logs, rate limits ou validacões de segurança;
+- inserir dados falsos, ilícitos, ofensivos ou desnecessários;
+- copiar, extrair, raspar, minerar ou reutilizar dados da Plataforma sem base legal e sem autorizacão;
+- praticar engenharia reversa, sondagem, ataque automatizado, brute force ou qualquer tentativa de explorar vulnerabilidades;
+- alterar, sabotar ou interferir no funcionamento da Plataforma;
+- usar a Plataforma em desconformidade com a legislação aplicável, inclusive LGPD, Marco Civil da Internet e normas civis, consumeristas e penais cabíveis.
+
+8. Permissões e níveis de acesso
+
+As permissões são definidas pelo controlador conforme a função do usuário.
+
+No estado atual do projeto:
+- Há separação de perfis no modelo de dados;
+- o backend privilegia fluxos administrativos e controles internos;
+- o acesso a determinados recursos pode ser restrito exclusivamente a administradores, mesmo que existam perfis de aluno e professor cadastrados.
+
+O controlador podera criar, alterar, restringir, suspender ou remover permissoes quando necessário para seguranca, conformidade, manutenção ou organização operacional.
+
+9. Disponibilidade da Plataforma
+
+A Plataforma é fornecida em esforço contínuo de disponibilidade, mas não há garantia de funcionamento ininterrupto, livre de falhas ou disponível em 100 por cento do tempo.
+
+Podem ocorrer indisponibilidades por:
+- manutenção preventiva ou corretiva;
+- atualizações técnicas;
+- falhas de rede, terceiros ou infraestrutura;
+- medidas de segurança;
+- incidentes operacionais.
+
+10. Seguranca e boas práticas operacionais
+
+O projeto adota medidas técnicas e organizacionais compatíveis com seu estágio atual, incluindo, entre outras:
+- autenticação via Supabase Auth;
+- cookies de sessão com proteções como `httpOnly`, `sameSite=lax` e `secure` em produção;
+- validações de origem em rotas mutáveis em produção;
+- limitação de tentativas por identificadores técnicos e de autenticação;
+- cabecalhos HTTP de seguranca e política de conteúdo em modo de monitoramento.
+
+Nenhuma medida de segurança, contudo, elimina totalmente riscos inerentes a sistemas conectados a internet.
+
+11. Responsabilidades do usuário
+
+O usuário e responsavel por:
+- usar a Plataforma de forma lícita e compatível com sua finalidade;
+- manter sigilo sobre suas credenciais;
+- respeitar a privacidade de alunos, professores, responsáveis e demais titulares;
+- observar as orientações internas do Curso Matemática Fácil.
+
+12. Tratamento de dados pessoais
+
+O uso da Plataforma envolve tratamento de dados pessoais nos termos da Política de Privacidade. O usuário declara ciência de que determinadas informações podem ser tratadas para autenticação, controle de acesso, gestão acadêmica, registros operacionais, segurança e cumprimento de obrigações legais e contratuais.
+
+13. Suspensão, bloqueio e encerramento de acesso
+
+O controlador podera suspender, limitar ou encerrar o acesso do usuário, com ou sem aviso previo, quando houver:
+- violação destes Termos;
+- risco a segurançaa da Plataforma ou de terceiros;
+- uso indevido, suspeito ou ilícito;
+- necessidade técnica, jurídica ou administrativa;
+- encerramento do vínculo que justificava o acesso.
+
+Quando aplicável, o controlador poderá manter registros e dados necessários para cumprimento de obrigações legais, auditoria, defesa em processos ou apuração de incidentes.
+
+14. Propriedade intelectual
+
+Salvo disposição expressa em contrario, pertencem ao Curso Matemática Fácil ou a seus licenciantes todos os direitos sobre:
+- marca, nome, layout e identidade visual;
+- código-fonte e arquitetura;
+- banco de dados, documentação e fluxos internos;
+- conteúdos institucionais e materiais disponibilizados na Plataforma.
+
+O uso da Plataforma não concede licença ampla, cessão ou transferência de direitos de propriedade intelectual.
+
+15. Limitação de responsabilidade
+
+Na extensão permitida pela legislação aplicável, o controlador não responde por:
+- danos decorrentes de uso indevido da conta pelo próprio usuário ou por terceiro com sua credencial;
+- indisponibilidades temporárias, falhas de internet ou serviços de terceiros;
+- decisões tomadas pelo usuário com base em dados lançados incorretamente por ele ou por outro operador autorizado;
+- prejuízos derivados do descumprimento destes Termos ou de orientações internas.
+
+Nada neste item exclui responsabilidades que não possam ser afastadas por lei.
+
+16. Alterações destes Termos
+
+Estes Termos podem ser alterados a qualquer tempo para refletir evoluções da Plataforma, adequações legais, mudanças operacionais ou ajustes de segurança.
+
+Sempre que possível, a data de atualização será revisada. O uso continuado da Plataforma após a publicação da nova versão será considerado aceite da versão vigente.
+
+17. Contato
+
+Assuntos gerais sobre a Plataforma:
+- Responsavel: [PREENCHER]
+- E-mail: [PREENCHER]
+
+Assuntos de privacidade e dados pessoais:
+- Encarregado: [PREENCHER]
+- E-mail: [PREENCHER]
+
+18. Legislação aplicável e foro
+
+Estes Termos são regidos pelas leis da República Federativa do Brasil.
+
+Fica eleito o foro da comarca do domicilio do controlador, salvo competencia legal especifica ou regra obrigatória em sentido diverso.
+    

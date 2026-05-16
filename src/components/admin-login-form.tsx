@@ -32,9 +32,9 @@ export default function AdminLoginForm({
                                         />
                                     </a>
                                 </div>
-                                <h1 className="text-2xl font-bold">Entre no seu dashboard, Cristiane!</h1>
+                                <h1 className="text-2xl font-bold">Bem vindo(a)!</h1>
                                 <p className="text-sm text-balance text-muted-foreground">
-                                    Coloque seu email e senha
+                                    Acesse a plataforma inserindo seu <br /> email e senha
                                 </p>
                             </div>
                             <Field>
@@ -51,7 +51,12 @@ export default function AdminLoginForm({
                                 <Input id="password" type="password" placeholder="Digite sua senha" required />
                             </Field>
                             <Field className="mb-4">
-                                <Button className="rounded-lg h-10 hover:bg-primary/80 cursor-pointer" type="submit">Entrar</Button>
+                                <Button
+                                    className="h-10 cursor-pointer rounded-lg bg-[#1FA2E1] text-white hover:bg-[#178CC5] focus-visible:ring-[#1FA2E1]/35"
+                                    type="submit"
+                                >
+                                    Entrar
+                                </Button>
                             </Field>
                         </FieldGroup>
                         <FieldDescription className="text-center text-sm font-normal text-muted-foreground">

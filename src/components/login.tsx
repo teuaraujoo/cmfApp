@@ -81,7 +81,11 @@ export default function LoginForm() {
                     <a href="/legal/politica-privacidade" className="font-medium text-card-foreground !no-underline"> Política de Privacidade</a>
                   </FieldDescription>
 
-                  <Button type="submit" size={"lg"} className="rounded-lg h-10 hover:bg-primary/80 cursor-pointer">
+                  <Button
+                    type="submit"
+                    size={"lg"}
+                    className="h-10 cursor-pointer rounded-lg bg-[#1FA2E1] text-white hover:bg-[#178CC5] focus-visible:ring-[#1FA2E1]/35"
+                  >
                     Entrar
                   </Button>
 

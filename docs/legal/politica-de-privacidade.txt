@@ -1,0 +1,188 @@
+POLÍTICA DE PRIVACIDADE — CURSO MATEMÁTICA FÁCIL
+
+Última atualização: 15 de maio de 2026
+
+1. Apresentação
+
+Esta Política de Privacidade explica como o Curso Matemática Fácil trata dados pessoais no contexto de uso da plataforma web de gestão acadêmica e administrativa (“Plataforma” ou “CMF”).
+
+O documento foi elaborado com base no estado atual do projeto, que possui autenticação, cadastro de usuários, alunos e professores, modalidades, turmas, agendas, aulas individuais e controles técnicos de acesso e segurança.
+
+2. Quem é o controlador dos dados
+
+Controlador:
+
+Curso Matemática Fácil
+CNPJ/CPF: [PREENCHER]
+E-mail de contato: [PREENCHER]
+
+Canal para solicitações relacionadas à privacidade e LGPD:
+
+Encarregado ou canal designado: [PREENCHER]
+E-mail: [PREENCHER]
+3. Quais dados podem ser tratados
+
+De acordo com o repositório e a modelagem atual, a Plataforma pode tratar dados como:
+
+Dados cadastrais de usuários
+nome;
+e-mail;
+telefone;
+perfil/role;
+status do cadastro;
+identificador interno vinculado à autenticação.
+Dados específicos de alunos
+data de nascimento;
+série;
+modalidade;
+tempo de aula;
+horas por semana;
+tempo de contrato, quando aplicável;
+nome do responsável;
+telefone do responsável;
+status acadêmico e operacional vinculado ao cadastro.
+Dados específicos de professores
+matéria;
+modalidade;
+status operacional vinculado ao cadastro.
+Dados de autenticação e segurança
+e-mail de login;
+senha tratada pelo provedor de autenticação;
+indicadores de primeiro acesso e troca obrigatória de senha;
+identificadores de sessão e cookies técnicos de autenticação;
+registros técnicos relacionados a tentativas de acesso e limitação de taxa;
+dados técnicos normalmente associados à segurança e à sessão, como IP e user agent, quando disponibilizados pelo provedor de autenticação ou pela infraestrutura utilizada.
+Dados operacionais e acadêmicos
+turmas, agendas semanais e vínculos entre professores e alunos;
+aulas individuais;
+horários, datas, notas e marcações de encerramento de aula;
+registros de frequência de alunos e professores.
+4. Como os dados são coletados
+
+Os dados podem ser coletados por diferentes meios, conforme o fluxo operacional do curso:
+
+informações fornecidas no processo de matrícula ou contratação;
+informações recebidas e lançadas administrativamente pela equipe do curso;
+dados inseridos durante o uso da Plataforma;
+dados técnicos gerados pela autenticação, pela sessão e pelos mecanismos de segurança.
+
+O repositório também indica que parte dos dados pode ter origem em contrato físico ou processo administrativo anterior ao cadastro no sistema.
+
+5. Para quais finalidades usamos os dados
+
+Os dados pessoais podem ser tratados para:
+
+criar, manter e administrar contas de acesso;
+autenticar usuários e proteger sessões;
+diferenciar perfis e permissões;
+cadastrar e manter alunos, professores, turmas e modalidades;
+organizar agendas semanais e aulas individuais;
+registrar frequência, acompanhamento e operação acadêmica;
+permitir comunicações operacionais relacionadas ao curso;
+prevenir fraude, abuso, acesso indevido e incidentes de segurança;
+cumprir obrigações legais, regulatórias e contratuais;
+exercer direitos em processos judiciais, administrativos ou arbitrais.
+6. Bases legais utilizadas
+
+O tratamento de dados pessoais pode ocorrer, conforme o caso concreto, com fundamento em uma ou mais das seguintes bases legais da LGPD:
+
+execução de contrato ou de procedimentos preliminares relacionados ao contrato;
+cumprimento de obrigação legal ou regulatória;
+exercício regular de direitos;
+proteção da vida ou da incolumidade física, quando aplicável;
+legítimo interesse, para segurança, prevenção à fraude e operação interna, observados os direitos do titular;
+consentimento, quando a atividade depender juridicamente dessa base.
+
+No contexto atual da Plataforma, a base mais recorrente tende a ser a execução da relação educacional e administrativa e a gestão do acesso ao sistema, e não o consentimento como fundamento único para toda a operação.
+
+7. Com quem os dados podem ser compartilhados
+
+Os dados podem ser compartilhados, dentro dos limites necessários, com:
+
+Supabase, como fornecedor de autenticação e componentes técnicos de sessão;
+Upstash Redis, para operações de rate limit e proteção contra abuso;
+prestadores de serviços de infraestrutura, hospedagem, suporte técnico ou segurança que atuem em nome do controlador, quando aplicável;
+autoridades públicas, órgãos reguladores, autoridades judiciais, policiais ou administrativas, quando houver obrigação legal ou requisição válida;
+profissionais e operadores internos autorizados do Curso Matemática Fácil, estritamente conforme a necessidade operacional.
+
+Não há, no estado atual revisado do repositório, indicação de uso de cookies publicitários, venda de dados pessoais ou compartilhamento para marketing comportamental.
+
+8. Cookies, sessão e tecnologias semelhantes
+
+A Plataforma utiliza principalmente cookies e mecanismos técnicos necessários para autenticação e manutenção da sessão.
+
+Conforme a implementação atual revisada:
+
+os cookies de autenticação são associados ao fluxo SSR do Supabase;
+a aplicação configura atributos como httpOnly;
+em produção, o atributo secure é aplicado;
+sameSite está configurado como lax;
+o objetivo principal desses cookies é manter a sessão autenticada e reforçar a segurança do acesso.
+9. Segurança da informação
+
+O projeto já apresenta medidas técnicas relevantes para o seu estágio atual, tais como:
+
+autenticação centralizada via Supabase Auth;
+cookies protegidos de sessão;
+validação de origem em rotas mutáveis, em produção;
+rate limit por e-mail, IP, usuário autenticado ou administrador, conforme o fluxo;
+cabeçalhos HTTP de segurança;
+política de conteúdo configurada em modo report-only;
+segregação de módulos e validações no backend.
+
+Apesar dessas medidas, nenhum sistema conectado à internet é completamente imune a incidentes. Por isso, o controlador atua para reduzir riscos, detectar abusos e responder a ocorrências de forma compatível com sua capacidade técnica e com a legislação aplicável.
+
+10. Retenção e eliminação de dados
+
+Os dados pessoais são mantidos pelo tempo necessário para cumprir as finalidades descritas nesta Política, inclusive para:
+
+execução da relação contratual ou educacional;
+manutenção do histórico acadêmico e administrativo pertinente;
+cumprimento de obrigações legais e regulatórias;
+auditoria, segurança e prevenção a fraudes;
+defesa do controlador em processos ou apuração de incidentes.
+
+Quando cabível e tecnicamente possível, dados desnecessários poderão ser eliminados, anonimizados ou bloqueados, respeitadas as hipóteses legais de conservação.
+
+11. Dados de crianças, adolescentes e responsáveis
+
+Como a operação do Curso Matemática Fácil envolve contexto educacional e o cadastro de nome e telefone de responsáveis, a Plataforma pode tratar dados de alunos menores de idade e de seus responsáveis legais.
+
+Nesses casos, o tratamento deve permanecer vinculado a finalidades educacionais, administrativas, de segurança e de execução da relação com o curso, sempre com observância do melhor interesse do menor e das exigências legais aplicáveis.
+
+12. Direitos do titular nos termos da LGPD
+
+Nos termos da LGPD, o titular pode solicitar, quando aplicável:
+
+confirmação da existência de tratamento;
+acesso aos dados;
+correção de dados incompletos, inexatos ou desatualizados;
+anonimização, bloqueio ou eliminação de dados desnecessários, excessivos ou tratados em desconformidade;
+portabilidade, conforme regulamentação aplicável;
+eliminação dos dados tratados com base em consentimento, quando cabível;
+informação sobre compartilhamentos realizados;
+informação sobre a possibilidade de não fornecer consentimento e suas consequências, quando essa base legal for utilizada;
+revogação do consentimento, quando aplicável.
+
+O exercício desses direitos deve ser solicitado pelo canal informado nesta Política.
+
+13. Como exercer seus direitos
+
+Solicitações relacionadas a dados pessoais, incluindo acesso, correção, exclusão quando cabível e demais pedidos relacionados à LGPD, devem ser encaminhadas para:
+
+Encarregado: [PREENCHER]
+E-mail: [PREENCHER]
+
+Para proteção do próprio titular, o controlador poderá solicitar informações adicionais para confirmar a identidade e a legitimidade do pedido antes de processá-lo.
+
+14. Transferência e operadores
+
+Quando fornecedores tecnológicos forem utilizados para viabilizar autenticação, sessão, rate limit, armazenamento ou operação da Plataforma, esses terceiros poderão atuar como operadores ou suboperadores, conforme a LGPD e os arranjos contratuais aplicáveis.
+
+O compartilhamento deve ocorrer apenas na extensão necessária à prestação do serviço ou ao atendimento de obrigações legais.
+
+15. Alterações desta Política
+
+Esta Política poderá ser atualizada a qualquer momento para refletir mudanças legais, regulatórias, técnicas ou operacionais.
+
+Sempre que possível, a data de “Última atualização” será ajustada no topo do documento. O uso continuado da Plataforma após a publicação de uma nova versão poderá caracterizar ciência da versão vigente
