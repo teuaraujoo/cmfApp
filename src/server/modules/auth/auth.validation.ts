@@ -6,7 +6,7 @@ import { createClient } from "@/server/libs/supabase/server";
 export async function validateLogin(error: AuthError| null, authUser: User | null, supabase: Awaited<ReturnType<typeof createClient>>) {
 
     if (error || !authUser) {
-        throw new AppError("Credenciais inválidas.", 401);
+        throw new AppError("Senha ou email inválidos.", 401);
     };
 
     const appUser = await UsersRepositories.getByAuthUserId(authUser.id);

@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -9,8 +11,32 @@ import {
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { BackgroundCircle } from "./ui/circlebackground";
+import { loginUser } from "@/services/auth/auth.client";
+import { useState } from "react";
 
 export default function LoginForm() {
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+
+    event.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    const result = await loginUser({ email, password });
+
+    if (result?.err) {
+      setError(result.err);
+      setLoading(false);
+    };
+  };
+
   return (
     <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
       <BackgroundCircle />
@@ -37,7 +63,10 @@ export default function LoginForm() {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <form>
+
+            <form
+              onSubmit={handleSubmit}
+            >
               <FieldGroup className="gap-6">
                 <div className="flex flex-col gap-4">
                   <Field className="gap-1.5">
@@ -50,6 +79,7 @@ export default function LoginForm() {
                     <Input
                       id="email"
                       type="email"
+                      name="email"
                       placeholder="example@cmfapp.com"
                       required
                       className="dark:bg-background h-9 shadow-xs"
@@ -66,11 +96,19 @@ export default function LoginForm() {
                     <Input
                       id="password"
                       type="password"
+                      name="password"
                       placeholder="Digite sua senha"
                       required
                       className="dark:bg-background h-9 shadow-xs"
                     />
                   </Field>
+
+                  {error && (
+                    <p className="text-sm text-red-500">
+                      {error}
+                    </p>
+                  )}
+
                 </div>
                 <Field className="gap-4">
 
@@ -84,9 +122,10 @@ export default function LoginForm() {
                   <Button
                     type="submit"
                     size={"lg"}
+                    disabled={loading}
                     className="h-10 cursor-pointer rounded-lg bg-[#1FA2E1] text-white hover:bg-[#178CC5] focus-visible:ring-[#1FA2E1]/35"
                   >
-                    Entrar
+                    {loading ? "Entrando..." : "Entrar"}
                   </Button>
 
                   <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
