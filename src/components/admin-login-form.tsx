@@ -57,7 +57,6 @@ export default function AdminLoginForm({
             router.replace("/dashboard/home");
             
         } catch (err) {
-            console.error("Erro no login:", err);
             setError("Erro inesperado ao fazer login. Tente novamente.");
             setLoading(false);
         };

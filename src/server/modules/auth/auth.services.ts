@@ -48,6 +48,8 @@ export async function changePassword(body: ChangePasswordBody) {
 
   const updatedUser = await UsersRepositories.disableMustChangePassword(appUser.id);
 
+  await supabase.auth.refreshSession();
+
   return UserMapper.toChangePasswordResponse(updatedUser);
 };
 

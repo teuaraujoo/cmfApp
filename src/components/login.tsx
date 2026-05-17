@@ -13,26 +13,47 @@ import Image from "next/image";
 import { BackgroundCircle } from "./ui/circlebackground";
 import { loginUser } from "@/services/auth/auth.client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    try {
 
-    event.preventDefault();
-    setLoading(true);
+      event.preventDefault();
+      setLoading(true);
 
-    const formData = new FormData(event.currentTarget);
+      const formData = new FormData(event.currentTarget);
 
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
 
-    const result = await loginUser({ email, password });
+      const result = await loginUser({ email, password });
 
-    if (result?.err) {
-      setError(result.err);
+      if (result?.err) {
+        setError(result.err);
+        setLoading(false);
+        return;
+      };
+
+      if (!result?.data?.role) {
+        setError("Erro ao processar login. Tente novamente.");
+        setLoading(false);
+        return;
+      };
+
+      if (result.data.must_change_password) {
+        router.replace("/change-password");
+      } else {
+        router.replace("/portal");
+      };
+
+    } catch (err) {
+      setError("Erro inesperado ao fazer login. Tente novamente.");
       setLoading(false);
     };
   };

@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -8,8 +10,42 @@ import {
 import { Input } from "@/components/ui/input";
 import { BackgroundCircle } from "./ui/circlebackground";
 import Image from "next/image";
+import { changePassword } from "@/services/auth/auth.client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function ChangePasswordForm() {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    try {
+
+      event.preventDefault();
+      setLoading(true);
+
+      const formData = new FormData(event.currentTarget);
+
+      const newPassword = formData.get("newPassword") as string;
+      const confirmPassword = formData.get("confirmPassword") as string;
+
+      const result = await changePassword({ newPassword, confirmPassword });
+
+      if (result?.err) {
+        setError(result.err);
+        setLoading(false);
+        return;
+      };
+
+      router.replace("/portal");
+
+    } catch (err) {
+      setError("Erro inesperado ao fazer login. Tente novamente.");
+      setLoading(false);
+    };
+  };
+
   return (
     <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
       <BackgroundCircle />
@@ -26,7 +62,7 @@ export default function ChangePasswordForm() {
                 />
               </a>
             </div>
-            
+
             <div className="flex flex-col gap-1">
               <CardTitle className="text-2xl font-medium text-card-foreground">
                 Primeiro acesso por aqui
@@ -37,7 +73,9 @@ export default function ChangePasswordForm() {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <form>
+            <form
+              onSubmit={handleSubmit}
+            >
               <FieldGroup className="gap-6">
                 <div className="flex flex-col gap-4">
                   <Field className="gap-1.5">
@@ -50,6 +88,7 @@ export default function ChangePasswordForm() {
                     <Input
                       id="newPassword"
                       type="password"
+                      name="newPassword"
                       placeholder="Digite sua nova senha"
                       required
                       className="dark:bg-background h-9 shadow-xs"
@@ -66,19 +105,28 @@ export default function ChangePasswordForm() {
                     <Input
                       id="confirmPassword"
                       type="password"
+                      name="confirmPassword"
                       placeholder="Digite sua nova senha"
                       required
                       className="dark:bg-background h-9 shadow-xs"
                     />
                   </Field>
                 </div>
+
+                {error && (
+                  <p className="text-sm text-red-500">
+                    {error}
+                  </p>
+                )}
+
                 <Field className="gap-4">
                   <Button
                     type="submit"
                     size={"lg"}
+                    disabled={loading}
                     className="h-10 cursor-pointer rounded-lg bg-[#1FA2E1] text-white hover:bg-[#178CC5] focus-visible:ring-[#1FA2E1]/35"
                   >
-                    Trocar senha
+                    {loading ? "Mudoficando..." : "Mudar senha"}
                   </Button>
                 </Field>
               </FieldGroup>

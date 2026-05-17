@@ -31,7 +31,7 @@ export default function HomePage() {
                 </CardHeader>
 
                 <CardContent className="flex justify-center">
-                    <Link href="/login">
+                    <Link href="/choose-login">
                         <ButtonShineHoverDemo text={"Ir para o sistema"} />
                     </Link>
                 </CardContent>
