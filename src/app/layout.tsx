@@ -1,6 +1,7 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
-import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"]
@@ -22,6 +23,35 @@ export default function RootLayout({
         className={`${spaceGrotesk.className} min-h-full flex flex-col`}
       >
         {children}
+        
+         <Toaster
+          position="bottom-right"
+          reverseOrder={false}
+          toastOptions={{
+            duration: 4000,
+
+            style: {
+              background: "#f3f0eb",
+              color: "#1C1C1C",
+              border: "1px solid #ffeecb",
+            },
+
+            success: {
+              iconTheme: {
+                primary: "#22c55e",
+                secondary: "#fff",
+              },
+            },
+
+            error: {
+              iconTheme: {
+                primary: "#ef4444",
+                secondary: "#fff",
+              },
+            },
+          }}
+        />
+
       </body>
     </html>
   );

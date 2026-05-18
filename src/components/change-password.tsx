@@ -13,11 +13,13 @@ import Image from "next/image";
 import { changePassword, logoutUser } from "@/services/auth/auth.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PasswordSecurityModal } from "./auth/PasswordSecurityModal";
 
 export default function ChangePasswordForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [open, setOpen] = useState(true);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     try {
@@ -44,12 +46,17 @@ export default function ChangePasswordForm() {
 
     } catch {
       setError("Erro inesperado ao fazer login. Tente novamente.");
+    } finally {
       setLoading(false);
-    };
+    }
   };
 
   return (
     <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
+      <PasswordSecurityModal
+        open={open}
+        onOpenChange={setOpen}
+      />
       <BackgroundCircle />
       <div className="py-10 md:py-20 max-w-lg px-4 sm:px-0 mx-auto w-full">
         <Card className="max-w-lg px-6 py-8 sm:p-12 relative gap-6">
@@ -128,7 +135,7 @@ export default function ChangePasswordForm() {
                     disabled={loading}
                     className="h-10 cursor-pointer rounded-lg bg-[#1FA2E1] text-white hover:bg-[#178CC5] focus-visible:ring-[#1FA2E1]/35"
                   >
-                    {loading ? "Mudoficando..." : "Mudar senha"}
+                    {loading ? "Modificando..." : "Mudar senha"}
                   </Button>
                 </Field>
               </FieldGroup>

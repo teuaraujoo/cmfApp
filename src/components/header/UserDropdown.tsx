@@ -5,6 +5,7 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { logoutUser } from "@/services/auth/auth.client";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,8 +22,10 @@ export default function UserDropdown() {
 
   async function handleLogout() {
     await logoutUser();
+    
+    toast.success("Logout realizado com sucesso!")
 
-    router.replace("/");
+    router.replace("/dashboard/login");
   };
 
   return ( 

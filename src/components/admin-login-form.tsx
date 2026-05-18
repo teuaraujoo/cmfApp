@@ -15,6 +15,7 @@ import Image from "next/image"
 import { loginUser } from "@/services/auth/auth.client"
 import { logoutUser } from "@/services/auth/auth.client"
 import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 
 export default function AdminLoginForm({
     className,
@@ -56,6 +57,7 @@ export default function AdminLoginForm({
                 return;
             };
 
+            toast.success("Login realizado com sucesso. Bem vindo!")
             router.replace("/dashboard/home");
             
         } catch {

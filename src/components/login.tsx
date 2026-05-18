@@ -14,6 +14,7 @@ import { BackgroundCircle } from "./ui/circlebackground";
 import { loginUser } from "@/services/auth/auth.client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
 
@@ -49,6 +50,7 @@ export default function LoginForm() {
       if (result.data.must_change_password) {
         router.replace("/change-password");
       } else {
+        toast.success("Login realizado com suceeso. Bem vindo!")
         router.replace("/portal");
       };
 
