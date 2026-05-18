@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { BackgroundCircle } from "./ui/circlebackground";
 import Image from "next/image";
-import { changePassword } from "@/services/auth/auth.client";
+import { changePassword, logoutUser } from "@/services/auth/auth.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -38,7 +38,9 @@ export default function ChangePasswordForm() {
         return;
       };
 
-      router.replace("/portal");
+      await logoutUser();
+
+      router.replace("/login");
 
     } catch {
       setError("Erro inesperado ao fazer login. Tente novamente.");
