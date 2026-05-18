@@ -12,7 +12,9 @@ export const changePasswordSchema = z.object({
     .string()
     .min(8, "A nova senha deve ter pelo menos 8 caracteres.")
     .regex(/[A-Za-z]/, "A nova senha deve conter ao menos uma letra.")
-    .regex(/[0-9]/, "A nova senha deve conter ao menos um número."),
+    .regex(/[A-Z]/, "A nova senha deve conter ao menos uma letra maiúscula.")
+    .regex(/[^A-Za-z0-9]/, "A nova senha deve conter ao menos um caractere especial.")
+    .regex(/^(?:.*\d){2,}.*$/, "A nova senha deve conter ao menos dois números."),
   confirmPassword: z.string().min(1, "A confirmação da nova senha é obrigatória."),
 });
 

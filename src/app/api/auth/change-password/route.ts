@@ -4,6 +4,7 @@ import { authenticatedUserRateLimit } from "@/server/libs/ratelimit";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
+import { ZodError } from "zod";
 
 export async function POST(request: Request) {
   try {
@@ -25,6 +26,16 @@ export async function POST(request: Request) {
   } catch (err) {
     if (err instanceof AppError) {
       return Response.json({ message: err.message }, { status: err.statusCode });
+    };
+
+    if (err instanceof ZodError) {
+      return Response.json(
+        {
+          message: err.issues?.[0]?.message ?? err.message,
+          issues: err.issues,
+        },
+        { status: 400 }
+      );
     };
     
     return Response.json(

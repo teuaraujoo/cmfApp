@@ -40,6 +40,9 @@ export async function changePassword(body: ChangePasswordBody) {
 
   const { error } = await supabase.auth.updateUser({
     password: data.newPassword,
+    data: {
+      must_change_password: false
+    }
   });
 
   if (error) {
@@ -47,6 +50,15 @@ export async function changePassword(body: ChangePasswordBody) {
   };
 
   const updatedUser = await UsersRepositories.disableMustChangePassword(appUser.id);
+
+  const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+
+  if (refreshError) {
+    throw new AppError(
+      `Falha ao atualizar sessão após alteração de senha: ${refreshError.message}`,
+      500
+    );
+  };
 
   return UserMapper.toChangePasswordResponse(updatedUser);
 };
