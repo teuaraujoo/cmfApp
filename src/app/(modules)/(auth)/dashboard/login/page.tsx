@@ -1,4 +1,4 @@
-import AdminLoginForm from "@/components/admin-login-form"
+import AdminLoginForm from "@/components/auth/AdminLoginForm"
 import { BackgroundCircle } from "@/components/ui/circlebackground";
 
 export default function LoginDashboardPage() {

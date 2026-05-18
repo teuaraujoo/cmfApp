@@ -4,22 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { BackgroundCircle } from "./ui/circlebackground";
 import Image from "next/image";
-import { changePassword, logoutUser } from "@/services/auth/auth.client";
-import { useRouter } from "next/navigation";
+import { BackgroundCircle } from "../ui/circlebackground";
+import { loginUser } from "@/services/auth/auth.client";
 import { useState } from "react";
-import { PasswordSecurityModal } from "./auth/PasswordSecurityModal";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
-export default function ChangePasswordForm() {
+export default function LoginForm() {
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [open, setOpen] = useState(true);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     try {
@@ -29,10 +30,10 @@ export default function ChangePasswordForm() {
 
       const formData = new FormData(event.currentTarget);
 
-      const newPassword = formData.get("newPassword") as string;
-      const confirmPassword = formData.get("confirmPassword") as string;
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
 
-      const result = await changePassword({ newPassword, confirmPassword });
+      const result = await loginUser({ email, password });
 
       if (result?.err) {
         setError(result.err);
@@ -40,28 +41,32 @@ export default function ChangePasswordForm() {
         return;
       };
 
-      await logoutUser();
+      if (!result?.data?.role) {
+        setError("Erro ao processar login. Tente novamente.");
+        setLoading(false);
+        return;
+      };
 
-      router.replace("/login");
+      if (result.data.must_change_password) {
+        router.replace("/change-password");
+      } else {
+        toast.success("Login realizado com suceeso. Bem vindo!")
+        router.replace("/portal");
+      };
 
     } catch {
       setError("Erro inesperado ao fazer login. Tente novamente.");
-    } finally {
       setLoading(false);
-    }
+    };
   };
 
   return (
     <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
-      <PasswordSecurityModal
-        open={open}
-        onOpenChange={setOpen}
-      />
       <BackgroundCircle />
+
       <div className="py-10 md:py-20 max-w-lg px-4 sm:px-0 mx-auto w-full">
         <Card className="max-w-lg px-6 py-8 sm:p-12 relative gap-6">
           <CardHeader className="text-center gap-6 p-0">
-
             <div className="mx-auto">
               <a href="">
                 <Image src="/images/logocmf.png" width={100}
@@ -71,17 +76,17 @@ export default function ChangePasswordForm() {
                 />
               </a>
             </div>
-
             <div className="flex flex-col gap-1">
               <CardTitle className="text-2xl font-medium text-card-foreground">
-                Primeiro acesso por aqui
+                Bem vindo a CMF!
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground font-normal">
-                Troque sua senha agora
+                Entre na sua conta agora.
               </CardDescription>
             </div>
           </CardHeader>
           <CardContent className="p-0">
+
             <form
               onSubmit={handleSubmit}
             >
@@ -89,54 +94,73 @@ export default function ChangePasswordForm() {
                 <div className="flex flex-col gap-4">
                   <Field className="gap-1.5">
                     <FieldLabel
-                      htmlFor="newPassword"
+                      htmlFor="email"
                       className="text-sm text-muted-foreground font-normal"
                     >
-                      Nova senha
+                      Email
                     </FieldLabel>
                     <Input
-                      id="newPassword"
-                      type="password"
-                      name="newPassword"
-                      placeholder="Digite sua nova senha"
+                      id="email"
+                      type="email"
+                      name="email"
+                      placeholder="example@cmfapp.com"
                       required
                       className="dark:bg-background h-9 shadow-xs"
                     />
                   </Field>
                   <Field className="gap-1.5">
                     <FieldLabel
-                      htmlFor="confirmPassword"
+                      htmlFor="password"
                       className="text-sm text-muted-foreground font-normal"
                     >
-                      Confirme Nova senha
+                      Senha
                     </FieldLabel>
 
                     <Input
-                      id="confirmPassword"
+                      id="password"
                       type="password"
-                      name="confirmPassword"
-                      placeholder="Digite sua nova senha"
+                      name="password"
+                      placeholder="Digite sua senha"
                       required
                       className="dark:bg-background h-9 shadow-xs"
                     />
                   </Field>
+
+                  {error && (
+                    <p className="text-sm text-red-500">
+                      {error}
+                    </p>
+                  )}
+
                 </div>
-
-                {error && (
-                  <p className="text-sm text-red-500">
-                    {error}
-                  </p>
-                )}
-
                 <Field className="gap-4">
+
+                  <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
+                    Ao entrar no sistema, você concorda com
+                    <a href="/legal/termos" className="font-medium text-card-foreground !no-underline"> Termos de Uso </a>
+                    e nossa
+                    <a href="/legal/politica-privacidade" className="font-medium text-card-foreground !no-underline"> Política de Privacidade</a>
+                  </FieldDescription>
+
                   <Button
                     type="submit"
                     size={"lg"}
                     disabled={loading}
                     className="h-10 cursor-pointer rounded-lg bg-[#1FA2E1] text-white hover:bg-[#178CC5] focus-visible:ring-[#1FA2E1]/35"
                   >
-                    {loading ? "Modificando..." : "Mudar senha"}
+                    {loading ? "Entrando..." : "Entrar"}
                   </Button>
+
+                  <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
+                    Esqueceu seu login e/ou senha?{" "}
+                    <a
+                      href="#"
+                      className="font-medium text-card-foreground !no-underline"
+                    >
+                      Fale com o administrador
+                    </a>
+                  </FieldDescription>
+
                 </Field>
               </FieldGroup>
             </form>

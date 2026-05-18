@@ -4,6 +4,8 @@ import { decodeJwt } from "jose";
 const publicRoutes = [
     { path: '/', whenAuthenticated: 'next' },
     { path: '/choose-login', whenAuthenticated: 'next' },
+    { path: '/legal/termos', whenAuthenticated: 'next' },
+    { path: '/legal/politica-privacidade', whenAuthenticated: 'next' },
     { path: '/login', whenAuthenticated: 'redirect' },
     { path: '/dashboard/login', whenAuthenticated: 'redirect' },
 ] as const;
