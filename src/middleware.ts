@@ -63,22 +63,18 @@ export async function middleware(request: NextRequest) {
 
     const role = decodedToken.user_metadata?.role ?? decodedToken.app_metadata?.role;
     const mustChangePassword = decodedToken.user_metadata?.must_change_password;
-    const localmustChangePassword = request.cookies.get("mustChangePassword");
+    const localMustChangePassword = request.cookies.get("mustChangePassword")?.value;
+    const effectiveMustChangePassword = localMustChangePassword === "false" ? false : mustChangePassword;
 
+    if (effectiveMustChangePassword && pathname !== "/change-password") {
+        const redirectUrl = request.nextUrl.clone();
 
-    if (mustChangePassword) {
-        if (pathname !== "/change-password") {
-            const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/change-password";
 
-            redirectUrl.pathname = "/change-password";
-
-            return NextResponse.redirect(redirectUrl);
-        };
-
-        return NextResponse.next();
+        return NextResponse.redirect(redirectUrl);
     };
 
-    if (!mustChangePassword && pathname === "/change-password") {
+    if (!effectiveMustChangePassword && pathname === "/change-password") {
         const redirectUrl = request.nextUrl.clone();
 
         redirectUrl.pathname = role === "ADMIN" ? "/dashboard/home" : "/portal";
@@ -86,12 +82,15 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(redirectUrl);
     };
 
+
     if (authToken && publicRoute && publicRoute.whenAuthenticated === "redirect") {
         const redirectUrl = request.nextUrl.clone();
 
-        if (pathname.startsWith("/dashboard") && role === "ADMIN") {
+        if (effectiveMustChangePassword) {
+            redirectUrl.pathname = "/change-password";
+        } else if (pathname.startsWith("/dashboard") && role === "ADMIN") {
             redirectUrl.pathname = "/dashboard/home";
-        } else if (!mustChangePassword) {
+        } else {
             redirectUrl.pathname = "/portal";
         };
 
@@ -101,7 +100,7 @@ export async function middleware(request: NextRequest) {
     if (authToken && !publicRoute) {
         const redirectUrl = request.nextUrl.clone();
 
-        if (mustChangePassword && pathname !== "/change-password") {
+        if (effectiveMustChangePassword && pathname !== "/change-password") {
             redirectUrl.pathname = "/change-password";
             return NextResponse.redirect(redirectUrl);
         };
