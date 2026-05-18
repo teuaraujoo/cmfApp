@@ -7,7 +7,6 @@ import { useSidebar } from "../context/SidebarContext";
 import {
   LayoutDashboard,
   CircleUserRound,
-  Users,
   GraduationCap,
   CalendarDays,
   Settings,
@@ -50,10 +49,7 @@ const navItems: NavItem[] = [
     icon: <BookOpenText />,
     subItems: [{ name: "Semana", path: "/dashboard/aulas/semana" }, { name: "Pendentes", path: "/dashboard/aulas/pendentes" }, { name: "Histórico", path: "/dashboard/aulas/historico" }],
   },
-  {
-    name: "Turmas",
-    icon: <Users />,
-  },
+
   {
     icon: <CalendarDays />,
     name: "Calendário",

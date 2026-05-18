@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { loginUser } from "@/services/auth/auth.client"
+import { logoutUser } from "@/services/auth/auth.client"
 import { useRouter } from "next/navigation"
 
 export default function AdminLoginForm({
@@ -49,6 +50,7 @@ export default function AdminLoginForm({
             };
 
             if (result.data.role !== "ADMIN") {
+                await logoutUser();
                 setError("Apenas administradores podem acessar!");
                 setLoading(false);
                 return;
@@ -56,7 +58,7 @@ export default function AdminLoginForm({
 
             router.replace("/dashboard/home");
             
-        } catch (err) {
+        } catch {
             setError("Erro inesperado ao fazer login. Tente novamente.");
             setLoading(false);
         };

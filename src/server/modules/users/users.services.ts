@@ -34,7 +34,7 @@ export async function createUser(body: CreateUserBody) {
     email_confirm: true,
     user_metadata: {
       role: data.role,
-      must_change_password: true,
+      must_change_password: data.role === "ADMIN" ? false : true
     }
   });
 

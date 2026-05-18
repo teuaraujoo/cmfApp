@@ -52,7 +52,7 @@ export default function LoginForm() {
         router.replace("/portal");
       };
 
-    } catch (err) {
+    } catch {
       setError("Erro inesperado ao fazer login. Tente novamente.");
       setLoading(false);
     };

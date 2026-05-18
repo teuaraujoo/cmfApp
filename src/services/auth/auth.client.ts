@@ -27,6 +27,7 @@ export async function loginUser(data: LoginData) {
         if (!response.ok) return { err: result.message ?? "Não foi possível entrar." }
 
         localStorage.setItem("time", "14.400.000");
+        
         return result;
 
     } catch {
@@ -57,9 +58,23 @@ export async function changePassword(data: ChangePasswordData) {
         if (!response.ok) return { err: result.message ?? "Não foi possível trocar a senha." }
 
         document.cookie = "mustChangePassword=false; path=/";
-        
+
         return result;
-    } catch (err) {
+    } catch {
         return { err: "Não foi possível conectar ao sservidor." };
     };
+};
+
+export async function logoutUser() {
+    const response = await fetch(`${apiRoutes.logout}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "same-origin",
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) return { err: result.message ?? "Error ao fazer logout." }
 };

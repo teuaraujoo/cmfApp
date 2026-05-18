@@ -1,33 +1,41 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
+import { Button } from "@/components/ui/button"
 import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { logoutUser } from "@/services/auth/auth.client";
+import { useRouter } from "next/navigation";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
-function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-  e.stopPropagation();
-  setIsOpen((prev) => !prev);
-}
+  function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.stopPropagation();
+    setIsOpen((prev) => !prev);
+  };
 
   function closeDropdown() {
     setIsOpen(false);
-  }
-  return (
+  };
+
+  async function handleLogout() {
+    await logoutUser();
+
+    router.replace("/");
+  };
+
+  return ( 
     <div className="relative">
       <button
-        onClick={toggleDropdown} 
+        onClick={toggleDropdown}
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle cursor-pointer"
       >
         <span className="block mr-1 font-medium text-theme-sm">Cristiane</span>
 
         <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           width="18"
           height="20"
           viewBox="0 0 18 20"
@@ -135,12 +143,12 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             </DropdownItem>
           </li>
         </ul>
-        <Link
-          href="/signin"
-          className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+        <Button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-3 py-2 mt-3 font-medium rounded-lg cursor-pointer transition-colors duration-200 bg-red-500 text-white hover:bg-red-600"
         >
           <svg
-            className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
+            className="fill-white"
             width="24"
             height="24"
             viewBox="0 0 24 24"
@@ -155,7 +163,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             />
           </svg>
           Logout
-        </Link>
+        </Button>
       </Dropdown>
     </div>
   );

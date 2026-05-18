@@ -1,4 +1,5 @@
 import { AppError } from "@/server/error/app-errors";
+import { ZodError } from "zod";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { createUser, getAllUsers } from "@/server/modules/users/users.services";
@@ -54,7 +55,17 @@ export async function POST(request: Request) {
   } catch (err) {
     if (err instanceof AppError) {
       return Response.json({ message: err.message }, { status: err.statusCode });
-    }
+    };
+
+    if (err instanceof ZodError) {
+      return Response.json(
+        {
+          message: err.issues?.[0]?.message ?? err.message,
+          issues: err.issues,
+        },
+        { status: 400 }
+      );
+    };
 
     return Response.json(
       {
