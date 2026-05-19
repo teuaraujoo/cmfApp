@@ -92,10 +92,11 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Editar perfil
+             
+              Perfil
             </DropdownItem>
           </li>
-          <li>
+          {/* <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
@@ -119,7 +120,7 @@ export default function UserDropdown() {
               </svg>
               Configurações
             </DropdownItem>
-          </li>
+          </li> */}
           <li>
             <DropdownItem
               onItemClick={closeDropdown}

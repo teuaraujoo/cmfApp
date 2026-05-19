@@ -1,8 +1,12 @@
 const API_URL = process.env.NEXT_PUBLIC_APP_ORIGIN;
 
-export const apiRoutes = {
+const apiRoutes = {
     url: API_URL,
     login: "/api/auth/login",
     logout: "/api/auth/logout",
-    changePassword: "/api/auth/change-password"
+    changePassword: "/api/auth/change-password",
+    totalAlunos: "/api/alunos/total",
+    totalProfessores: "/api/professores/total"
 };
+
+export default apiRoutes;

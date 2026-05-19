@@ -6,6 +6,7 @@ export const colors = {
     300: "#73CCF5",
     400: "#56b8d9",
     500: "#1FA2E1", // principal
+    500: "#1fa4e14d", // principal
     600: "#178CC5",
     700: "#126F9C",
     800: "#0F5677",

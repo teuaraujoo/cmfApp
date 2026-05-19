@@ -3,17 +3,17 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useSidebar } from "../context/SidebarContext";
+import { useSidebar } from "@/context/SidebarContext";
 import {
   LayoutDashboard,
   CircleUserRound,
   GraduationCap,
   CalendarDays,
-  Settings,
   ChevronDown,
   Component,
   BookOpenText,
-  Ellipsis
+  Ellipsis,
+  FileUser
 } from "lucide-react";
 
 type NavItem = {
@@ -55,10 +55,15 @@ const navItems: NavItem[] = [
     name: "Calendário",
     path: "/dashboard/calendario",
   },
+  // {
+  //   icon: <Settings />,
+  //   name: "Configurações",
+  //   path: "/dashboard/configuracoes",
+  // },
   {
-    icon: <Settings />,
-    name: "Configurações",
-    path: "/dashboard/configuracoes",
+    icon: <FileUser />,
+    name: "Perfil",
+    path: "/dashboard/perfil",
   },
 ];
 
