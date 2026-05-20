@@ -1,14 +1,11 @@
 // achar todas as aulas 
 
 import { AppError } from "@/server/error/app-errors";
-import { requireAdminUser } from "@/server/modules/auth/auth.services";
-import { getAulasNotFinished } from "@/server/modules/aulas/aulas.services";
+import { getAulasNotFinishedForAdmin } from "@/server/modules/aulas/aulas.queries";
 
 export async function GET() {
     try {
-        await requireAdminUser();
-
-        const turmas = await getAulasNotFinished();
+        const turmas = await getAulasNotFinishedForAdmin();
 
         return Response.json(
             {

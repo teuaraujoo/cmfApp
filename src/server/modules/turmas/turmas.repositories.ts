@@ -69,6 +69,10 @@ export class TurmaRepositories {
         })
     };
 
+    static async getTotalTurmas() {
+        return prisma.turmas.count();
+    };
+
     // Achar todas as turmas que o professor ja esta (create) / achar todas as turmas que o professor esta menos a turma que esta sendo atualizada (update)
     static async findTurmasByProfessoresIds(professoresIds: number[], turmaId?: number) {
         return prisma.turmas.findMany({

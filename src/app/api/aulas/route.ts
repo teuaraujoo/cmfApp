@@ -2,16 +2,15 @@
 
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { AppError } from "@/server/error/app-errors";
-import { getAulas, createAula } from "@/server/modules/aulas/aulas.services";
+import { createAula } from "@/server/modules/aulas/aulas.services";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
+import { getAulasForAdmin } from "@/server/modules/aulas/aulas.queries";
 
 export async function GET() {
     try {
-        await requireAdminUser();
-
-        const aula = await getAulas();
+        const aula = await getAulasForAdmin();
 
         return Response.json(
             {

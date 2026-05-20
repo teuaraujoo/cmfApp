@@ -1,13 +1,10 @@
 import { AppError } from "@/server/error/app-errors";
-import { getTotalAlunos } from "@/server/modules/users/users.services";
-import { requireAdminUser } from "@/server/modules/auth/auth.services";
+import { getTotalAlunosForAdimin } from "@/server/modules/users/user.queries";
 
 export async function GET() {
     try {
-        await requireAdminUser();
-        
-        const total = await getTotalAlunos();
-        
+        const total = await getTotalAlunosForAdimin();
+
         return Response.json(
             {
                 message: "Total de alunos encontrados com sucesso!",

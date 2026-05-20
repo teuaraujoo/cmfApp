@@ -8,7 +8,7 @@ export async function getAulas() {
 
     const aulas = await AulasRepositories.getAulasWeek();
 
-    if (!aulas) return new AppError("Error ao encontrar aulas!");
+    if (aulas.length <= 0) return [];
 
     return aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
 };

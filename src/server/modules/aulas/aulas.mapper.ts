@@ -52,7 +52,7 @@ export class AulasMapper {
                 nome: aula.alunos.users.nome,
                 serie: aula.alunos.serie,
             },
-            profesor: {
+            professor: {
                 nome: aula.professores.users.nome,
                 materia: aula.professores.materia
             }
@@ -84,7 +84,7 @@ export class AulasMapper {
             inicio: aula.started_at,
             fim: aula.ended_at,
             encerrada: aula.encerrada,
-            profesor: {
+            professor: {
                 nome: aula.professores.users.nome,
                 materia: aula.professores.materia
             },

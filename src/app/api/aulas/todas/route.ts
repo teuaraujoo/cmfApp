@@ -1,12 +1,9 @@
-import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { AppError } from "@/server/error/app-errors";
-import { getTotalAulas } from "@/server/modules/aulas/aulas.services";
+import { getTotalAulasForAdmin } from "@/server/modules/aulas/aulas.queries";
 
 export async function GET() {
     try {
-        await requireAdminUser();
-
-        const aula = await getTotalAulas();
+        const aula = await getTotalAulasForAdmin();
 
         return Response.json(
             {

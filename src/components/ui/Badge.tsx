@@ -41,23 +41,23 @@ const Badge: React.FC<BadgeProps> = ({
   const variants = {
     light: {
       primary:
-        "bg-brand-50 text-brand-500 dark:bg-brand-500/15 dark:text-brand-400",
+        "bg-sky-50 text-sky-600 dark:bg-sky-500/15 dark:text-sky-400",
       success:
-        "bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500",
+        "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
       error:
-        "bg-error-50 text-error-600 dark:bg-error-500/15 dark:text-error-500",
+        "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-400",
       warning:
-        "bg-warning-50 text-warning-600 dark:bg-warning-500/15 dark:text-orange-400",
-      info: "bg-blue-light-50 text-blue-light-500 dark:bg-blue-light-500/15 dark:text-blue-light-500",
+        "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+      info: "bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
       light: "bg-gray-100 text-gray-700 dark:bg-white/5 dark:text-white/80",
       dark: "bg-gray-500 text-white dark:bg-white/5 dark:text-white",
     },
     solid: {
-      primary: "bg-brand-500 text-white dark:text-white",
-      success: "bg-success-500 text-white dark:text-white",
-      error: "bg-error-500 text-white dark:text-white",
-      warning: "bg-warning-500 text-white dark:text-white",
-      info: "bg-blue-light-500 text-white dark:text-white",
+      primary: "bg-sky-600 text-white dark:text-white",
+      success: "bg-emerald-600 text-white dark:text-white",
+      error: "bg-red-600 text-white dark:text-white",
+      warning: "bg-amber-500 text-white dark:text-white",
+      info: "bg-blue-600 text-white dark:text-white",
       light: "bg-gray-400 dark:bg-white/5 text-white dark:text-white/80",
       dark: "bg-gray-700 text-white dark:text-white",
     },

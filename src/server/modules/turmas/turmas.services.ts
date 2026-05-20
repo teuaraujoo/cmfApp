@@ -18,6 +18,10 @@ export async function getAllTurmas() {
     return turmas.map((turma) => TurmaMapper.toResponseTurmasGet(turma));
 };
 
+export async function getTotalTurmas() {
+    return TurmaRepositories.getTotalTurmas();
+};
+
 export async function getTurmaById(id: number) {
     try {
 

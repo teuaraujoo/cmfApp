@@ -1,13 +1,10 @@
 import { AppError } from "@/server/error/app-errors";
-import { getTotalProfessores } from "@/server/modules/users/users.services";
-import { requireAdminUser } from "@/server/modules/auth/auth.services";
+import { getTotalProfessoresForAdmin } from "@/server/modules/users/user.queries";
 
 export async function GET() {
     try {
-        await requireAdminUser();
+        const total = await getTotalProfessoresForAdmin();
 
-        const total = await getTotalProfessores();
-        
         return Response.json(
             {
                 message: "Total de professores encontrados com sucesso!",
