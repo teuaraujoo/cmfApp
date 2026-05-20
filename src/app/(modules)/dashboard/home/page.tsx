@@ -1,4 +1,5 @@
 import InformationCard from "@/components/dashboard/InformationCard";
+import RecentClasses from "@/components/dashboard/AulasTable";
 
 export default function Home() {
 
@@ -10,6 +11,10 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
 
           <InformationCard />
+
+        </div>
+        <div>
+          <RecentClasses />
 
         </div>
 

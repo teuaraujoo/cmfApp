@@ -29,6 +29,10 @@ export async function getAulasNotFinished() {
     return aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
 };
 
+export async function getTotalAulas() {
+   return AulasRepositories.getTotalAulas();
+};
+
 /* =================   PROFESSOR     =================*/
 
 export async function getAulasByProfessorId(professorId: number) {

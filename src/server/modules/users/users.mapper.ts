@@ -12,7 +12,7 @@ export class UserMapper {
       role: user.role,
       tel: user.tel,
       auth_user_id: authUserId,
-      must_change_password: true,
+      must_change_password: user.role === "ADMIN" ? false : true,
     };
   };
 

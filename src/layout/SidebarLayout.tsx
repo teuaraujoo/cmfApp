@@ -7,10 +7,19 @@ import AppSidebar from "./AppSidebar";
 import Backdrop from "./Backdrop";
 import AppHeader from "./AppHeader";
 
+type HeaderUserInfo = {
+  nome: string;
+  email: string;
+  tel: string | null;
+  role: string | null;
+};
+
 export default function SidebarLayout({
   children,
+  userInfo
 }: {
   children: React.ReactNode;
+  userInfo: HeaderUserInfo;
 }) {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
 
@@ -28,7 +37,9 @@ export default function SidebarLayout({
       <div
         className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}
       >
-        <AppHeader />
+        <AppHeader 
+          userInfo={userInfo}
+        />
         {children}
       </div>
     </div>

@@ -7,7 +7,18 @@ import { logoutUser } from "@/services/auth/auth.client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function UserDropdown() {
+type HeaderUserInfo = {
+  nome: string;
+  email: string;
+  tel: string | null;
+  role: string | null;
+};
+
+export default function UserDropdown({
+  userInfo
+}: {
+  userInfo: HeaderUserInfo
+  }) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -22,19 +33,19 @@ export default function UserDropdown() {
 
   async function handleLogout() {
     await logoutUser();
-    
+
     toast.success("Logout realizado com sucesso!")
 
     router.replace("/dashboard/login");
   };
 
-  return ( 
+  return (
     <div className="relative">
       <button
         onClick={toggleDropdown}
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle cursor-pointer"
       >
-        <span className="block mr-1 font-medium text-theme-sm">Cristiane</span>
+        <span className="block mr-1 font-medium text-theme-sm">{userInfo.nome}</span>
 
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
@@ -62,11 +73,17 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Cristiane Araujo
+            {userInfo.nome}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            cmf@gmail.com
+            {userInfo.email}
           </span>
+          {/* <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+            {userInfo.tel}
+          </span>
+          <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+            {userInfo.role}
+          </span> */}
         </div>
 
         <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
@@ -92,7 +109,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-             
+
               Perfil
             </DropdownItem>
           </li>

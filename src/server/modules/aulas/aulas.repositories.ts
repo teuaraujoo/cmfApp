@@ -74,6 +74,19 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findUnique({ where: { id: aulaId } });
     };
 
+    static async getTotalAulas() {
+        const { start, end } = DateUtils.getCurrentWeekRangeUTC();
+
+        return prisma.aulas_individuais.count({
+            where: {
+                started_at: {
+                    gte: start,
+                    lt: end
+                },
+            }
+        })
+    }
+
     static async getAulasWeekByProfessorId(professorId: number) {
         const { start, end } = DateUtils.getCurrentWeekRangeUTC();
 
