@@ -16,8 +16,12 @@ type AulaValidationContext = {
         fim: number;
     };
 };
+
+type CandidateTurmas = Awaited<
+    ReturnType<typeof TurmaRepositories.findCandidateTurmasByProfessorAndDate>
+>;
 export class AulaValidation {
-    
+
     static async validateAula(aula: CreateAulasBody) {
         const context = this.buildContext(aula);
 
@@ -89,22 +93,7 @@ export class AulaValidation {
                 context.startedAt
             );
 
-        for (const turma of candidateTurmas) {
-            for (const agenda of turma.turma_agenda) {
-                const isInsideVigencia =
-                    context.dataOnly >= DateUtils.toDateOnlyValue(turma.vigencia_inicio!) &&
-                    context.dataOnly <= DateUtils.toDateOnlyValue(turma.vigencia_fim!);
-
-                const horariosTurma = {
-                    inicio: DateUtils.dateToMinutes(agenda.horario_inicio),
-                    fim: DateUtils.dateToMinutes(agenda.horario_fim),
-                };
-
-                if (isInsideVigencia && hasConflict(context.horarios, horariosTurma)) {
-                    throw new AppError("Professor já possui turma nesse dia e horário!", 400);
-                };
-            };
-        };
+        this.validateTurmaAula(candidateTurmas, context, "Professor já possui turma nesse dia e horário!");
     };
 
     private static async validateAlunoTurmaConflicts(aula: CreateAulasBody, context: AulaValidationContext) {
@@ -115,6 +104,11 @@ export class AulaValidation {
                 context.startedAt
             );
 
+        this.validateTurmaAula(candidateTurmas, context, "Aluno já possui turma nesse dia e horário!")
+    };
+
+    private static validateTurmaAula(candidateTurmas: CandidateTurmas, context: AulaValidationContext, conflictMessage: string) {
+
         for (const turma of candidateTurmas) {
             for (const agenda of turma.turma_agenda) {
                 const isInsideVigencia =
@@ -127,11 +121,11 @@ export class AulaValidation {
                 };
 
                 if (isInsideVigencia && hasConflict(context.horarios, horariosTurma)) {
-                    throw new AppError("Aluno já possui turma nesse dia e horário!", 400);
+                    throw new AppError(conflictMessage, 400);
                 };
             };
         };
-    };
+    }
 };
 
 function hasConflict(fresh: { inicio: number, fim: number }, current: { inicio: number, fim: number }) {
