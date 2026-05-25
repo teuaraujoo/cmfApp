@@ -3,6 +3,7 @@ import { AulasRepositories } from "./aulas.repositories";
 import { AulasMapper } from "./aulas.mapper";
 import { CreateAulasBody, createAulasSchema, updateAulaSchema } from "./aulas.schemas";
 import { AulaValidation } from "./aulas.validation";
+import { ModalidadeRepositories } from "../modalidades/modalidades.repositories";
 
 export async function getAulas() {
 
@@ -30,7 +31,30 @@ export async function getAulasNotFinished() {
 };
 
 export async function getTotalAulas() {
-   return AulasRepositories.getTotalAulas();
+    return AulasRepositories.getTotalAulas();
+};
+
+export async function getAulasCountByModalidade() {
+
+    const groupedAulas = await AulasRepositories.getAulasCountByModalidade();
+    
+    if (!groupedAulas.length) {
+        return [];
+    };
+
+    const modalidadeIds = groupedAulas.map((item) => item.modalidade_id);
+
+    const modalidades = await ModalidadeRepositories.getModalidadeByAulaModalidadeId(modalidadeIds);
+    
+    const modalidadeById = new Map(
+        modalidades.map((modalidade) => [modalidade.id, modalidade.tipo])
+    );
+
+    return groupedAulas.map((item) => ({
+        modalidade_id: item.modalidade_id,
+        modalidade: modalidadeById.get(item.modalidade_id) ?? "Sem modalidade",
+        total: item._count.id,
+    }));
 };
 
 /* =================   PROFESSOR     =================*/

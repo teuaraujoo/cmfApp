@@ -3,6 +3,21 @@ import { Prisma } from "@/generated/prisma/client";
 import { DateUtils } from "@/server/utils/date-utils";
 
 export class AulasRepositories {
+    static async getAulasCountByModalidade() {
+        return prisma.aulas_individuais.groupBy({
+            by: ["modalidade_id"],
+            _count: {
+                id: true,
+            },
+            orderBy: {
+                _count: {
+                    id: "desc",
+                },
+            },
+        });
+
+    
+    };
 
     static async getAllAulas() {
         return prisma.aulas_individuais.findMany({

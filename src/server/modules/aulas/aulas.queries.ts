@@ -1,5 +1,5 @@
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
-import { getAllAulas, getAulas, getAulasNotFinished, getTotalAulas } from "./aulas.services";
+import { getAllAulas, getAulas, getAulasCountByModalidade, getAulasNotFinished, getTotalAulas } from "./aulas.services";
 
 
 export async function getAulasForAdmin() {
@@ -20,4 +20,9 @@ export async function getAulasNotFinishedForAdmin() {
 export async function getTotalAulasForAdmin() {
     await requireAdminUser();
     return getTotalAulas();
+};
+
+export async function getAulasCountByModalidadeForAdmin() {
+    await requireAdminUser();
+    return getAulasCountByModalidade();
 };

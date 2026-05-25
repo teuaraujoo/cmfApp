@@ -1,5 +1,8 @@
 import InformationCard from "@/components/dashboard/InformationCard";
 import RecentClasses from "@/components/dashboard/AulasTable";
+import StatisticsChart from "@/components/dashboard/StatisticsChart";
+import PendingAulasCard from "@/components/dashboard/PendingAulasCard";
+import RecentStudentsGrid from "@/components/dashboard/RecentStudentsGrid";
 
 export default function Home() {
 
@@ -13,9 +16,13 @@ export default function Home() {
           <InformationCard />
 
         </div>
-        <div>
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,2fr)_360px]">
+          <StatisticsChart />
+          <PendingAulasCard />
+        </div>
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+          <RecentStudentsGrid />
           <RecentClasses />
-
         </div>
 
       </div>

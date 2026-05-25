@@ -11,6 +11,20 @@ export class ModalidadeRepositories {
         return prisma.modalidades.findUnique({ where: { id } });
     };
 
+    static async getModalidadeByAulaModalidadeId(modalidadeIds: number[]) {
+        return prisma.modalidades.findMany({
+            where: {
+                id: {
+                    in: modalidadeIds,
+                },
+            },
+            select: {
+                id: true,
+                tipo: true,
+            },
+        });
+    }
+
     static async newModalidade(modalidade: Prisma.modalidadesCreateInput) {
         return prisma.modalidades.create({ data: modalidade });
     };
