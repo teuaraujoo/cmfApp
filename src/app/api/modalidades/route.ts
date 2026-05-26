@@ -3,13 +3,14 @@ import { AppError } from "@/server/error/app-errors";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
-import { getAllModalidades, createModalidade } from "@/server/modules/modalidades/modalidades.services";
+import { createModalidade } from "@/server/modules/modalidades/modalidades.services";
+import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
 
 export async function GET() {
   try {
     await requireAdminUser();
 
-    const modalidades = await getAllModalidades();
+    const modalidades = await getAllModalidadesForAdmin();
 
     return Response.json(
       {

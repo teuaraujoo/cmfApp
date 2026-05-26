@@ -5,6 +5,7 @@ const apiRoutes = {
     login: "/api/auth/login",
     logout: "/api/auth/logout",
     changePassword: "/api/auth/change-password",
+    users: "/api/users",
     totalAlunos: "/api/alunos/total",
     totalProfessores: "/api/professores/total"
 };

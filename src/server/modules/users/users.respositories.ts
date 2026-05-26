@@ -67,7 +67,8 @@ export class AlunosRepositories {
         created_at: "desc"
       },
       include: {
-        users: true
+        users: true,
+        modalidades: true
       }
     });
   };

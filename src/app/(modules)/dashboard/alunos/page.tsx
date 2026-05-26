@@ -1,10 +1,9 @@
-export default function AlunosPage() {
-  return (
-    <main className="p-6">
-      <h1 className="text-2xl font-semibold">Todos os alunos</h1>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-        Pagina placeholder para testar a navegacao da sidebar.
-      </p>
-    </main>
-  );
-}
+import StudentsDashboardPage from "@/components/alunos/AlunoDashboardPage";
+import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
+import { getAllAlunosForAdmin } from "@/server/modules/users/user.queries";
+
+export default async function AlunosPage() {
+  const alunos = await getAllAlunosForAdmin();
+  const modalidades = await getAllModalidadesForAdmin();
+  return <StudentsDashboardPage alunos={alunos} modalidades={modalidades}/>;
+};

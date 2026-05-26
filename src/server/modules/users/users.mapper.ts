@@ -2,6 +2,13 @@ import { CreateUserBody, UpdateUserBody } from "@/server/modules/users/user.sche
 import { public_users } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 
+export type AlunosWithRelations = Prisma.alunosGetPayload<{
+  include: {
+    users: true,
+    modalidades: true
+  }
+}>;
+
 export class UserMapper {
 
   // formata payload de user para o prisma
@@ -46,7 +53,6 @@ export class UserMapper {
       id: response.id,
       auth_user_id: response.auth_user_id,
       nome: response.nome,
-      email: response.email,
       role: response.role,
       status: response.status,
       must_change_password: response.must_change_password,
@@ -58,10 +64,7 @@ export class UserMapper {
     return {
       id: response.id,
       auth_user_id: response.auth_user_id,
-      nome: response.nome,
-      email: response.email,
       role: response.role,
-      status: response.status,
       must_change_password: response.must_change_password,
     };
   };
@@ -86,7 +89,7 @@ export class AlunoMapper {
     };
   };
 
-  static toResponseAlunoGet(aluno: Prisma.alunosUncheckedCreateInput, user: Prisma.public_usersUncheckedCreateInput) {
+  static toResponseAlunoGet(aluno: AlunosWithRelations, user: Prisma.public_usersUncheckedCreateInput) {
     return {
       id: aluno.id,
       user_id: aluno.user_id,
@@ -99,10 +102,10 @@ export class AlunoMapper {
       serie: aluno.serie,
       resp_tel: aluno.resp_tel,
       resp_nome: aluno.resp_nome,
-      modalidade: aluno.modalidade_id,
-      tempo_aula: aluno.tempo_aula,
-      horas_semana: aluno.horas_semana,
-      tempo_contrato: aluno.tempo_contrato,
+      modalidade: aluno.modalidades.tipo,
+      tempo_aula: Number(aluno.tempo_aula),
+      horas_semana: Number(aluno.horas_semana),
+      tempo_contrato: Number(aluno.tempo_contrato),
     };
   };
 };

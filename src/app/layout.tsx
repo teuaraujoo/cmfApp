@@ -30,6 +30,9 @@ export default function RootLayout({
          <Toaster
           position="bottom-right"
           reverseOrder={false}
+          containerStyle={{
+            zIndex: 200000,
+          }}
           toastOptions={{
             duration: 4000,
 
