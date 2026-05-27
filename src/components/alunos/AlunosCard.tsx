@@ -22,7 +22,7 @@ function AlunoStatusBadge({ status }: { status?: string }) {
   const statusClassName =
     status === "ATIVO"
       ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
-      : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+      : "bg-red-200 text-red-700 dark:bg-red-500/10 dark:text-red-300";
 
   return (
     <span

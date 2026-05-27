@@ -119,24 +119,24 @@ export async function updateUser(body: UpdateUserBody, id: number) {
   }
 };
 
-export async function inactiveUser(id: number) {
+export async function inactiveUser(userId: number) {
   try {
 
-    const user = await UsersRepositories.getById(id);
+    const user = await UsersRepositories.getById(userId);
 
     if (!user) {
       throw new AppError("Usuário não encontrado!", 404);
     };
 
     return prisma.$transaction(async (tx) => {
-      const userDel = await UsersRepositories.inactivePublicUser(tx, id);
+      const userDel = await UsersRepositories.inactivePublicUser(tx, userId);
 
       if (user.role === "ALUNO") {
-        await AlunosRepositories.inactiveAluno(tx, id);
+        await AlunosRepositories.inactiveAluno(tx, userId);
       };
 
       if (user.role === "PROFESSOR") {
-        await ProfessoresRepositories.inactiveProfessor(tx, id);
+        await ProfessoresRepositories.inactiveProfessor(tx, userId);
       };
 
       return UserMapper.toResponseAdmin(userDel);
@@ -152,24 +152,24 @@ export async function inactiveUser(id: number) {
   };
 };
 
-export async function activeUser(id: number) {
+export async function activeUser(userId: number) {
   try {
 
-    const user = await UsersRepositories.getById(id);
+    const user = await UsersRepositories.getById(userId);
 
     if (!user) {
       throw new AppError("Usuário não encontrado!", 404);
     };
 
     return prisma.$transaction(async (tx) => {
-      const userAct = await UsersRepositories.activePublicUser(tx, id);
+      const userAct = await UsersRepositories.activePublicUser(tx, userId);
 
       if (user.role === "ALUNO") {
-        await AlunosRepositories.activeAluno(tx, id);
+        await AlunosRepositories.activeAluno(tx, userId);
       };
 
       if (user.role === "PROFESSOR") {
-        await ProfessoresRepositories.activeProfessor(tx, id);
+        await ProfessoresRepositories.activeProfessor(tx, userId);
       };
 
       return UserMapper.toResponseAdmin(userAct);
@@ -194,7 +194,7 @@ export async function getAllAlunos() {
     throw new AppError("Error ao encontrar alunos!", 404);
   };
 
-  return alunos.map((aluno) => AlunoMapper.toResponseAlunoGet(aluno, aluno.users));
+  return alunos.map((aluno) => AlunoMapper.toResponseAlunoGet(aluno));
 };
 
 export async function getTotalAlunos() {
@@ -208,7 +208,7 @@ export async function getAlunoByUserId(userId: number) {
     throw new AppError("Error ao encontrar aluno!", 404);
   };
 
-  return AlunoMapper.toResponseAlunoGet(aluno, aluno.users);
+  return AlunoMapper.toResponseAlunoGet(aluno);
 };
 
 /* =================    PROFESSOR     =================*/

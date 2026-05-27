@@ -83,7 +83,8 @@ export class AlunosRepositories {
         user_id: id
       },
       include: {
-        users: true
+        users: true,
+        modalidades: true
       }
     });
   };

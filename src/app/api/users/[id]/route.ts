@@ -44,7 +44,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         const { id } = await params;
         const user = await inactiveUser(Number(id));
 
-        return Response.json({ message: "Usuário inativado com sucesso!", data: user }, { status: 200 });
+        return Response.json({ message: "Usuário desativado com sucesso!", data: user }, { status: 200 });
 
     } catch (err) {
         if (err instanceof AppError) {

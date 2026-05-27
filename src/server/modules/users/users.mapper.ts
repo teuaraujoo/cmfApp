@@ -89,14 +89,14 @@ export class AlunoMapper {
     };
   };
 
-  static toResponseAlunoGet(aluno: AlunosWithRelations, user: Prisma.public_usersUncheckedCreateInput) {
+  static toResponseAlunoGet(aluno: AlunosWithRelations) {
     return {
       id: aluno.id,
       user_id: aluno.user_id,
-      nome: user.nome,
-      email: user.email,
-      role: user.role,
-      tel: user.tel,
+      nome: aluno.users.nome,
+      email: aluno.users.email,
+      role: aluno.users.role,
+      tel: aluno.users.tel,
       status: aluno.status,
       data_nasc: aluno.data_nasc,
       serie: aluno.serie,

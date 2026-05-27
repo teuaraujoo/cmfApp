@@ -19,6 +19,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AlunosForm from "./AlunosForm";
+import { inactiveUser, activeUser } from "@/services/alunos/alunos.client";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type Aluno = {
   id?: number;
@@ -94,8 +97,9 @@ export default function StudentsDashboardPage({
   alunos: Aluno[];
   modalidades: Modalidade[];
 }) {
+  const router = useRouter();
   const [search, setSearch] = useState("");
-  const [selectedStudent, setSelectedStudent] = useState<Aluno | null>(null);
+  const [selectedAluno, setSelectedStudent] = useState<Aluno | null>(null);
   const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
   const {
     loading,
@@ -106,6 +110,7 @@ export default function StudentsDashboardPage({
   } = useCreateAlunoForm({
     onSuccess: () => {
       setIsCreatePanelOpen(false);
+      refreshAlunos();
     },
   });
 
@@ -138,6 +143,37 @@ export default function StudentsDashboardPage({
   function closeSidePanel() {
     setSelectedStudent(null);
     setIsCreatePanelOpen(false);
+  };
+
+  async function handleToggleAlunoStatus() {
+    if (!selectedAluno) {
+      return;
+    };
+
+    const isActive = selectedAluno.status === "ATIVO";
+    const result = isActive
+      ? await toast.promise(inactiveUser(selectedAluno.user_id), {
+        loading: 'Carregando...',
+        success: (response) => response?.message,
+        error: (error) => error?.message || "Error ao conectar com o servidor!",
+      })
+      : await toast.promise(activeUser(selectedAluno.user_id), {
+        loading: 'Carregando...',
+        success: (response) => response?.message,
+        error: (error) => error?.message || "Error ao conectar com o servidor!",
+      });
+
+    if (result?.err) {
+      toast.error(result.err);
+      return;
+    };
+
+    setSelectedStudent(null);
+    refreshAlunos();
+  };
+
+  function refreshAlunos() {
+    router.refresh();
   };
 
   return (
@@ -173,7 +209,7 @@ export default function StudentsDashboardPage({
       </div>
 
       <div
-        className={`fixed inset-0 z-[100000] transition ${selectedStudent || isCreatePanelOpen
+        className={`fixed inset-0 z-[100000] transition ${selectedAluno || isCreatePanelOpen
           ? "pointer-events-auto bg-gray-900/50 backdrop-blur-[1px]"
           : "pointer-events-none bg-transparent"
           }`}
@@ -181,7 +217,7 @@ export default function StudentsDashboardPage({
       />
 
       <aside
-        className={`fixed right-0 top-0 z-[100001] h-screen w-full max-w-md transform border-l border-gray-200 bg-white shadow-2xl transition-transform duration-300 dark:border-gray-800 dark:bg-gray-900 ${selectedStudent || isCreatePanelOpen
+        className={`fixed right-0 top-0 z-[100001] h-screen w-full max-w-md transform border-l border-gray-200 bg-white shadow-2xl transition-transform duration-300 dark:border-gray-800 dark:bg-gray-900 ${selectedAluno || isCreatePanelOpen
           ? "translate-x-0"
           : "translate-x-full"
           }`}
@@ -195,7 +231,7 @@ export default function StudentsDashboardPage({
               <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
                 {isCreatePanelOpen
                   ? "Novo aluno"
-                  : selectedStudent?.nome ?? "Aluno"}
+                  : selectedAluno?.nome ?? "Aluno"}
               </h2>
             </div>
 
@@ -219,7 +255,7 @@ export default function StudentsDashboardPage({
                 onCancel={closeSidePanel}
               />
             </div>
-          ) : selectedStudent ? (
+          ) : selectedAluno ? (
             <div className="side-panel-scroll flex-1 space-y-6 overflow-y-auto px-5 py-5 sm:px-6">
 
               <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-5 dark:border-gray-800 dark:bg-gray-800/20">
@@ -232,16 +268,16 @@ export default function StudentsDashboardPage({
 
                     <div className="min-w-0">
                       <p className="truncate text-lg font-semibold text-gray-900 dark:text-white">
-                        {selectedStudent.nome}
+                        {selectedAluno.nome}
                       </p>
 
                       <div className="mt-3">
-                        {getAge(selectedStudent.data_nasc)} anos
+                        {getAge(selectedAluno.data_nasc)} anos
                       </div>
 
                       <div className="mt-3">
                         <AlunoStatusBadge
-                          status={selectedStudent.status ?? "INATIVO"}
+                          status={selectedAluno.status ?? "INATIVO"}
                         />
                       </div>
                     </div>
@@ -258,10 +294,11 @@ export default function StudentsDashboardPage({
                       </DropdownMenuItem>
 
                       <DropdownMenuItem
+                        onClick={() => handleToggleAlunoStatus()}
                         className={`cursor-pointer dark:hover:bg-gray-700 
-                        ${selectedStudent.status === "ATIVO" ? "text-red-500" : "text-green-500"}`}
+                        ${selectedAluno.status === "ATIVO" ? "text-red-500" : "text-green-500"}`}
                       >
-                        {selectedStudent.status === "ATIVO" ? "Desativar" : "Ativar"}
+                        {selectedAluno.status === "ATIVO" ? "Desativar" : "Ativar"}
                       </DropdownMenuItem>
 
                     </DropdownMenuContent>
@@ -279,12 +316,12 @@ export default function StudentsDashboardPage({
                     <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
                       <Mail className="size-4 text-gray-400 dark:text-gray-500" />
                       <span className="break-all sm:break-words">
-                        {selectedStudent.email}
+                        {selectedAluno.email}
                       </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
                       <Phone className="size-4 text-gray-400 dark:text-gray-500" />
-                      <span>{selectedStudent.tel ?? "-"}</span>
+                      <span>{selectedAluno.tel ?? "-"}</span>
                     </div>
                   </div>
                 </div>
@@ -299,7 +336,7 @@ export default function StudentsDashboardPage({
                         Serie
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {selectedStudent.serie ?? "-"}
+                        {selectedAluno.serie ?? "-"}
                       </p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
@@ -307,7 +344,7 @@ export default function StudentsDashboardPage({
                         Tempo de aula
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatDisplayValue(selectedStudent.tempo_aula)}
+                        {formatDisplayValue(selectedAluno.tempo_aula)}
                       </p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
@@ -315,7 +352,7 @@ export default function StudentsDashboardPage({
                         Horas semanais
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatDisplayValue(selectedStudent.horas_semana)}
+                        {formatDisplayValue(selectedAluno.horas_semana)}
                       </p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
@@ -323,7 +360,7 @@ export default function StudentsDashboardPage({
                         Tempo de contrato
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatDisplayValue(selectedStudent.tempo_contrato)}
+                        {formatDisplayValue(selectedAluno.tempo_contrato)}
                       </p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
@@ -331,7 +368,7 @@ export default function StudentsDashboardPage({
                         Modalidade
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatDisplayValue(selectedStudent.modalidade)}
+                        {formatDisplayValue(selectedAluno.modalidade)}
                       </p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
@@ -339,7 +376,7 @@ export default function StudentsDashboardPage({
                         Data de Nascimento
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatBirthDay(selectedStudent.data_nasc)}
+                        {formatBirthDay(selectedAluno.data_nasc)}
                       </p>
                     </div>
                   </div>
@@ -355,7 +392,7 @@ export default function StudentsDashboardPage({
                         Nome
                       </p>
                       <p className="mt-1 break-words text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {selectedStudent.resp_nome ?? "-"}
+                        {selectedAluno.resp_nome ?? "-"}
                       </p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
@@ -363,7 +400,7 @@ export default function StudentsDashboardPage({
                         Telefone
                       </p>
                       <p className="mt-1 break-words text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {selectedStudent.resp_tel ?? "-"}
+                        {selectedAluno.resp_tel ?? "-"}
                       </p>
                     </div>
                   </div>

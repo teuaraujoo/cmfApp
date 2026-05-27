@@ -31,11 +31,53 @@ export async function createAluno(aluno: CreateAlunoPayload) {
 
         const result = await response.json();
 
-        if (!response.ok) return { err: result.message ?? "Não foi possível criar aluno." }
+        if (!response.ok) return { err: result.message ?? "Não foi possível criar aluno." };
 
         return result;
 
     } catch {
-        return { err: "Não foi possível conectar ao servidor." }
+        return { err: "Nao foi possivel conectar ao servidor." };
+    };
+};
+
+export async function inactiveUser(id: number) {
+    try {
+        const response = await fetch(`${apiRoutes.users}/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) return { err: result.message ?? "Nao foi possivel inativar aluno." };
+
+        return result;
+
+    } catch {
+        return { err: "Nao foi possivel conectar ao servidor." };
+    };
+};
+
+export async function activeUser(id: number) {
+    try {
+        const response = await fetch(`${apiRoutes.users}/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) return { err: result.message ?? "Nao foi possivel ativar aluno." };
+
+        return result;
+
+    } catch {
+        return { err: "Nao foi possivel conectar ao servidor." };
     };
 };

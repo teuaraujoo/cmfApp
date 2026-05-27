@@ -44,10 +44,10 @@ type UseCreateAlunoFormParams = {
 
 export function useCreateAlunoForm({
   onSuccess,
-}: UseCreateAlunoFormParams = {}) {
+}: UseCreateAlunoFormParams = {}
+) {
   const [loading, setLoading] = useState(false);
-  const [alunoForm, setAlunoForm] =
-    useState<AlunoFormState>(INITIAL_STUDENT_FORM);
+  const [alunoForm, setAlunoForm] = useState<AlunoFormState>(INITIAL_STUDENT_FORM);
 
   function handleFormFieldChange(
     field: keyof AlunoFormState,
@@ -94,7 +94,7 @@ export function useCreateAlunoForm({
         return;
       };
 
-      toast.success("Aluno salvo com sucesso!");
+      toast.success(request?.message);
 
       resetForm();
       onSuccess?.();
