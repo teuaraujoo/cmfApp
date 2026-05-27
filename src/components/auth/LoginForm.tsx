@@ -50,7 +50,7 @@ export default function LoginForm() {
       if (result.data.must_change_password) {
         router.replace("/change-password");
       } else {
-        toast.success("Login realizado com suceeso. Bem vindo!")
+        toast.success(`${result.message} Bem vindo(a)`);
         router.replace("/portal");
       };
 

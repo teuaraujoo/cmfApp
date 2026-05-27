@@ -57,7 +57,7 @@ export default function AdminLoginForm({
                 return;
             };
 
-            toast.success("Login realizado com sucesso. Bem vindo!")
+            toast.success(`${result.message} Bem vindo(a)!`)
             router.replace("/dashboard/home");
             
         } catch {
