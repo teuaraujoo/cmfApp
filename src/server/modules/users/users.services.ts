@@ -30,7 +30,7 @@ export async function createUser(body: CreateUserBody) {
 
   const { data: authData, error: authError } = await adminSupabase.auth.admin.createUser({
     email: data.email,
-    password: data.temporary_password,
+    password: 'Temporaria1234@',
     email_confirm: true,
     user_metadata: {
       role: data.role,
@@ -249,6 +249,12 @@ async function validateUser(data: CreateUserBody) {
 
   if (data.role === "ALUNO" && !data.aluno) {
     throw new AppError("Dados do aluno são obrigatórios!", 400);
+  };
+
+  if (data.role === "ALUNO") {
+    if (data.aluno!.resp_tel.length > 11) {
+      throw new AppError("Número do responsável inválido", 400);
+    };
   };
 
   if (data.role === "PROFESSOR" && !data.professor) {

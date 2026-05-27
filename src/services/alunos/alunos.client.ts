@@ -18,6 +18,8 @@ type CreateAlunoPayload = {
     };
 };
 
+type UpdateAlunoPayload = Omit<CreateAlunoPayload, "temporary_password">;
+
 export async function createAluno(aluno: CreateAlunoPayload) {
     try {
         const response = await fetch(`${apiRoutes.users}`, {
@@ -40,9 +42,31 @@ export async function createAluno(aluno: CreateAlunoPayload) {
     };
 };
 
-export async function inactiveUser(id: number) {
+export async function updateAluno(aluno: UpdateAlunoPayload, userId: number) {
     try {
-        const response = await fetch(`${apiRoutes.users}/${id}`, {
+        const response = await fetch(`${apiRoutes.users}/${userId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(aluno)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) return { err: result.message ?? "Não foi possível atualizar aluno." };
+
+        return result;
+
+    } catch {
+        return { err: "Nao foi possivel conectar ao servidor." };
+    };
+};
+
+export async function inactiveUser(userId: number) {
+    try {
+        const response = await fetch(`${apiRoutes.users}/${userId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -61,9 +85,9 @@ export async function inactiveUser(id: number) {
     };
 };
 
-export async function activeUser(id: number) {
+export async function activeUser(userId: number) {
     try {
-        const response = await fetch(`${apiRoutes.users}/${id}`, {
+        const response = await fetch(`${apiRoutes.users}/${userId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"

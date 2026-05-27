@@ -102,6 +102,7 @@ export class AlunoMapper {
       serie: aluno.serie,
       resp_tel: aluno.resp_tel,
       resp_nome: aluno.resp_nome,
+      modalidade_id: aluno.modalidade_id,
       modalidade: aluno.modalidades.tipo,
       tempo_aula: Number(aluno.tempo_aula),
       horas_semana: Number(aluno.horas_semana),
@@ -140,4 +141,3 @@ export class ProfessorMapper {
     };
   };
 };
-

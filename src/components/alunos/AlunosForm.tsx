@@ -1,8 +1,6 @@
-"use client"
+"use client";
 
-import {
-    Plus,
-} from "lucide-react";
+import { Plus } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -15,18 +13,34 @@ import {
 import { Field, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import type { FormEvent } from "react";
-import type { AlunoFormState } from "@/hooks/alunos/useAlunoForm";
 
 type Modalidade = {
     id: number;
     tipo: string;
 };
 
+type AlunoFormInitialData = {
+    nome?: string;
+    email?: string;
+    tel?: string | null;
+    status?: string;
+    data_nasc?: string | Date | null;
+    serie?: string | null;
+    resp_tel?: string | null;
+    resp_nome?: string | null;
+    modalidade_id?: number | null;
+    tempo_aula?: unknown;
+    horas_semana?: unknown;
+    tempo_contrato?: unknown;
+};
+
 type AlunosFormProps = {
+    mode: "create" | "update";
+    aluno?: AlunoFormInitialData | null;
     modalidades: Modalidade[];
     loading: boolean;
-    alunoForm: AlunoFormState;
-    onFieldChange: (field: keyof AlunoFormState, value: string) => void;
+    error: string;
+    tempPassword?: string;
     onSubmit: (event: FormEvent<HTMLFormElement>) => void;
     onCancel: () => void;
 };
@@ -41,10 +55,20 @@ const series = [
     { id: 7, tipo: "3º Ano do Ensino Médio" },
 ];
 
-export default function AlunosForm({ modalidades, loading, alunoForm, onFieldChange, onSubmit, onCancel }: AlunosFormProps) {
+export default function AlunosForm({
+    mode,
+    aluno,
+    modalidades,
+    loading,
+    error,
+    tempPassword,
+    onSubmit,
+    onCancel,
+}: AlunosFormProps) {
+    const isUpdate = mode === "update";
+    const birthDateValue = aluno?.data_nasc ? new Date(aluno.data_nasc).toISOString().slice(0, 10) : "";
 
     return (
-
         <form className="space-y-6" onSubmit={onSubmit}>
             <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-5 dark:border-gray-800 dark:bg-gray-800/20">
                 <div className="flex items-center gap-4">
@@ -53,10 +77,12 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                     </div>
                     <div>
                         <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                            Adicionar novo aluno
+                            {isUpdate ? "Editar aluno" : "Adicionar novo aluno"}
                         </p>
                         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Preencha os dados abaixo para criar um aluno.
+                            {isUpdate
+                                ? "Atualize os dados abaixo para salvar as alterações."
+                                : "Preencha os dados abaixo para criar um aluno."}
                         </p>
                     </div>
                 </div>
@@ -72,40 +98,22 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="nome"
                             type="text"
                             name="nome"
-                            value={alunoForm.nome}
-                            onChange={(event) =>
-                                onFieldChange("nome", event.target.value)
-                            }
+                            defaultValue={aluno?.nome ?? ""}
                             required
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
                     </Field>
 
-
                     <Field className="space-y-2">
                         <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Série
                         </FieldLabel>
-                        <Select
-                            value={alunoForm.serie}
-                            onValueChange={(value) =>
-                                onFieldChange("serie", value ?? "")
-                            }
-                        >
+                        <Select name="serie" defaultValue={aluno?.serie ?? undefined} required>
                             <SelectTrigger
-                                name="serie"
                                 id="serie"
                                 className="h-14 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                             >
-
-                                <SelectValue>
-                                    {
-                                        series.find(
-                                            (serie) =>
-                                                String(serie.id) === String(alunoForm.serie)
-                                        )?.tipo
-                                    }
-                                </SelectValue>
+                                <SelectValue placeholder="Selecione a série" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
@@ -113,7 +121,7 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                                     {series.map((serie) => (
                                         <SelectItem
                                             key={serie.id}
-                                            value={serie.id}
+                                            value={serie.tipo}
                                             className="cursor-pointer"
                                         >
                                             {serie.tipo}
@@ -133,11 +141,8 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                         id="email"
                         type="email"
                         name="email"
+                        defaultValue={aluno?.email ?? ""}
                         required
-                        value={alunoForm.email}
-                        onChange={(event) =>
-                            onFieldChange("email", event.target.value)
-                        }
                         className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                     />
                 </Field>
@@ -148,22 +153,19 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             Modalidade
                         </FieldLabel>
                         <Select
-                            value={alunoForm.modalidade}
-                            onValueChange={(value) =>
-                                onFieldChange("modalidade", value ?? "")
+                            name="modalidade"
+                            defaultValue={
+                                aluno?.modalidade_id ? String(aluno.modalidade_id) : undefined
                             }
+                            required
                         >
                             <SelectTrigger
-                                name="modalidade"
                                 id="modalidade"
                                 className="h-14 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                             >
-                                <SelectValue>
-                                    {
-                                        modalidades.find(
-                                            (modalidade) =>
-                                                String(modalidade.id) === String(alunoForm.modalidade)
-                                        )?.tipo
+                                <SelectValue placeholder="Selecione a modalidade">
+                                    {(value) => modalidades.find((modalidade) => String(modalidade.id) === String(value))
+                                        ?.tipo ?? "Selecione a modalidade"
                                     }
                                 </SelectValue>
                             </SelectTrigger>
@@ -192,10 +194,7 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="dataNasc"
                             type="date"
                             name="dataNasc"
-                            value={alunoForm.dataNasc}
-                            onChange={(event) =>
-                                onFieldChange("dataNasc", event.target.value)
-                            }
+                            defaultValue={birthDateValue}
                             required
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
@@ -211,11 +210,8 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="telefone"
                             type="tel"
                             name="telefone"
+                            defaultValue={aluno?.tel ?? ""}
                             required
-                            value={alunoForm.telefone}
-                            onChange={(event) =>
-                                onFieldChange("telefone", event.target.value)
-                            }
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
                     </Field>
@@ -228,7 +224,7 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="status"
                             type="text"
                             name="status"
-                            value={alunoForm.status}
+                            defaultValue={aluno?.status ?? "ATIVO"}
                             readOnly
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
@@ -244,10 +240,8 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="horasSemana"
                             type="number"
                             name="horasSemana"
-                            value={alunoForm.horasSemana}
-                            onChange={(event) =>
-                                onFieldChange("horasSemana", event.target.value)
-                            }
+                            min={1}
+                            defaultValue={String(aluno?.horas_semana ?? "")}
                             required
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
@@ -261,10 +255,8 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="tempoAula"
                             type="number"
                             name="tempoAula"
-                            value={alunoForm.tempoAula}
-                            onChange={(event) =>
-                                onFieldChange("tempoAula", event.target.value)
-                            }
+                            min={1}
+                            defaultValue={String(aluno?.tempo_aula ?? "")}
                             required
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
@@ -280,31 +272,28 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="tempoContrato"
                             type="number"
                             name="tempoContrato"
-                            value={alunoForm.tempoContrato}
-                            onChange={(event) =>
-                                onFieldChange(
-                                    "tempoContrato",
-                                    event.target.value
-                                )
-                            }
+                            min={1}
+                            defaultValue={String(aluno?.tempo_contrato ?? "")}
                             required
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
                     </Field>
 
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Senha temporaria
-                        </FieldLabel>
-                        <Input
-                            id="tempPassword"
-                            type="password"
-                            name="tempPassword"
-                            value={alunoForm.tempPassword}
-                            readOnly
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
+                    {!isUpdate ? (
+                        <Field className="space-y-2">
+                            <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Senha temporaria
+                            </FieldLabel>
+                            <Input
+                                id="tempPassword"
+                                type="password"
+                                name="tempPassword"
+                                defaultValue={tempPassword}
+                                readOnly
+                                className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
+                            />
+                        </Field>
+                    ) : null}
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -316,10 +305,7 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="respNome"
                             type="text"
                             name="respNome"
-                            value={alunoForm.respNome}
-                            onChange={(event) =>
-                                onFieldChange("respNome", event.target.value)
-                            }
+                            defaultValue={aluno?.resp_nome ?? ""}
                             required
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
@@ -333,10 +319,7 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                             id="respTel"
                             type="tel"
                             name="respTel"
-                            value={alunoForm.respTel}
-                            onChange={(event) =>
-                                onFieldChange("respTel", event.target.value)
-                            }
+                            defaultValue={aluno?.resp_tel ?? ""}
                             required
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
@@ -344,23 +327,31 @@ export default function AlunosForm({ modalidades, loading, alunoForm, onFieldCha
                 </div>
             </div>
 
+            {error && (
+                <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300">
+                    {error}
+                </p>
+            )}
+
             <div className="flex flex-col gap-3 border-t border-gray-200 pt-5 dark:border-gray-800 sm:flex-row sm:justify-end">
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="cursor-pointer inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                    className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                 >
                     Cancelar
                 </button>
                 <button
                     type="submit"
                     disabled={loading}
-                    className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-xl bg-[#1FA2E1] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#178CC5]"
+                    className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#1FA2E1] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#178CC5] disabled:cursor-not-allowed disabled:opacity-70"
                 >
                     <Plus className="size-4" />
-                    {loading ? "Criando..." : "Criar aluno"}
+                    {loading
+                        ? isUpdate ? "Salvando..." : "Criando..."
+                        : isUpdate ? "Salvar alterações" : "Criar aluno"}
                 </button>
             </div>
         </form>
-    )
+    );
 }

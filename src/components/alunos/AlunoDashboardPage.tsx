@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import HeaderAlunosPage from "./HeaderAlunosPage";
 import AlunosCard from "./AlunosCard";
-import { useCreateAlunoForm } from "../../hooks/alunos/useAlunoForm";
+import { useCreateAlunoForm } from "../../hooks/alunos/useCreateAlunoForm";
+import { useUpdateAlunoForm } from "@/hooks/alunos/useUpdateAlunoForm";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +36,7 @@ type Aluno = {
   serie?: string | null;
   resp_tel?: string | null;
   resp_nome?: string | null;
+  modalidade_id?: number | null;
   modalidade?: unknown;
   tempo_aula?: unknown;
   horas_semana?: unknown;
@@ -100,16 +102,29 @@ export default function StudentsDashboardPage({
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [selectedAluno, setSelectedStudent] = useState<Aluno | null>(null);
+  const [editingAluno, setEditingAluno] = useState<Aluno | null>(null);
   const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
+  const isFormPanelOpen = isCreatePanelOpen || Boolean(editingAluno);
   const {
-    loading,
-    alunoForm,
-    handleFormFieldChange,
+    error: createError,
+    loading: createLoading,
+    tempPassword,
     handleCreateAluno,
-    resetForm,
+    resetForm: resetCreateForm,
   } = useCreateAlunoForm({
     onSuccess: () => {
       setIsCreatePanelOpen(false);
+      refreshAlunos();
+    },
+  });
+  const {
+    error: updateError,
+    loading: updateLoading,
+    handleUpdateAluno,
+    resetForm: resetUpdateForm,
+  } = useUpdateAlunoForm({
+    onSuccess: () => {
+      setEditingAluno(null);
       refreshAlunos();
     },
   });
@@ -131,17 +146,31 @@ export default function StudentsDashboardPage({
 
   function openCreatePanel() {
     setSelectedStudent(null);
-    resetForm();
+    setEditingAluno(null);
+    resetCreateForm();
     setIsCreatePanelOpen(true);
   };
 
+  function openEditPanel() {
+    if (!selectedAluno) {
+      return;
+    };
+
+    resetUpdateForm();
+    setIsCreatePanelOpen(false);
+    setEditingAluno(selectedAluno);
+    setSelectedStudent(null);
+  };
+
   function openDetailsPanel(aluno: Aluno) {
+    setEditingAluno(null);
     setIsCreatePanelOpen(false);
     setSelectedStudent(aluno);
   };
 
   function closeSidePanel() {
     setSelectedStudent(null);
+    setEditingAluno(null);
     setIsCreatePanelOpen(false);
   };
 
@@ -209,7 +238,7 @@ export default function StudentsDashboardPage({
       </div>
 
       <div
-        className={`fixed inset-0 z-[100000] transition ${selectedAluno || isCreatePanelOpen
+        className={`fixed inset-0 z-[100000] transition ${selectedAluno || isFormPanelOpen
           ? "pointer-events-auto bg-gray-900/50 backdrop-blur-[1px]"
           : "pointer-events-none bg-transparent"
           }`}
@@ -217,7 +246,7 @@ export default function StudentsDashboardPage({
       />
 
       <aside
-        className={`fixed right-0 top-0 z-[100001] h-screen w-full max-w-md transform border-l border-gray-200 bg-white shadow-2xl transition-transform duration-300 dark:border-gray-800 dark:bg-gray-900 ${selectedAluno || isCreatePanelOpen
+        className={`fixed right-0 top-0 z-[100001] h-screen w-full max-w-md transform border-l border-gray-200 bg-white shadow-2xl transition-transform duration-300 dark:border-gray-800 dark:bg-gray-900 ${selectedAluno || isFormPanelOpen
           ? "translate-x-0"
           : "translate-x-full"
           }`}
@@ -226,11 +255,13 @@ export default function StudentsDashboardPage({
           <div className="flex items-start justify-between border-b border-gray-200 px-5 py-5 dark:border-gray-800 sm:px-6">
             <div>
               <p className="text-sm font-medium text-sky-600 dark:text-sky-300">
-                {isCreatePanelOpen ? "Cadastro de aluno" : "Detalhes do aluno"}
+                {isFormPanelOpen ? "Cadastro de aluno" : "Detalhes do aluno"}
               </p>
               <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
                 {isCreatePanelOpen
                   ? "Novo aluno"
+                  : editingAluno
+                  ? "Editar aluno"
                   : selectedAluno?.nome ?? "Aluno"}
               </h2>
             </div>
@@ -244,14 +275,24 @@ export default function StudentsDashboardPage({
             </button>
           </div>
 
-          {isCreatePanelOpen ? (
+          {isFormPanelOpen ? (
             <div className="side-panel-scroll flex-1 overflow-y-auto px-5 py-5 sm:px-6">
               <AlunosForm
+                key={editingAluno?.user_id ?? "create"}
+                mode={editingAluno ? "update" : "create"}
+                aluno={editingAluno}
                 modalidades={modalidades}
-                loading={loading}
-                alunoForm={alunoForm}
-                onFieldChange={handleFormFieldChange}
-                onSubmit={handleCreateAluno}
+                error={editingAluno ? updateError : createError}
+                loading={editingAluno ? updateLoading : createLoading}
+                tempPassword={tempPassword}
+                onSubmit={(event) => {
+                  if (editingAluno) {
+                    void handleUpdateAluno(event, editingAluno.user_id);
+                    return;
+                  };
+
+                  void handleCreateAluno(event);
+                }}
                 onCancel={closeSidePanel}
               />
             </div>
@@ -289,7 +330,10 @@ export default function StudentsDashboardPage({
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="cursor-pointer dark:hover:bg-gray-700">
+                      <DropdownMenuItem
+                        onClick={openEditPanel}
+                        className="cursor-pointer dark:hover:bg-gray-700"
+                      >
                         Editar aluno
                       </DropdownMenuItem>
 
