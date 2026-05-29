@@ -9,7 +9,6 @@ import {
   X,
   EllipsisVertical,
   Pencil, 
-  Trash2,
   ShieldCheck,
   ShieldOff
 } from "lucide-react";
@@ -112,7 +111,6 @@ export default function StudentsDashboardPage({
   const {
     error: createError,
     loading: createLoading,
-    tempPassword,
     handleCreateAluno,
     resetForm: resetCreateForm,
   } = useCreateAlunoForm({
@@ -288,7 +286,6 @@ export default function StudentsDashboardPage({
                 modalidades={modalidades}
                 error={editingAluno ? updateError : createError}
                 loading={editingAluno ? updateLoading : createLoading}
-                tempPassword={tempPassword}
                 onSubmit={(event) => {
                   if (editingAluno) {
                     void handleUpdateAluno(event, editingAluno.user_id);

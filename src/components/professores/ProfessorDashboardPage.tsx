@@ -5,14 +5,13 @@ import { UserRoundSearch } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import HeaderProfessoresPage from "./HeaderProfessoresPage";
-import ProfessorMateriaFilters from "./ProfessorMateriaFilters";
 import ProfessoresGrid from "./ProfessoresGrid";
 import ProfessoresOverview from "./ProfessoresOverview";
 import ProfessorDetailsPanel from "./ProfessorDetailsPanel";
 import type { Modalidade, Professor } from "./types";
-import { inactiveProfessor } from "@/services/professor/professores.client";
 import { useCreateProfessorForm } from "@/hooks/professores/useCreateProfessorForm";
 import { useUpdateProfessorForm } from "@/hooks/professores/useUpdateProfessorForm";
+import { inactiveUser, activeUser } from "@/services/alunos/alunos.client";
 
 type ProfessorDashboardPageProps = {
   professores: Professor[];
@@ -30,7 +29,8 @@ export default function ProfessorDashboardPage({
   const [selectedProfessor, setSelectedProfessor] = useState<Professor | null>(
     null,
   );
-  const [panelMode, setPanelMode] = useState<"details" | "edit">("details");
+  const [panelMode, setPanelMode] = useState<"details" | "edit" | "create">("details");
+  const [editingProfessor, setEditingProfessor] = useState<Professor | null>(null);
   const {
     error: updateError,
     loading: updateLoading,
@@ -61,7 +61,7 @@ export default function ProfessorDashboardPage({
   }, [professores]);
 
   const filteredProfessores = useMemo(() => {
-    const searchValue = search.trim().toLowerCase();
+    const searchValue = search.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
     return professores.filter((professor) => {
       const matchesMateria =
@@ -70,10 +70,10 @@ export default function ProfessorDashboardPage({
       const matchesSearch =
         !searchValue ||
         [
-          professor.nome,
-          professor.email,
-          professor.materia,
-          professor.modalidade,
+          professor.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+          professor.email.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+          professor.materia.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+          professor.modalidade.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
         ]
           .join(" ")
           .toLowerCase()
@@ -83,59 +83,63 @@ export default function ProfessorDashboardPage({
     });
   }, [professores, search, selectedMateria]);
 
+  async function handleToggleProfessorStatus(professor: Professor) {
+    if (!professor) {
+      return;
+    };
+
+    const isActive = professor.status === "ATIVO";
+    const result = isActive ?
+      await toast.promise(inactiveUser(professor.user_id), {
+        loading: 'Carregando...',
+        success: (response) => response?.message,
+        error: (error) => error?.message || "Error ao conectar com o servidor!",
+      })
+      : await toast.promise(activeUser(professor.user_id), {
+        loading: 'Carregando...',
+        success: (response) => response?.message,
+        error: (error) => error?.message || "Error ao conectar com o servidor!",
+      });
+
+
+    if (result?.err) {
+      toast.error(result.err);
+      return;
+    };
+
+    refreshProfessores();
+  };
+
   function openDetailsPanel(professor: Professor) {
     setPanelMode("details");
+    setEditingProfessor(null);
     setSelectedProfessor(professor);
   };
 
   function openEditPanel(professor: Professor) {
     resetUpdateForm();
+    setEditingProfessor(professor);
     setPanelMode("edit");
     setSelectedProfessor(professor);
   };
 
   function openCreatePanel() {
+    setSelectedProfessor(null);
+    setEditingProfessor(null);
+    setPanelMode("create");
     resetCreateForm();
-    // setSelectedProfessor();
-  }
+  };
 
   function closeSidePanel() {
     setSelectedProfessor(null);
+    setEditingProfessor(null);
+    setPanelMode("details");
   };
 
   function refreshProfessores() {
     startTransition(() => {
       router.refresh();
     });
-  };
-
-  async function runInactiveProfessor(professor: Professor) {
-    const response = await inactiveProfessor(professor.user_id);
-
-    if (response?.err) {
-      throw new Error(response.err);
-    };
-
-    return response;
-  };
-
-  async function handleInactiveProfessor(professor: Professor) {
-    try {
-      await toast.promise(runInactiveProfessor(professor), {
-        loading: "Carregando...",
-        success: (response) =>
-          response?.message ?? "Professor excluido com sucesso!",
-        error: (error) =>
-          error instanceof Error
-            ? error.message
-            : "Erro ao conectar com o servidor!",
-      });
-
-      closeSidePanel();
-      refreshProfessores();
-    } catch {
-      return;
-    };
   };
 
   return (
@@ -148,6 +152,7 @@ export default function ProfessorDashboardPage({
           selectedMateria={selectedMateria}
           onSelectMateria={setSelectedMateria}
           onSearchChange={setSearch}
+          onOpenCreatePanel={openCreatePanel}
         />
 
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -170,7 +175,7 @@ export default function ProfessorDashboardPage({
                 professores={filteredProfessores}
                 onOpenDetailsPanel={openDetailsPanel}
                 onEditProfessor={openEditPanel}
-                onInactiveProfessor={handleInactiveProfessor}
+                toggleProfessorStatus={handleToggleProfessorStatus}
               />
             )}
           </section>
@@ -181,12 +186,17 @@ export default function ProfessorDashboardPage({
 
       <ProfessorDetailsPanel
         professor={selectedProfessor}
-        isOpen={Boolean(selectedProfessor)}
+        isOpen={panelMode === "create" || Boolean(selectedProfessor)}
         mode={panelMode}
         modalidades={modalidades}
-        loading={updateLoading}
-        error={updateError}
-        onSubmitEdit={(event) => {
+        loading={editingProfessor ? updateLoading : createLoading}
+        error={editingProfessor ? updateError : createError}
+        onSubmit={(event) => {
+          if (panelMode === "create") {
+            void handleCreateProfessor(event);
+            return;
+          };
+
           if (!selectedProfessor) {
             return;
           };

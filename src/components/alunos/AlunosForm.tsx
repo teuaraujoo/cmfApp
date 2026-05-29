@@ -40,7 +40,6 @@ type AlunosFormProps = {
     modalidades: Modalidade[];
     loading: boolean;
     error: string;
-    tempPassword?: string;
     onSubmit: (event: FormEvent<HTMLFormElement>) => void;
     onCancel: () => void;
 };
@@ -61,7 +60,6 @@ export default function AlunosForm({
     modalidades,
     loading,
     error,
-    tempPassword,
     onSubmit,
     onCancel,
 }: AlunosFormProps) {
@@ -279,24 +277,6 @@ export default function AlunosForm({
                         />
                     </Field>
 
-                    {!isUpdate ? (
-                        <Field className="space-y-2">
-                            <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Senha temporaria
-                            </FieldLabel>
-                            <Input
-                                id="tempPassword"
-                                type="password"
-                                name="tempPassword"
-                                defaultValue={tempPassword}
-                                readOnly
-                                className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                            />
-                        </Field>
-                    ) : null}
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <Field className="space-y-2">
                         <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Nome do Responsavel
@@ -310,6 +290,9 @@ export default function AlunosForm({
                             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                         />
                     </Field>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                     <Field className="space-y-2">
                         <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">

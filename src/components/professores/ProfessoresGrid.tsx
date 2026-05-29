@@ -7,7 +7,6 @@ import {
   Mail,
   ShieldCheck,
   Pencil,
-  Trash2,
   ShieldOff,
 } from "lucide-react";
 import type { Professor } from "./types";
@@ -22,7 +21,7 @@ type ProfessoresGridProps = {
   professores: Professor[];
   onOpenDetailsPanel: (professor: Professor) => void;
   onEditProfessor: (professor: Professor) => void;
-  onInactiveProfessor: (professor: Professor) => void;
+  toggleProfessorStatus: (professor: Professor) => Promise<void>;
 };
 
 function ProfessorStatusBadge({ status }: { status: string }) {
@@ -44,7 +43,7 @@ export default function ProfessoresGrid({
   professores,
   onOpenDetailsPanel,
   onEditProfessor,
-  onInactiveProfessor,
+  toggleProfessorStatus,
 }: ProfessoresGridProps) {
   return (
     <div className="grid grid-cols-1 gap-3 2xl:grid-cols-2">
@@ -102,7 +101,9 @@ export default function ProfessoresGrid({
                   Editar
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => onInactiveProfessor(professor)}
+                  onClick={() => {
+                    void toggleProfessorStatus(professor);
+                  }}
                   className={`${professor.status === "ATIVO" ? "text-red-500" : "text-green-500"} cursor-pointer dark:hover:bg-gray-700`}
                 >
                   {professor.status === "ATIVO" ? <ShieldOff /> : <ShieldCheck />}

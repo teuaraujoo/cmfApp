@@ -8,11 +8,11 @@ import type { Modalidade, Professor } from "./types";
 type ProfessorDetailsPanelProps = {
   professor: Professor | null;
   isOpen: boolean;
-  mode: "details" | "edit";
+  mode: "details" | "edit" | "create";
   modalidades: Modalidade[];
   loading: boolean;
   error: string;
-  onSubmitEdit: (event: FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onClose: () => void;
 };
 
@@ -31,7 +31,7 @@ export default function ProfessorDetailsPanel({
   modalidades,
   loading,
   error,
-  onSubmitEdit,
+  onSubmit,
   onClose,
 }: ProfessorDetailsPanelProps) {
   return (
@@ -54,10 +54,14 @@ export default function ProfessorDetailsPanel({
           <div className="flex items-start justify-between border-b border-gray-200 px-5 py-5 dark:border-gray-800 sm:px-6">
             <div>
               <p className="text-sm font-medium text-sky-600 dark:text-sky-300">
-                {mode === "edit" ? "Editar professor" : "Detalhes do professor"}
+                {mode === "create"
+                  ? "Cadastro de professor"
+                  : mode === "edit"
+                  ? "Editar professor"
+                  : "Detalhes do professor"}
               </p>
               <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
-                {professor?.nome ?? "Professor"}
+                {mode === "create" ? "Novo professor" : professor?.nome ?? "Professor"}
               </h2>
             </div>
 
@@ -70,14 +74,16 @@ export default function ProfessorDetailsPanel({
             </button>
           </div>
 
-          {professor && mode === "edit" ? (
+          {mode === "create" || (professor && mode === "edit") ? (
             <div className="side-panel-scroll flex-1 overflow-y-auto px-5 py-5 sm:px-6">
               <ProfessorForm
+                key={professor?.user_id ?? "create"}
+                mode={mode === "create" ? "create" : "edit"}
                 professor={professor}
                 modalidades={modalidades}
                 loading={loading}
                 error={error}
-                onSubmit={onSubmitEdit}
+                onSubmit={onSubmit}
                 onCancel={onClose}
               />
             </div>

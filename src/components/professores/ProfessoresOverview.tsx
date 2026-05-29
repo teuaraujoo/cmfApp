@@ -30,7 +30,7 @@ export default function ProfessoresOverview({
           <UsersRound className="size-5" />
         </div>
         <div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Overview</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Visão geral</p>
           <p className="text-2xl font-semibold text-gray-900 dark:text-white">
             {total}
           </p>

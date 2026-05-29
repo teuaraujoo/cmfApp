@@ -1,3 +1,5 @@
+"use client";
+
 import { createProfessor } from "@/services/professor/professores.client";
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
@@ -18,7 +20,7 @@ export function useCreateProfessorForm({ onSuccess, }: UseCreateProfessorFormPar
         setError("");
     };
 
-    async function handleCreateAluno(event: FormEvent<HTMLFormElement>) {
+    async function handleCreateProfessor(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setError("");
 
@@ -27,10 +29,11 @@ export function useCreateProfessorForm({ onSuccess, }: UseCreateProfessorFormPar
 
             const form = event.currentTarget;
             const formData = new FormData(form);
-
+            
             const data = {
                 nome: getRequiredFormString(formData, "nome", "Nome"),
                 email: getRequiredFormString(formData, "email", "Email"),
+                temporary_password: TEMP_PASSWORD,
                 role: "PROFESSOR" as const,
                 tel: getRequiredFormString(formData, "telefone", "Telefone"),
                 professor: {
@@ -46,7 +49,8 @@ export function useCreateProfessorForm({ onSuccess, }: UseCreateProfessorFormPar
                 return;
             };
 
-            toast.success(request?.message ?? "Professor atualizado com sucesso!");
+            toast.success(request?.message ?? "Professor criado com sucesso!");
+            form.reset();
             onSuccess?.();
 
         } finally {
@@ -58,7 +62,7 @@ export function useCreateProfessorForm({ onSuccess, }: UseCreateProfessorFormPar
         error,
         loading,
         tempPassword: TEMP_PASSWORD,
-        handleCreateAluno,
+        handleCreateProfessor,
         resetForm
     }
 }

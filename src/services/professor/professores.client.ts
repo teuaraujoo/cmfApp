@@ -3,6 +3,7 @@ import apiRoutes from "@/lib/api";
 type ProfessorPayload = {
     nome: string;
     email: string;
+    temporary_password?: string;
     role: "PROFESSOR";
     tel: string;
     professor: {
@@ -49,46 +50,6 @@ export async function updateProfessor(professor: ProfessorPayload, userId: numbe
         const result = await response.json();
 
         if (!response.ok) return { err: result.message ?? "Nao foi possivel atualizar professor." };
-
-        return result;
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
-};
-
-export async function inactiveProfessor(userId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.users}/${userId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Nao foi possivel inativar professor." };
-
-        return result;
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
-};
-
-export async function activeProfessor(userId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.users}/${userId}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Nao foi possivel ativar professor." };
 
         return result;
     } catch {

@@ -37,11 +37,7 @@ export function useCreateAlunoForm({
       const data = {
         nome: getRequiredFormString(formData, "nome", "Nome"),
         email: getRequiredFormString(formData, "email", "Email"),
-        temporary_password: getRequiredFormString(
-          formData,
-          "tempPassword",
-          "Senha temporária"
-        ),
+        temporary_password: TEMP_PASSWORD,
         role: "ALUNO" as const,
         tel: getRequiredFormString(formData, "telefone", "Telefone"),
         aluno: {
@@ -97,7 +93,6 @@ export function useCreateAlunoForm({
   return {
     error,
     loading,
-    tempPassword: TEMP_PASSWORD,
     handleCreateAluno,
     resetForm,
   };

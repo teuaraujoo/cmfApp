@@ -15,8 +15,15 @@ import {
 } from "@/components/ui/select";
 import type { Modalidade, Professor } from "./types";
 
+const materias = [
+  { id: 1, tipo: "Matemática" },
+  { id: 2, tipo: "Física" },
+  { id: 3, tipo: "Química" }
+];
+
 type ProfessorFormProps = {
-  professor: Professor;
+  mode: "create" | "edit";
+  professor?: Professor | null;
   modalidades: Modalidade[];
   loading: boolean;
   error: string;
@@ -25,6 +32,7 @@ type ProfessorFormProps = {
 };
 
 export default function ProfessorForm({
+  mode,
   professor,
   modalidades,
   loading,
@@ -32,6 +40,8 @@ export default function ProfessorForm({
   onSubmit,
   onCancel,
 }: ProfessorFormProps) {
+  const isCreate = mode === "create";
+
   return (
     <form className="space-y-6" onSubmit={onSubmit}>
       <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-5 dark:border-gray-800 dark:bg-gray-800/20">
@@ -41,10 +51,12 @@ export default function ProfessorForm({
           </div>
           <div>
             <p className="text-lg font-semibold text-gray-900 dark:text-white">
-              Editar professor
+              {isCreate ? "Adicionar novo professor" : "Editar professor"}
             </p>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Atualize os dados do professor selecionado.
+              {isCreate
+                ? "Preencha os dados abaixo para criar um professor."
+                : "Atualize os dados do professor selecionado."}
             </p>
           </div>
         </div>
@@ -59,7 +71,7 @@ export default function ProfessorForm({
             id="nome"
             type="text"
             name="nome"
-            defaultValue={professor.nome}
+            defaultValue={professor?.nome ?? ""}
             required
             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
           />
@@ -73,7 +85,7 @@ export default function ProfessorForm({
             id="email"
             type="email"
             name="email"
-            defaultValue={professor.email}
+            defaultValue={professor?.email ?? ""}
             required
             className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
           />
@@ -88,7 +100,7 @@ export default function ProfessorForm({
               id="telefone"
               type="tel"
               name="telefone"
-              defaultValue={professor.tel ?? ""}
+              defaultValue={professor?.tel ?? ""}
               required
               className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
             />
@@ -96,16 +108,39 @@ export default function ProfessorForm({
 
           <Field className="space-y-2">
             <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Materia
+              Matéria
             </FieldLabel>
-            <Input
-              id="materia"
-              type="text"
+            <Select
               name="materia"
-              defaultValue={professor.materia}
               required
-              className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-            />
+            >
+              <SelectTrigger
+                id="materia"
+                className="h-14 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
+              >
+                <SelectValue placeholder="Selecione a matéria">
+                  {(value) =>
+                    materias.find(
+                      (materia) => String(materia.tipo) === String(value),
+                    )?.tipo ?? "Selecione uma matéria"
+                  }
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Matéria</SelectLabel>
+                  {materias.map((materia) => (
+                    <SelectItem
+                      key={materia.id}
+                      value={materia.tipo}
+                      className="cursor-pointer"
+                    >
+                      {materia.tipo}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </Field>
         </div>
 
@@ -115,7 +150,7 @@ export default function ProfessorForm({
           </FieldLabel>
           <Select
             name="modalidade"
-            defaultValue={String(professor.modalidade_id)}
+            defaultValue={professor?.modalidade_id ? String(professor.modalidade_id) : undefined}
             required
           >
             <SelectTrigger
@@ -167,7 +202,9 @@ export default function ProfessorForm({
           disabled={loading}
           className="inline-flex cursor-pointer items-center justify-center rounded-xl bg-[#1FA2E1] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#178CC5] disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {loading ? "Salvando..." : "Salvar alteracoes"}
+          {loading
+            ? isCreate ? "Criando..." : "Salvando..."
+            : isCreate ? "Criar professor" : "Salvar alteracoes"}
         </button>
       </div>
     </form>

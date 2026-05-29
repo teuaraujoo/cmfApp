@@ -5,11 +5,11 @@ function getFormString(formData: FormData, field: string) {
 
 export function getRequiredFormString(formData: FormData, field: string, label: string) {
   const value = getFormString(formData, field);
+  console.log(value)
 
   if (!value) {
     throw new Error(`${label} é obrigatório.`);
   };
-
   return value;
 };
 

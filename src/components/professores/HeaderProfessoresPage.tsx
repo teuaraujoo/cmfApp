@@ -9,6 +9,7 @@ type HeaderProfessoresPageProps = {
   selectedMateria: string;
   onSelectMateria: (materia: string) => void;
   onSearchChange: (value: string) => void;
+  onOpenCreatePanel: () => void;
 };
 
 export default function HeaderProfessoresPage({
@@ -17,7 +18,8 @@ export default function HeaderProfessoresPage({
   materias,
   selectedMateria,
   onSelectMateria,
-  onSearchChange
+  onSearchChange,
+  onOpenCreatePanel
 }: HeaderProfessoresPageProps) {
   return (
     <div className="space-y-6">
@@ -25,7 +27,7 @@ export default function HeaderProfessoresPage({
         <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-2xl">
             <p className="text-sm font-medium text-sky-600 dark:text-sky-300">
-              Gestao de professores
+              Gestão de professores
             </p>
             <h1 className="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Todos os professores
@@ -90,6 +92,7 @@ export default function HeaderProfessoresPage({
           <button
             type="button"
             className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#1FA2E1] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#178CC5]"
+            onClick={onOpenCreatePanel}
           >
             <Plus className="size-4" />
             Adicionar professor
