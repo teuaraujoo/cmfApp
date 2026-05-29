@@ -1,0 +1,64 @@
+import { createProfessor } from "@/services/professor/professores.client";
+import { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
+import { getPositiveNumber, getRequiredFormString } from "@/utils/forms-utils";
+
+const TEMP_PASSWORD = "Temp1234";
+
+type UseCreateProfessorFormParamas = {
+    onSuccess?: () => void;
+};
+
+export function useCreateProfessorForm({ onSuccess, }: UseCreateProfessorFormParamas = {}) {
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    function resetForm() {
+        setError("");
+    };
+
+    async function handleCreateAluno(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        setError("");
+
+        try {
+            setLoading(true);
+
+            const form = event.currentTarget;
+            const formData = new FormData(form);
+
+            const data = {
+                nome: getRequiredFormString(formData, "nome", "Nome"),
+                email: getRequiredFormString(formData, "email", "Email"),
+                role: "PROFESSOR" as const,
+                tel: getRequiredFormString(formData, "telefone", "Telefone"),
+                professor: {
+                    materia: getRequiredFormString(formData, "materia", "Materia"),
+                    modalidade_id: getPositiveNumber(formData, "modalidade", "Modalidade"),
+                }
+            };
+
+            const request = await createProfessor(data);
+
+            if (request?.err) {
+                setError(request.err);
+                return;
+            };
+
+            toast.success(request?.message ?? "Professor atualizado com sucesso!");
+            onSuccess?.();
+
+        } finally {
+            setLoading(false);
+        };
+    };
+
+    return {
+        error,
+        loading,
+        tempPassword: TEMP_PASSWORD,
+        handleCreateAluno,
+        resetForm
+    }
+}

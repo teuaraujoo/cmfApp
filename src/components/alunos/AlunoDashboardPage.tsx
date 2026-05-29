@@ -7,7 +7,11 @@ import {
   Phone,
   UserRoundSearch,
   X,
-  EllipsisVertical
+  EllipsisVertical,
+  Pencil, 
+  Trash2,
+  ShieldCheck,
+  ShieldOff
 } from "lucide-react";
 import HeaderAlunosPage from "./HeaderAlunosPage";
 import AlunosCard from "./AlunosCard";
@@ -334,6 +338,7 @@ export default function StudentsDashboardPage({
                         onClick={openEditPanel}
                         className="cursor-pointer dark:hover:bg-gray-700"
                       >
+                        <Pencil />
                         Editar aluno
                       </DropdownMenuItem>
 
@@ -342,6 +347,7 @@ export default function StudentsDashboardPage({
                         className={`cursor-pointer dark:hover:bg-gray-700 
                         ${selectedAluno.status === "ATIVO" ? "text-red-500" : "text-green-500"}`}
                       >
+                         {selectedAluno.status === "ATIVO" ? <ShieldOff/> : <ShieldCheck />}
                         {selectedAluno.status === "ATIVO" ? "Desativar" : "Ativar"}
                       </DropdownMenuItem>
 
