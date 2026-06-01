@@ -18,7 +18,7 @@ export default function UserDropdown({
   userInfo
 }: {
   userInfo: HeaderUserInfo
-  }) {
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -34,9 +34,8 @@ export default function UserDropdown({
   async function handleLogout() {
     await logoutUser();
 
-    toast.success("Logout realizado com sucesso!")
-
     router.replace("/dashboard/login");
+    toast.success("Logout realizado com sucesso!")
   };
 
   return (

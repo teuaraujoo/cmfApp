@@ -58,6 +58,7 @@ export default function HeaderAlunosPage({
             type="button"
             onClick={onOpenCreatePanel}
             className="cursor-pointer inline-flex items-center justify-center gap-2 self-start rounded-xl bg-[#1FA2E1] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#178CC5]"
+            data-testid="addAluno-button"
           >
             <Plus className="size-4" />
             Adicionar aluno

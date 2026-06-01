@@ -57,9 +57,9 @@ export default function AdminLoginForm({
                 return;
             };
 
-            toast.success(`${result.message} Bem vindo(a)!`)
             router.replace("/dashboard/home");
-            
+            toast.success(`${result.message} Bem vindo(a)!`);
+
         } catch {
             setError("Erro inesperado ao fazer login. Tente novamente.");
             setLoading(false);
@@ -122,6 +122,7 @@ export default function AdminLoginForm({
 
                             <Field className="mb-4">
                                 <Button
+                                    data-testid="login-submit"
                                     className="h-10 cursor-pointer rounded-lg bg-[#1FA2E1] text-white hover:bg-[#178CC5] focus-visible:ring-[#1FA2E1]/35"
                                     type="submit"
                                     disabled={loading}
