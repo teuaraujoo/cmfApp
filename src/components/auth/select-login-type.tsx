@@ -8,11 +8,11 @@ import { BackgroundCircle } from "../ui/circlebackground";
 
 export default function SelectLoginType() {
   return (
-    <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#05070A] text-white">
       <BackgroundCircle />
 
       <div className="w-full max-w-5xl px-4 py-10 md:py-20">
-        <Card className="relative overflow-hidden border-0 shadow-2xl rounded-3xl">
+        <Card className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0E1117]/95 text-white shadow-2xl shadow-black/40 backdrop-blur">
           <CardContent className="p-8 md:p-12">
             <div className="flex flex-col items-center text-center gap-4 mb-10">
               <Image
@@ -24,11 +24,11 @@ export default function SelectLoginType() {
               />
 
               <div className="space-y-1">
-                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-card-foreground">
+                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-white">
                   Escolha seu acesso
                 </h1>
 
-                <p className="text-muted-foreground text-sm md:text-base">
+                <p className="text-sm text-white/60 md:text-base">
                   Selecione o tipo de login para continuar no sistema.
                 </p>
               </div>
@@ -37,18 +37,18 @@ export default function SelectLoginType() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               <Link href="/login" className="group">
-                <div className="h-full rounded-2xl border bg-background/70 backdrop-blur-sm p-8 transition-all duration-300 hover:border-[#1FA2E1]/40 hover:shadow-xl hover:-translate-y-1">
+                <div className="h-full rounded-2xl border border-white/10 bg-[#05070A]/80 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#1FA2E1]/40 hover:shadow-xl hover:shadow-black/30">
                   
                   <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1FA2E1]/10 mb-6 mx-auto">
                     <GraduationCap className="size-8 text-[#1FA2E1]" />
                   </div>
 
                   <div className="space-y-2 text-center">
-                    <h2 className="text-xl font-semibold text-card-foreground">
+                    <h2 className="text-xl font-semibold text-white">
                       Usuário
                     </h2>
 
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm leading-relaxed text-white/60">
                       Acesso destinado para alunos e professores utilizarem
                       o portal acadêmico.
                     </p>
@@ -63,18 +63,18 @@ export default function SelectLoginType() {
               </Link>
 
               <Link href="/dashboard/login" className="group">
-                <div className="h-full rounded-2xl border bg-background/70 backdrop-blur-sm p-8 transition-all duration-300 hover:border-[#1FA2E1]/40 hover:shadow-xl hover:-translate-y-1">
+                <div className="h-full rounded-2xl border border-white/10 bg-[#05070A]/80 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#1FA2E1]/40 hover:shadow-xl hover:shadow-black/30">
                   
                   <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1FA2E1]/10 mb-6 mx-auto">
                     <ShieldCheck className="size-8 text-[#1FA2E1]" />
                   </div>
 
                   <div className="space-y-2 text-center">
-                    <h2 className="text-xl font-semibold text-card-foreground">
+                    <h2 className="text-xl font-semibold text-white">
                       Administrador
                     </h2>
 
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm leading-relaxed text-white/60">
                       Área administrativa para gerenciamento da plataforma.
                     </p>
                   </div>

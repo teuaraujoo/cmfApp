@@ -61,11 +61,11 @@ export default function LoginForm() {
   };
 
   return (
-    <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#05070A] text-white">
       <BackgroundCircle />
 
       <div className="py-10 md:py-20 max-w-lg px-4 sm:px-0 mx-auto w-full">
-        <Card className="max-w-lg px-6 py-8 sm:p-12 relative gap-6">
+        <Card className="relative max-w-lg gap-6 border border-white/10 bg-[#0E1117]/95 px-6 py-8 text-white shadow-2xl shadow-black/40 backdrop-blur sm:p-12">
           <CardHeader className="text-center gap-6 p-0">
             <div className="mx-auto">
               <a href="">
@@ -77,10 +77,10 @@ export default function LoginForm() {
               </a>
             </div>
             <div className="flex flex-col gap-1">
-              <CardTitle className="text-2xl font-medium text-card-foreground">
+              <CardTitle className="text-2xl font-medium text-white">
                 Bem vindo a CMF!
               </CardTitle>
-              <CardDescription className="text-sm text-muted-foreground font-normal">
+              <CardDescription className="text-sm font-normal text-white/60">
                 Entre na sua conta agora.
               </CardDescription>
             </div>
@@ -95,7 +95,7 @@ export default function LoginForm() {
                   <Field className="gap-1.5">
                     <FieldLabel
                       htmlFor="email"
-                      className="text-sm text-muted-foreground font-normal"
+                      className="text-sm font-normal text-white/70"
                     >
                       Email
                     </FieldLabel>
@@ -105,13 +105,13 @@ export default function LoginForm() {
                       name="email"
                       placeholder="example@cmfapp.com"
                       required
-                      className="dark:bg-background h-9 shadow-xs"
+                      className="h-9 border-white/10 bg-[#05070A] text-white shadow-xs placeholder:text-white/35 focus-visible:ring-[#1FA2E1]/35"
                     />
                   </Field>
                   <Field className="gap-1.5">
                     <FieldLabel
                       htmlFor="password"
-                      className="text-sm text-muted-foreground font-normal"
+                      className="text-sm font-normal text-white/70"
                     >
                       Senha
                     </FieldLabel>
@@ -122,7 +122,7 @@ export default function LoginForm() {
                       name="password"
                       placeholder="Digite sua senha"
                       required
-                      className="dark:bg-background h-9 shadow-xs"
+                      className="h-9 border-white/10 bg-[#05070A] text-white shadow-xs placeholder:text-white/35 focus-visible:ring-[#1FA2E1]/35"
                     />
                   </Field>
 
@@ -135,11 +135,11 @@ export default function LoginForm() {
                 </div>
                 <Field className="gap-4">
 
-                  <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
+                  <FieldDescription className="text-center text-sm font-normal text-white/60 [&>a:hover]:!text-sky-200">
                     Ao entrar no sistema, você concorda com
-                    <a href="/legal/termos" className="font-medium text-card-foreground !no-underline"> Termos de Uso </a>
+                    <a href="/legal/termos" className="font-medium text-white transition-colors hover:text-sky-200 !no-underline"> Termos de Uso </a>
                     e nossa
-                    <a href="/legal/politica-privacidade" className="font-medium text-card-foreground !no-underline"> Política de Privacidade</a>
+                    <a href="/legal/politica-privacidade" className="font-medium text-white transition-colors hover:text-sky-200 !no-underline"> Política de Privacidade</a>
                   </FieldDescription>
 
                   <Button
@@ -151,11 +151,11 @@ export default function LoginForm() {
                     {loading ? "Entrando..." : "Entrar"}
                   </Button>
 
-                  <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
+                  <FieldDescription className="text-center text-sm font-normal text-white/60 [&>a:hover]:!text-sky-200">
                     Esqueceu seu login e/ou senha?{" "}
                     <a
                       href="#"
-                      className="font-medium text-card-foreground !no-underline"
+                      className="font-medium text-white transition-colors hover:text-sky-200 !no-underline"
                     >
                       Fale com o administrador
                     </a>

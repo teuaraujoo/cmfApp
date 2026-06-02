@@ -24,27 +24,27 @@ export default function LegalDocument({
   sections,
 }: LegalDocumentProps) {
   return (
-    <section className="bg-foreground dark:bg-background relative min-h-screen px-4 py-10 text-card-foreground sm:px-6 md:py-16">
+    <section className="relative min-h-screen overflow-hidden bg-[#05070A] px-4 py-10 text-white sm:px-6 md:py-16">
       <BackgroundCircle />
 
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <div className="flex items-center justify-between gap-4">
           <Link
             href="/"
-            className="text-sm font-medium text-white/80 transition-colors hover:text-white dark:text-white/70 dark:hover:text-white"
+            className="text-sm font-medium text-white/70 transition-colors hover:text-sky-200"
           >
             Voltar para o inicio
           </Link>
 
           <Link
             href="/login"
-            className="text-sm font-medium text-white/80 transition-colors hover:text-white dark:text-white/70 dark:hover:text-white"
+            className="text-sm font-medium text-white/70 transition-colors hover:text-sky-200"
           >
             Ir para o login
           </Link>
         </div>
 
-        <Card className="relative border-white/10 bg-card/95 px-6 py-8 shadow-2xl shadow-black/20 backdrop-blur sm:px-10 sm:py-10">
+        <Card className="relative border border-white/10 bg-[#0E1117]/95 px-6 py-8 text-white shadow-2xl shadow-black/40 backdrop-blur sm:px-10 sm:py-10">
           <CardHeader className="gap-6 p-0 text-center">
             <div className="mx-auto">
               <Image
@@ -57,13 +57,13 @@ export default function LegalDocument({
             </div>
 
             <div className="space-y-2">
-              <CardTitle className="text-3xl font-medium text-card-foreground">
+              <CardTitle className="text-3xl font-medium text-white">
                 {title}
               </CardTitle>
-              <CardDescription className="mx-auto max-w-2xl text-sm leading-6 text-muted-foreground">
+              <CardDescription className="mx-auto max-w-2xl text-sm leading-6 text-white/60">
                 {description}
               </CardDescription>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-sky-600 dark:text-sky-400">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-sky-300">
                 Ultima atualizacao: {updatedAt}
               </p>
             </div>
@@ -74,14 +74,14 @@ export default function LegalDocument({
               {sections.map((section) => (
                 <section
                   key={section.title}
-                  className="rounded-2xl border border-foreground/8 bg-background/60 p-5 shadow-sm dark:border-white/8 dark:bg-white/[0.02]"
+                  className="rounded-2xl border border-white/10 bg-[#05070A]/70 p-5 shadow-sm shadow-black/20"
                 >
-                  <h2 className="text-lg font-semibold text-card-foreground">
+                  <h2 className="text-lg font-semibold text-white">
                     {section.title}
                   </h2>
 
                   {section.paragraphs?.length ? (
-                    <div className="mt-3 space-y-3 text-sm leading-7 text-muted-foreground">
+                    <div className="mt-3 space-y-3 text-sm leading-7 text-white/65">
                       {section.paragraphs.map((paragraph) => (
                         <p key={paragraph}>{paragraph}</p>
                       ))}
@@ -89,7 +89,7 @@ export default function LegalDocument({
                   ) : null}
 
                   {section.bullets?.length ? (
-                    <ul className="mt-3 space-y-2 pl-5 text-sm leading-7 text-muted-foreground marker:text-sky-600 dark:marker:text-sky-400">
+                    <ul className="mt-3 space-y-2 pl-5 text-sm leading-7 text-white/65 marker:text-sky-300">
                       {section.bullets.map((bullet) => (
                         <li key={bullet}>{bullet}</li>
                       ))}

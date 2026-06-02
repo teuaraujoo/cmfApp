@@ -68,13 +68,13 @@ export default function AdminLoginForm({
 
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
-            <Card className="overflow-hidden p-0">
+            <Card className="overflow-hidden border border-white/10 bg-[#0E1117]/95 p-0 text-white shadow-2xl shadow-black/40 backdrop-blur">
                 <CardContent className="grid p-0 md:grid-cols-2">
 
                     {/* FORM */}
 
                     <form
-                        className="p-6 md:p-8"
+                        className="bg-[#0E1117] p-6 md:p-8"
                         onSubmit={handleSubmit}
                     >
                         <FieldGroup>
@@ -88,29 +88,31 @@ export default function AdminLoginForm({
                                         />
                                     </a>
                                 </div>
-                                <h1 className="text-2xl font-bold">Bem vindo(a)!</h1>
-                                <p className="text-sm text-balance text-muted-foreground">
+                                <h1 className="text-2xl font-bold text-white">Bem vindo(a)!</h1>
+                                <p className="text-sm text-balance text-white/60">
                                     Acesse a plataforma inserindo seu <br /> email e senha
                                 </p>
                             </div>
                             <Field>
-                                <FieldLabel htmlFor="email">Email</FieldLabel>
+                                <FieldLabel htmlFor="email" className="text-white/70">Email</FieldLabel>
                                 <Input
                                     id="email"
                                     type="email"
                                     name="email"
                                     placeholder="cmf@example.com"
                                     required
+                                    className="border-white/10 bg-[#05070A] text-white placeholder:text-white/35 focus-visible:ring-[#1FA2E1]/35"
                                 />
                             </Field>
                             <Field>
-                                <FieldLabel htmlFor="password">Senha</FieldLabel>
+                                <FieldLabel htmlFor="password" className="text-white/70">Senha</FieldLabel>
                                 <Input
                                     id="password"
                                     type="password"
                                     name="password"
                                     placeholder="Digite sua senha"
                                     required
+                                    className="border-white/10 bg-[#05070A] text-white placeholder:text-white/35 focus-visible:ring-[#1FA2E1]/35"
                                 />
                             </Field>
 
@@ -131,17 +133,17 @@ export default function AdminLoginForm({
                                 </Button>
                             </Field>
                         </FieldGroup>
-                        <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
+                        <FieldDescription className="text-center text-sm font-normal text-white/60">
                             Esqueceu seu login e/ou senha?{" "}
                             <a
                                 href="#"
-                                className="font-medium text-card-foreground !no-underline"
+                                className="font-medium text-white !no-underline"
                             >
                                 Fale com o administrador
                             </a>
                         </FieldDescription>
                     </form>
-                    <div className="relative hidden bg-muted md:block">
+                    <div className="relative hidden bg-[#05070A] md:block">
                         <Image
                             src="/images/estudo.jpeg"
                             alt="Foto sala da CMF"

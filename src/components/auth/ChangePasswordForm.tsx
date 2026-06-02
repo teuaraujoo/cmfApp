@@ -52,14 +52,14 @@ export default function ChangePasswordForm() {
   };
 
   return (
-    <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#05070A] text-white">
       <PasswordSecurityModal
         open={open}
         onOpenChange={setOpen}
       />
       <BackgroundCircle />
       <div className="py-10 md:py-20 max-w-lg px-4 sm:px-0 mx-auto w-full">
-        <Card className="max-w-lg px-6 py-8 sm:p-12 relative gap-6">
+        <Card className="relative max-w-lg gap-6 border border-white/10 bg-[#0E1117]/95 px-6 py-8 text-white shadow-2xl shadow-black/40 backdrop-blur sm:p-12">
           <CardHeader className="text-center gap-6 p-0">
 
             <div className="mx-auto">
@@ -73,10 +73,10 @@ export default function ChangePasswordForm() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <CardTitle className="text-2xl font-medium text-card-foreground">
+              <CardTitle className="text-2xl font-medium text-white">
                 Primeiro acesso por aqui
               </CardTitle>
-              <CardDescription className="text-sm text-muted-foreground font-normal">
+              <CardDescription className="text-sm font-normal text-white/60">
                 Troque sua senha agora
               </CardDescription>
             </div>
@@ -90,7 +90,7 @@ export default function ChangePasswordForm() {
                   <Field className="gap-1.5">
                     <FieldLabel
                       htmlFor="newPassword"
-                      className="text-sm text-muted-foreground font-normal"
+                      className="text-sm font-normal text-white/70"
                     >
                       Nova senha
                     </FieldLabel>
@@ -100,13 +100,13 @@ export default function ChangePasswordForm() {
                       name="newPassword"
                       placeholder="Digite sua nova senha"
                       required
-                      className="dark:bg-background h-9 shadow-xs"
+                      className="h-9 border-white/10 bg-[#05070A] text-white shadow-xs placeholder:text-white/35 focus-visible:ring-[#1FA2E1]/35"
                     />
                   </Field>
                   <Field className="gap-1.5">
                     <FieldLabel
                       htmlFor="confirmPassword"
-                      className="text-sm text-muted-foreground font-normal"
+                      className="text-sm font-normal text-white/70"
                     >
                       Confirme Nova senha
                     </FieldLabel>
@@ -117,7 +117,7 @@ export default function ChangePasswordForm() {
                       name="confirmPassword"
                       placeholder="Digite sua nova senha"
                       required
-                      className="dark:bg-background h-9 shadow-xs"
+                      className="h-9 border-white/10 bg-[#05070A] text-white shadow-xs placeholder:text-white/35 focus-visible:ring-[#1FA2E1]/35"
                     />
                   </Field>
                 </div>
