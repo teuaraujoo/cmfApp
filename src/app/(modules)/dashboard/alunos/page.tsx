@@ -3,7 +3,10 @@ import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalida
 import { getAllAlunosForAdmin } from "@/server/modules/users/user.queries";
 
 export default async function AlunosPage() {
-  const alunos = await getAllAlunosForAdmin();
-  const modalidades = await getAllModalidadesForAdmin();
-  return <StudentsDashboardPage alunos={alunos} modalidades={modalidades}/>;
+
+  const [alunos, modalidades] = await Promise.all([
+    getAllAlunosForAdmin(),
+    getAllModalidadesForAdmin()
+  ]);
+  return <StudentsDashboardPage alunos={alunos} modalidades={modalidades} />;
 };
