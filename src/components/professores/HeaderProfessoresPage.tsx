@@ -33,8 +33,8 @@ export default function HeaderProfessoresPage({
               Todos os professores
             </h1>
             <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
-              Consulte professores cadastrados, filtre por materia e acompanhe
-              a distribuicao da equipe.
+              Consulte professores cadastrados, filtre por matéria e acompanhe
+              a distribuição da equipe.
             </p>
           </div>
 
@@ -44,7 +44,7 @@ export default function HeaderProfessoresPage({
               type="text"
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
-              placeholder="Pesquisar por nome, email ou materia"
+              placeholder="Pesquisar por nome, email ou matéria"
               className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 text-sm text-gray-800 outline-none transition-colors placeholder:text-gray-400 focus:border-sky-300 focus:bg-white dark:border-gray-800 dark:bg-gray-900/70 dark:text-white/90 dark:placeholder:text-gray-500 dark:focus:border-sky-700"
             />
           </div>

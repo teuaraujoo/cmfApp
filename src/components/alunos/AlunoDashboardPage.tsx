@@ -375,12 +375,12 @@ export default function StudentsDashboardPage({
 
                 <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-800/20">
                   <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
-                    Academico
+                    Acadêmico
                   </p>
                   <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
                       <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Serie
+                        Série
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                         {selectedAluno.serie ?? "-"}
@@ -431,7 +431,7 @@ export default function StudentsDashboardPage({
 
                 <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-800/20">
                   <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
-                    Responsavel
+                    Responsável
                   </p>
                   <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">

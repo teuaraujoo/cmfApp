@@ -130,7 +130,7 @@ export default function ProfessorDetailsPanel({
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
                     <p className="text-xs text-gray-400 dark:text-gray-500">
-                      Materia
+                      Matéria
                     </p>
                     <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                       {professor.materia}

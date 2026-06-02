@@ -32,7 +32,7 @@ export default function HeaderTurmasPage({
         <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-2xl">
             <p className="text-sm font-medium text-sky-600 dark:text-sky-300">
-              Gestao de turmas
+              Gestão de turmas
             </p>
             <h1 className="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Todas as turmas
