@@ -7,7 +7,8 @@ const apiRoutes = {
     changePassword: "/api/auth/change-password",
     users: "/api/users",
     totalAlunos: "/api/alunos/total",
-    totalProfessores: "/api/professores/total"
+    totalProfessores: "/api/professores/total",
+    turmas: "/api/turmas"
 };
 
 export default apiRoutes;

@@ -1,15 +1,19 @@
 "use client";
 
 import { Plus, Search } from "lucide-react";
-import type { DiaSemana } from "./types";
+
+type DiaSemanaFiltro = {
+  label: string;
+  value: string;
+};
 
 type HeaderTurmasPageProps = {
   filteredCount: number;
   search: string;
-  diasSemana: DiaSemana[];
-  selectedDia: "Todas" | DiaSemana;
+  diasSemana: DiaSemanaFiltro[];
+  selectedDia: string;
   onSearchChange: (value: string) => void;
-  onSelectDia: (value: "Todas" | DiaSemana) => void;
+  onSelectDia: (value: string) => void;
   onOpenCreateDialog: () => void;
 };
 
@@ -22,8 +26,6 @@ export default function HeaderTurmasPage({
   onSelectDia,
   onOpenCreateDialog,
 }: HeaderTurmasPageProps) {
-  const filtros = ["Todas", ...diasSemana] as const;
-
   return (
     <div className="space-y-6">
       <section className="px-5 py-5 sm:px-6">
@@ -37,7 +39,7 @@ export default function HeaderTurmasPage({
             </h1>
             <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
               Consulte as turmas cadastradas, filtre por dia da semana e acesse
-              rapidamente os detalhes de alunos, professores e horarios.
+              rapidamente os detalhes de alunos, professores e horários.
             </p>
           </div>
 
@@ -47,7 +49,7 @@ export default function HeaderTurmasPage({
               type="text"
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
-              placeholder="Pesquisar por nome, dia ou horario"
+              placeholder="Pesquisar por nome, dia ou horário"
               className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 text-sm text-gray-800 outline-none transition-colors placeholder:text-gray-400 focus:border-sky-300 focus:bg-white dark:border-gray-800 dark:bg-gray-900/70 dark:text-white/90 dark:placeholder:text-gray-500 dark:focus:border-sky-700"
             />
           </div>
@@ -62,21 +64,33 @@ export default function HeaderTurmasPage({
 
         <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-2">
-            {filtros.map((dia) => {
-              const isSelected = selectedDia === dia;
+            <button
+              type="button"
+              onClick={() => onSelectDia("Todas")}
+              className={`inline-flex cursor-pointer items-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                selectedDia === "Todas"
+                  ? "bg-[#1FA2E1] text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              }`}
+            >
+              Todas
+            </button>
+
+            {diasSemana.map((dia) => {
+              const isSelected = selectedDia === dia.value;
 
               return (
                 <button
-                  key={dia}
+                  key={dia.value}
                   type="button"
-                  onClick={() => onSelectDia(dia)}
+                  onClick={() => onSelectDia(dia.value)}
                   className={`inline-flex cursor-pointer items-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                     isSelected
                       ? "bg-[#1FA2E1] text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                   }`}
                 >
-                  {dia}
+                  {dia.label}
                 </button>
               );
             })}

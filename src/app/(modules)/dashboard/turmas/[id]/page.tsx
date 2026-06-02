@@ -1,4 +1,9 @@
 import TurmaDetailsPage from "@/components/turmas/TurmaDetailsPage";
+import { toTurmaDashboardItem } from "@/components/turmas/turmas-view.mapper";
+import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
+import { getTurmaByIdForAdmin } from "@/server/modules/turmas/turmas.queries";
+import { getAllAlunosForAdmin } from "@/server/modules/users/user.queries";
+import { getAllProfessoresForAdmin } from "@/server/modules/users/user.queries";
 
 type TurmaDetailsRouteProps = {
   params: Promise<{
@@ -11,5 +16,14 @@ export default async function TurmaDetailsRoute({
 }: TurmaDetailsRouteProps) {
   const { id } = await params;
 
-  return <TurmaDetailsPage turmaId={Number(id)} />;
-}
+  const [alunos, modalidades, turma, professores] = await Promise.all([
+    getAllAlunosForAdmin(),
+    getAllModalidadesForAdmin(),
+    getTurmaByIdForAdmin(Number(id)),
+    getAllProfessoresForAdmin(),
+  ]);
+
+  const turmaDashboard = toTurmaDashboardItem(turma);
+
+  return <TurmaDetailsPage turma={turmaDashboard} modalidades={modalidades} alunos={alunos} professores={professores} />;
+};

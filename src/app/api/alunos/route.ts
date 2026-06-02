@@ -1,10 +1,8 @@
 import { AppError } from "@/server/error/app-errors";
-import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getAllAlunosForAdmin } from "@/server/modules/users/user.queries";
 
 export async function GET() {
     try {
-        await requireAdminUser();
 
         const data = await getAllAlunosForAdmin();
         

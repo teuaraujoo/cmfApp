@@ -8,7 +8,6 @@ import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalida
 
 export async function GET() {
   try {
-    await requireAdminUser();
 
     const modalidades = await getAllModalidadesForAdmin();
 

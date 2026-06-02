@@ -8,11 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Turma } from "./types";
+import type { TurmaDashboardItem } from "./types";
 
 type TurmasGridProps = {
-  turmas: Turma[];
-  onOpenDeleteDialog: (turma: Turma) => void;
+  turmas: TurmaDashboardItem[];
+  onOpenDeleteDialog: (turma: TurmaDashboardItem) => void;
 };
 
 export default function TurmasGrid({
@@ -32,13 +32,18 @@ export default function TurmasGrid({
                 {turma.nome}
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-800 dark:bg-sky-500/10 dark:text-sky-200">
-                  <CalendarClock className="size-3.5" />
+                {/* <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-800 dark:bg-sky-500/10 dark:text-sky-200">
                   {turma.diasSemana.join(" e ")}
-                </span>
-                <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-                  {turma.horario}
-                </span>
+                  </span> */}
+                {turma.agenda.map((agenda, index) => (
+                  <span
+                    key={`${turma.id}-agenda-${index}`}
+                    className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:bg-sky-500/10"
+                  >
+                    <CalendarClock className="size-3.5" />
+                    {formatAgendaItem(turma.diasSemana[index], agenda)}
+                  </span>
+                ))}
               </div>
             </div>
 
@@ -96,4 +101,13 @@ export default function TurmasGrid({
       }
     </div >
   );
+}
+
+function formatAgendaItem(
+  diaSemana: string | number | undefined,
+  agenda: TurmaDashboardItem["agenda"][number],
+) {
+  const dia = diaSemana ? `${diaSemana}: ` : "";
+
+  return `${dia}${agenda.horario_inicio} - ${agenda.horario_fim}`;
 }

@@ -10,10 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Turma } from "./types";
+import type { TurmaDashboardItem } from "./types";
 
 type TurmaDeleteDialogProps = {
-  turma: Turma | null;
+  turma: TurmaDashboardItem | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };

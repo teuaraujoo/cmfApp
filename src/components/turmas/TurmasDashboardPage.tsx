@@ -7,53 +7,72 @@ import TurmaDeleteDialog from "./TurmaDeleteDialog";
 import TurmaFormDialog from "./TurmaFormDialog";
 import TurmasGrid from "./TurmasGrid";
 import TurmasOverview from "./TurmasOverview";
-import { mockTurmas } from "./mock";
-import type { DiaSemana, Turma } from "./types";
+import type { Modalidade, TurmaDashboardItem, Aluno, Professor } from "./types";
 
-const diasSemana: DiaSemana[] = [
-  "Segunda",
-  "Terca",
-  "Quarta",
-  "Quinta",
-  "Sexta",
-  "Sabado",
+const diasSemanaFiltro = [
+  { label: "Segunda", value: "Segunda-feira" },
+  { label: "Terça", value: "Terça-feira" },
+  { label: "Quarta", value: "Quarta-feira" },
+  { label: "Quinta", value: "Quinta-feira" },
+  { label: "Sexta", value: "Sexta-feira" },
+  { label: "Sábado", value: "Sábado" },
+  { label: "Domingo", value: "Domingo" },
 ];
 
-export default function TurmasDashboardPage() {
+type TurmasDashboardPageProps = {
+  turmas?: TurmaDashboardItem[];
+  modalidades: Modalidade[];
+  alunos: Aluno[];
+  professores: Professor[]; 
+};
+
+export default function TurmasDashboardPage({
+  turmas = [],
+  modalidades,
+  alunos,
+  professores
+}: TurmasDashboardPageProps) {
   const [search, setSearch] = useState("");
-  const [selectedDia, setSelectedDia] = useState<"Todas" | DiaSemana>("Todas");
+  const [selectedDia, setSelectedDia] = useState("Todas");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedTurma, setSelectedTurma] = useState<Turma | null>(null);
+  const [selectedTurma, setSelectedTurma] = useState<TurmaDashboardItem | null>(
+    null,
+  );
 
   const filteredTurmas = useMemo(() => {
     const searchValue = search
       .trim()
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, "-");
 
-    return mockTurmas.filter((turma) => {
+    return turmas.filter((turma) => {
       const matchesDia =
         selectedDia === "Todas" || turma.diasSemana.includes(selectedDia);
 
       const searchableText = [
         turma.nome,
         ...turma.diasSemana,
-        turma.horario,
+        ...turma.agenda.flatMap((agenda) => [
+          agenda.horario_inicio,
+          agenda.horario_fim,
+        ]),
         ...turma.alunos.map((aluno) => aluno.nome),
         ...turma.professores.map((professor) => professor.nome),
       ]
         .join(" ")
         .toLowerCase()
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, "-");
 
       return matchesDia && (!searchValue || searchableText.includes(searchValue));
     });
-  }, [search, selectedDia]);
+  }, [search, selectedDia, turmas]);
 
-  function openDeleteDialog(turma: Turma) {
+  function openDeleteDialog(turma: TurmaDashboardItem) {
     setSelectedTurma(turma);
     setDeleteDialogOpen(true);
   }
@@ -64,7 +83,7 @@ export default function TurmasDashboardPage() {
         <HeaderTurmasPage
           filteredCount={filteredTurmas.length}
           search={search}
-          diasSemana={diasSemana}
+          diasSemana={diasSemanaFiltro}
           selectedDia={selectedDia}
           onSearchChange={setSearch}
           onSelectDia={setSelectedDia}
@@ -94,16 +113,22 @@ export default function TurmasDashboardPage() {
             )}
           </section>
 
-          <TurmasOverview turmas={mockTurmas} diasSemana={diasSemana} />
+          <TurmasOverview turmas={turmas} diasSemana={diasSemanaFiltro} />
         </div>
       </div>
 
-      <TurmaFormDialog
-        open={createDialogOpen}
-        mode="create"
-        diasSemana={diasSemana}
-        onOpenChange={setCreateDialogOpen}
-      />
+      {createDialogOpen && (
+        <TurmaFormDialog
+          key="create-turma-form"
+          open={createDialogOpen}
+          mode="create"
+          diasSemana={diasSemanaFiltro}
+          onOpenChange={setCreateDialogOpen}
+          modalidades={modalidades}
+          alunos={alunos}
+          professores={professores}
+        />
+      )}
 
       <TurmaDeleteDialog
         turma={selectedTurma}

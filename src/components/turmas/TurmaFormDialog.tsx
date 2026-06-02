@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { Check, UserRound, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,14 +21,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { mockAlunos, mockModalidades, mockProfessores } from "./mock";
-import type { DiaSemana, Turma } from "./types";
+import type { Aluno, DiaSemana, Modalidade, Professor, TurmaAgenda, TurmaDashboardItem } from "./types";
+
+type DiaSemanaFiltro = {
+  label: string;
+  value: string;
+};
 
 type TurmaFormDialogProps = {
   open: boolean;
   mode: "create" | "edit";
-  turma?: Turma | null;
-  diasSemana: DiaSemana[];
+  turma?: TurmaDashboardItem | null;
+  diasSemana: DiaSemanaFiltro[];
+  modalidades: Modalidade[];
+  alunos: Aluno[];
+  professores: Professor[]
   onOpenChange: (open: boolean) => void;
 };
 
@@ -37,29 +44,29 @@ export default function TurmaFormDialog({
   mode,
   turma,
   diasSemana,
+  modalidades,
+  alunos,
+  professores,
   onOpenChange,
 }: TurmaFormDialogProps) {
-  const [selectedAlunos, setSelectedAlunos] = useState<number[]>([]);
-  const [selectedProfessores, setSelectedProfessores] = useState<number[]>([]);
-  const [primeiroDiaSemana, setPrimeiroDiaSemana] = useState<DiaSemana | "">("");
-  const [segundoDiaSemana, setSegundoDiaSemana] = useState<DiaSemana | "">("");
-  const [horarioInicio, setHorarioInicio] = useState("");
-  const [horarioFim, setHorarioFim] = useState("");
-
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    setSelectedAlunos(turma?.alunos.map((aluno) => aluno.id) ?? []);
-    setSelectedProfessores(
-      turma?.professores.map((professor) => professor.id) ?? [],
-    );
-    setPrimeiroDiaSemana(turma?.diasSemana[0] ?? "");
-    setSegundoDiaSemana(turma?.diasSemana[1] ?? "");
-    setHorarioInicio(turma?.horario.split(" - ")[0] ?? "");
-    setHorarioFim(turma?.horario.split(" - ")[1] ?? "");
-  }, [open, turma]);
+  const [selectedAlunos, setSelectedAlunos] = useState<number[]>(
+    () => turma?.alunos.map((aluno) => aluno.id) ?? [],
+  );
+  const [selectedProfessores, setSelectedProfessores] = useState<number[]>(
+    () => turma?.professores.map((professor) => professor.id) ?? [],
+  );
+  const [primeiroDiaSemana, setPrimeiroDiaSemana] = useState(
+    () => String(turma?.diasSemana[0] ?? ""),
+  );
+  const [segundoDiaSemana, setSegundoDiaSemana] = useState(
+    () => String(turma?.diasSemana[1] ?? ""),
+  );
+  const [horarioInicio, setHorarioInicio] = useState(
+    () => turma?.agenda[0]?.horario_inicio ?? "",
+  );
+  const [horarioFim, setHorarioFim] = useState(
+    () => turma?.agenda[0]?.horario_fim ?? "",
+  );
 
   function toggleAluno(alunoId: number) {
     setSelectedAlunos((current) =>
@@ -67,7 +74,7 @@ export default function TurmaFormDialog({
         ? current.filter((id) => id !== alunoId)
         : [...current, alunoId],
     );
-  }
+  };
 
   function toggleProfessor(professorId: number) {
     setSelectedProfessores((current) =>
@@ -75,14 +82,57 @@ export default function TurmaFormDialog({
         ? current.filter((id) => id !== professorId)
         : [...current, professorId],
     );
-  }
+  };
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onOpenChange(false);
-  }
+  };
+
+  function calculateHours(agenda: TurmaAgenda[] | undefined) {
+    if (!agenda?.length) {
+      return "";
+    };
+
+    let minutosTotais = 0;
+
+    for (const item of agenda) {
+      if (!item.horario_inicio || !item.horario_fim) {
+        return "";
+      };
+
+      const [inicioHora, inicioMinuto] = item.horario_inicio.split(":").map(Number);
+      const [fimHora, fimMinuto] = item.horario_fim.split(":").map(Number);
+
+      const inicio = inicioHora * 60 + inicioMinuto;
+      const fim = fimHora * 60 + fimMinuto;
+
+      if (fim <= inicio) {
+        return "";
+      };
+
+      minutosTotais += fim - inicio;
+    };
+
+    return minutosTotais / 60;
+  };
 
   const isEditing = mode === "edit";
+  const agendaAtual = [
+    primeiroDiaSemana
+      ? {
+        horario_inicio: horarioInicio,
+        horario_fim: horarioFim,
+      }
+      : null,
+    segundoDiaSemana
+      ? {
+        horario_inicio: horarioInicio,
+        horario_fim: horarioFim,
+      }
+      : null,
+  ].filter(Boolean) as TurmaAgenda[];
+  const horasSemana = calculateHours(agendaAtual);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -117,6 +167,33 @@ export default function TurmaFormDialog({
 
               <label className="min-w-0 space-y-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Modalidade
+                </span>
+                <Select
+                  name="modalidade_id"
+                  defaultValue={turma?.modalidade_id ? String(turma.modalidade_id) : undefined}
+                >
+                  <SelectTrigger className="h-11 w-full rounded-xl mt-2">
+                    <SelectValue placeholder="Selecione a modalidade" >
+                      {(value) =>
+                        modalidades.find(
+                          (modalidade) => String(modalidade.id) === String(value),
+                        )?.tipo ?? "Selecione a modalidade"
+                      }
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {modalidades.map((modalidade) => (
+                      <SelectItem key={modalidade.id} value={String(modalidade.id)}>
+                        {modalidade.tipo}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </label>
+
+              <label className="min-w-0 space-y-2">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Horas semanais
                 </span>
                 <Input
@@ -124,10 +201,9 @@ export default function TurmaFormDialog({
                   type="number"
                   step="0.5"
                   min="0.5"
-                  defaultValue={turma?.horas_semana}
-                  placeholder="Ex: 4"
+                  value={horasSemana}
                   className="h-11 rounded-xl mt-2"
-                  required
+                  readOnly
                 />
               </label>
 
@@ -159,27 +235,6 @@ export default function TurmaFormDialog({
 
               <label className="min-w-0 space-y-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Modalidade
-                </span>
-                <Select
-                  name="modalidade_id"
-                  defaultValue={turma?.modalidade_id ? String(turma.modalidade_id) : undefined}
-                >
-                  <SelectTrigger className="h-11 w-full rounded-xl mt-2">
-                    <SelectValue placeholder="Selecione a modalidade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockModalidades.map((modalidade) => (
-                      <SelectItem key={modalidade.id} value={String(modalidade.id)}>
-                        {modalidade.tipo}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
-
-              <label className="min-w-0 space-y-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Primeiro dia da semana
                 </span>
                 <Select
@@ -192,8 +247,8 @@ export default function TurmaFormDialog({
                   </SelectTrigger>
                   <SelectContent>
                     {diasSemana.map((dia) => (
-                      <SelectItem key={dia} value={dia}>
-                        {dia}
+                      <SelectItem key={dia.label} value={dia.value}>
+                        {dia.value}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -214,8 +269,8 @@ export default function TurmaFormDialog({
                   </SelectTrigger>
                   <SelectContent>
                     {diasSemana.map((dia) => (
-                      <SelectItem key={dia} value={dia}>
-                        {dia}
+                      <SelectItem key={dia.label} value={dia.value}>
+                        {dia.value}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -249,12 +304,27 @@ export default function TurmaFormDialog({
                   required
                 />
               </label>
+
+              <label className="min-w-0 space-y-2">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Horas semanais
+                </span>
+                <Input
+                  name="horas_semana"
+                  type="number"
+                  step="0.5"
+                  min="0.5"
+                  value={horasSemana}
+                  className="h-11 rounded-xl mt-2"
+                  readOnly
+                />
+              </label>
             </div>
 
             <input
               type="hidden"
               name="turma_agenda.0.dia_semana"
-              value={diaSemanaToPayloadValue(primeiroDiaSemana)}
+              value={primeiroDiaSemana}
             />
             <input
               type="hidden"
@@ -269,7 +339,7 @@ export default function TurmaFormDialog({
             <input
               type="hidden"
               name="turma_agenda.1.dia_semana"
-              value={diaSemanaToPayloadValue(segundoDiaSemana)}
+              value={segundoDiaSemana}
             />
             <input
               type="hidden"
@@ -306,14 +376,14 @@ export default function TurmaFormDialog({
               icon={<UsersRound className="size-4" />}
               selectedCount={selectedAlunos.length}
             >
-              {mockAlunos.map((aluno) => {
-                const selected = selectedAlunos.includes(aluno.id);
+              {alunos.map((aluno) => {
+                const selected = aluno.id != null && selectedAlunos.includes(aluno.id);
 
                 return (
                   <button
                     key={aluno.id}
                     type="button"
-                    onClick={() => toggleAluno(aluno.id)}
+                    onClick={() => toggleAluno(aluno.id!)}
                     className={selectionCardClassName(selected)}
                   >
                     <div className="min-w-0 flex-1 text-left">
@@ -336,8 +406,8 @@ export default function TurmaFormDialog({
               icon={<UserRound className="size-4" />}
               selectedCount={selectedProfessores.length}
             >
-              {mockProfessores.map((professor) => {
-                const selected = selectedProfessores.includes(professor.id);
+              {professores.map((professor) => {
+                const selected = professor.id != null && selectedProfessores.includes(professor.id);
 
                 return (
                   <button
@@ -443,17 +513,4 @@ function selectionCardClassName(selected: boolean) {
       ? "border-sky-500 bg-sky-50 shadow-sm dark:border-sky-400/50 dark:bg-sky-500/10"
       : "border-gray-200 bg-white hover:border-sky-200 hover:bg-sky-50/70 dark:border-gray-800 dark:bg-gray-950/60 dark:hover:border-sky-500/30 dark:hover:bg-sky-500/10",
   );
-}
-
-function diaSemanaToPayloadValue(diaSemana: DiaSemana | "") {
-  const dias: Record<DiaSemana, number> = {
-    Segunda: 1,
-    Terca: 2,
-    Quarta: 3,
-    Quinta: 4,
-    Sexta: 5,
-    Sabado: 6,
-  };
-
-  return diaSemana ? dias[diaSemana] : "";
-}
+};

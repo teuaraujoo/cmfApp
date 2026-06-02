@@ -1,9 +1,14 @@
 import { CalendarDays, Layers3 } from "lucide-react";
-import type { DiaSemana, Turma } from "./types";
+import type { TurmaDashboardItem } from "./types";
+
+type DiaSemanaFiltro = {
+  label: string;
+  value: string;
+};
 
 type TurmasOverviewProps = {
-  turmas: Turma[];
-  diasSemana: DiaSemana[];
+  turmas: TurmaDashboardItem[];
+  diasSemana: DiaSemanaFiltro[];
 };
 
 export default function TurmasOverview({
@@ -12,8 +17,8 @@ export default function TurmasOverview({
 }: TurmasOverviewProps) {
   const totalTurmas = turmas.length;
   const turmasPorDia = diasSemana.map((dia) => ({
-    dia,
-    total: turmas.filter((turma) => turma.diasSemana.includes(dia)).length,
+    ...dia,
+    total: turmas.filter((turma) => turma.diasSemana.includes(dia.value)).length,
   }));
 
   return (
@@ -43,13 +48,13 @@ export default function TurmasOverview({
         </div>
 
         <div className="space-y-3">
-          {turmasPorDia.map(({ dia, total }) => (
+          {turmasPorDia.map(({ label, value, total }) => (
             <div
-              key={dia}
+              key={value}
               className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-900/50"
             >
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {dia}
+                {label}
               </span>
               <span className="rounded-full bg-sky-100 px-2.5 py-1 text-xs font-semibold text-sky-800 dark:bg-sky-500/15 dark:text-sky-200">
                 {total}

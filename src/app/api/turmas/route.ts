@@ -3,13 +3,13 @@ import { AppError } from "@/server/error/app-errors";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
-import { getAllTurmas, createTurma } from "@/server/modules/turmas/turmas.services";
+import { createTurma } from "@/server/modules/turmas/turmas.services";
+import { getAllTurmasForAdmin } from "@/server/modules/turmas/turmas.queries";
 
 export async function GET() {
   try {
-    await requireAdminUser();
 
-    const turmas = await getAllTurmas();
+    const turmas = await getAllTurmasForAdmin();
 
     return Response.json(
       {

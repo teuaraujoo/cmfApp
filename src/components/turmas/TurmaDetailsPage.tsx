@@ -14,25 +14,33 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TurmaFormDialog from "./TurmaFormDialog";
-import { mockTurmas } from "./mock";
-import type { DiaSemana, Turma } from "./types";
+import type { Aluno ,Modalidade, Professor, TurmaDashboardItem } from "./types";
 
-const diasSemana: DiaSemana[] = [
-  "Segunda",
-  "Terca",
-  "Quarta",
-  "Quinta",
-  "Sexta",
-  "Sabado",
+const diasSemanaFormulario = [
+  { label: "Segunda", value: "Segunda" },
+  { label: "Terça", value: "Terça" },
+  { label: "Quarta", value: "Quarta" },
+  { label: "Quinta", value: "Quinta" },
+  { label: "Sexta", value: "Sexta" },
+  { label: "Sábado", value: "Sábado" },
 ];
 
+
 type TurmaDetailsPageProps = {
-  turmaId: number;
+  turma?: TurmaDashboardItem;
+  modalidades: Modalidade[];
+  alunos: Aluno[];
+  professores: Professor[]
 };
 
-export default function TurmaDetailsPage({ turmaId }: TurmaDetailsPageProps) {
+export default function TurmaDetailsPage({
+  turma,
+  modalidades,
+  alunos,
+  professores
+}: TurmaDetailsPageProps) {
+
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const turma = mockTurmas.find((item) => item.id === turmaId);
 
   if (!turma) {
     return (
@@ -53,7 +61,7 @@ export default function TurmaDetailsPage({ turmaId }: TurmaDetailsPageProps) {
         </section>
       </main>
     );
-  }
+  };
 
   return (
     <main className="p-6">
@@ -89,8 +97,8 @@ export default function TurmaDetailsPage({ turmaId }: TurmaDetailsPageProps) {
 
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           <SummaryCard
-            title="Dias e horario"
-            value={`${turma.diasSemana.join(" e ")}, ${turma.horario}`}
+            title="Dias e horário"
+            value={formatAgenda(turma)}
             icon={<CalendarClock className="size-5" />}
           />
           <SummaryCard
@@ -104,18 +112,18 @@ export default function TurmaDetailsPage({ turmaId }: TurmaDetailsPageProps) {
             icon={<Clock3 className="size-5" />}
           />
           <SummaryCard
-            title="Vigencia"
-            value={`${formatDate(turma.vigencia_inicio)} ate ${formatDate(turma.vigencia_fim)}`}
+            title="Vigência"
+            value={`${formatDate(turma.vigencia_inicio)} até ${formatDate(turma.vigencia_fim)}`}
             icon={<CalendarClock className="size-5" />}
           />
           <SummaryCard
-            title="Total de estudantes"
+            title="Total de alunos"
             value={`${turma.alunos.length} alunos`}
             icon={<Users className="size-5" />}
           />
           <SummaryCard
             title="Professores"
-            value={`${turma.professores.length} responsaveis`}
+            value={`${turma.professores.length} responsável(eis)`}
             icon={<UserRound className="size-5" />}
           />
         </section>
@@ -123,29 +131,35 @@ export default function TurmaDetailsPage({ turmaId }: TurmaDetailsPageProps) {
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <PeopleList
             title="Alunos da turma"
-            description="Estudantes vinculados a esta turma."
+            description="Alunos vinculados a esta turma."
             people={turma.alunos}
             type="aluno"
           />
           <PeopleList
             title="Professores da turma"
-            description="Professores responsaveis pela turma."
+            description="Professor(es) responsável(eis) pela turma."
             people={turma.professores}
             type="professor"
           />
         </div>
       </div>
 
-      <TurmaFormDialog
-        open={editDialogOpen}
-        mode="edit"
-        turma={turma}
-        diasSemana={diasSemana}
-        onOpenChange={setEditDialogOpen}
-      />
+      {editDialogOpen && (
+        <TurmaFormDialog
+          key={`edit-turma-form-${turma.id}`}
+          open={editDialogOpen}
+          mode="edit"
+          turma={turma}
+          modalidades={modalidades}
+          alunos={alunos}
+          professores={professores}
+          diasSemana={diasSemanaFormulario}
+          onOpenChange={setEditDialogOpen}
+        />
+      )}
     </main>
   );
-}
+};
 
 function SummaryCard({
   title,
@@ -171,7 +185,7 @@ function SummaryCard({
       </div>
     </article>
   );
-}
+};
 
 function PeopleList({
   title,
@@ -181,7 +195,7 @@ function PeopleList({
 }: {
   title: string;
   description: string;
-  people: Turma["alunos"] | Turma["professores"];
+  people: TurmaDashboardItem["alunos"] | TurmaDashboardItem["professores"];
   type: "aluno" | "professor";
 }) {
   return (
@@ -212,10 +226,25 @@ function PeopleList({
       </div>
     </section>
   );
-}
+};
 
 function formatDate(date: string) {
   const [year, month, day] = date.split("-");
 
   return `${day}/${month}/${year}`;
-}
+};
+
+function formatAgenda(turma: TurmaDashboardItem) {
+  if (!turma.agenda.length) {
+    return "Sem agenda cadastrada";
+  }
+
+  return turma.agenda
+    .map((agenda, index) => {
+      const diaSemana = turma.diasSemana[index];
+      const dia = diaSemana ? `${diaSemana}: ` : "";
+
+      return `${dia}${agenda.horario_inicio} - ${agenda.horario_fim}`;
+    })
+    .join(" | ");
+};
