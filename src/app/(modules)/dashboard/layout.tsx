@@ -1,4 +1,3 @@
-import "./sidebar-globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { SidebarProvider } from "@/context/SidebarContext";
 import SidebarLayout from "@/layout/SidebarLayout";
