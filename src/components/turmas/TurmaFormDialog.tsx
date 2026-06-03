@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { FormEvent, ReactNode } from "react";
-import { Check, UserRound, UsersRound } from "lucide-react";
+import { CalendarClock, Check, UserRound, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -85,11 +85,17 @@ export default function TurmaFormDialog({
   const [primeiroDiaSemana, setPrimeiroDiaSemana] = useState(() => getDiaSemanaId(turma?.diasSemana[0]));
   const [segundoDiaSemana, setSegundoDiaSemana] = useState(() => getDiaSemanaId(turma?.diasSemana[1]));
 
-  const [horarioInicio, setHorarioInicio] = useState(
+  const [primeiroHorarioInicio, setPrimeiroHorarioInicio] = useState(
     () => turma?.agenda[0]?.horario_inicio ?? "",
   );
-  const [horarioFim, setHorarioFim] = useState(
+  const [primeiroHorarioFim, setPrimeiroHorarioFim] = useState(
     () => turma?.agenda[0]?.horario_fim ?? "",
+  );
+  const [segundoHorarioInicio, setSegundoHorarioInicio] = useState(
+    () => turma?.agenda[1]?.horario_inicio ?? "",
+  );
+  const [segundoHorarioFim, setSegundoHorarioFim] = useState(
+    () => turma?.agenda[1]?.horario_fim ?? "",
   );
 
   function toggleAluno(alunoId: number) {
@@ -140,14 +146,14 @@ export default function TurmaFormDialog({
   const agendaAtual = [
     primeiroDiaSemana
       ? {
-        horario_inicio: horarioInicio,
-        horario_fim: horarioFim,
+        horario_inicio: primeiroHorarioInicio,
+        horario_fim: primeiroHorarioFim,
       }
       : null,
     segundoDiaSemana
       ? {
-        horario_inicio: horarioInicio,
-        horario_fim: horarioFim,
+        horario_inicio: segundoHorarioInicio,
+        horario_fim: segundoHorarioFim,
       }
       : null,
   ].filter(Boolean) as TurmaAgenda[];
@@ -236,104 +242,61 @@ export default function TurmaFormDialog({
                   required
                 />
               </label>
-
-              <label className="min-w-0 space-y-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Primeiro dia da semana
-                </span>
-                <Select
-                  name="primeiro_dia_semana"
-                  value={primeiroDiaSemana}
-                  onValueChange={(value) => { if (value) setPrimeiroDiaSemana(value) }}
-                >
-                  <SelectTrigger className="h-11 w-full rounded-xl mt-2">
-                    <SelectValue placeholder="Selecione o primeiro dia" >
-                      {(value) => diasSemana.find(
-                        (dia) => String(dia.id) === String(value),
-                      )?.filterValue ?? "Selecione uma dia"
-                      }
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {diasSemana.map((dia) => (
-                      <SelectItem key={dia.id} value={String(dia.id)}>
-                        {dia.filterValue}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
-
-              <label className="min-w-0 space-y-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Segundo dia da semana
-                </span>
-                <Select
-                  name="segundo_dia_semana"
-                  value={segundoDiaSemana}
-                  onValueChange={(value) => { if (value) setSegundoDiaSemana(value) }}
-                >
-                  <SelectTrigger className="h-11 w-full rounded-xl mt-2">
-                    <SelectValue placeholder="Selecione o segundo dia" >
-                      {(value) => diasSemana.find(
-                        (dia) => String(dia.id) === String(value),
-                      )?.filterValue ?? "Selecione uma dia"
-                      }
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {diasSemana.map((dia) => (
-                      <SelectItem key={dia.label} value={String(dia.id)}>
-                        {dia.filterValue}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
-
-              <label className="min-w-0 space-y-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Horario inicial
-                </span>
-                <Input
-                  name="horarioInicio"
-                  type="time"
-                  value={horarioInicio}
-                  onChange={(event) => setHorarioInicio(event.target.value)}
-                  className="h-11 rounded-xl mt-2"
-                  required
-                />
-              </label>
-
-              <label className="min-w-0 space-y-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Horario final
-                </span>
-                <Input
-                  name="horarioFim"
-                  type="time"
-                  value={horarioFim}
-                  onChange={(event) => setHorarioFim(event.target.value)}
-                  className="h-11 rounded-xl mt-2"
-                  required
-                />
-              </label>
-
-              <label className="min-w-0 space-y-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Horas semanais
-                </span>
-                <Input
-                  name="horasSemana"
-                  type="number"
-                  step="0.5"
-                  min="0.5"
-                  value={horasSemana}
-                  className="h-11 rounded-xl mt-2"
-                  readOnly
-                />
-              </label>
             </div>
+
+            <section className="min-w-0 rounded-2xl border border-gray-200 bg-gray-50/70 p-4 dark:border-gray-800 dark:bg-gray-900/40">
+              <div className="mb-4 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700 dark:bg-sky-500/10 dark:text-sky-300">
+                      <CalendarClock className="size-4" />
+                    </span>
+                    Agenda da turma
+                  </div>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Configure o dia e o horário de cada encontro da turma.
+                  </p>
+                </div>
+
+                <span className="w-fit shrink-0 rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-700 ring-1 ring-gray-200 dark:bg-gray-950 dark:text-gray-200 dark:ring-gray-800">
+                  {horasSemana || 0}h semanais
+                </span>
+              </div>
+
+              <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-2">
+                <AgendaCard
+                  title="1º dia"
+                  description="Primeiro encontro semanal da turma."
+                  diasSemana={diasSemana}
+                  diaValue={primeiroDiaSemana}
+                  inicioValue={primeiroHorarioInicio}
+                  fimValue={primeiroHorarioFim}
+                  required
+                  onDiaChange={setPrimeiroDiaSemana}
+                  onInicioChange={setPrimeiroHorarioInicio}
+                  onFimChange={setPrimeiroHorarioFim}
+                />
+
+                <AgendaCard
+                  title="2º dia"
+                  description="Segundo encontro semanal, caso exista."
+                  diasSemana={diasSemana}
+                  diaValue={segundoDiaSemana}
+                  inicioValue={segundoHorarioInicio}
+                  fimValue={segundoHorarioFim}
+                  required={Boolean(segundoDiaSemana)}
+                  onDiaChange={setSegundoDiaSemana}
+                  onInicioChange={setSegundoHorarioInicio}
+                  onFimChange={setSegundoHorarioFim}
+                />
+              </div>
+            </section>
+
+            <input
+              name="horasSemana"
+              type="hidden"
+              value={horasSemana}
+            />
 
             <input
               type="hidden"
@@ -343,12 +306,12 @@ export default function TurmaFormDialog({
             <input
               type="hidden"
               name="turma_agenda.0.horario_inicio"
-              value={horarioInicio}
+              value={primeiroHorarioInicio}
             />
             <input
               type="hidden"
               name="turma_agenda.0.horario_fim"
-              value={horarioFim}
+              value={primeiroHorarioFim}
             />
             <input
               type="hidden"
@@ -358,12 +321,12 @@ export default function TurmaFormDialog({
             <input
               type="hidden"
               name="turma_agenda.1.horario_inicio"
-              value={horarioInicio}
+              value={segundoHorarioInicio}
             />
             <input
               type="hidden"
               name="turma_agenda.1.horario_fim"
-              value={horarioFim}
+              value={segundoHorarioFim}
             />
 
             {selectedAlunos.map((alunoId, index) => (
@@ -472,6 +435,99 @@ export default function TurmaFormDialog({
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function AgendaCard({
+  title,
+  description,
+  diasSemana,
+  diaValue,
+  inicioValue,
+  fimValue,
+  required,
+  onDiaChange,
+  onInicioChange,
+  onFimChange,
+}: {
+  title: string;
+  description: string;
+  diasSemana: DiaSemanaFiltro[];
+  diaValue: string;
+  inicioValue: string;
+  fimValue: string;
+  required?: boolean;
+  onDiaChange: (value: string) => void;
+  onInicioChange: (value: string) => void;
+  onFimChange: (value: string) => void;
+}) {
+  return (
+    <article className="min-w-0 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950/60">
+      <div className="mb-4">
+        <p className="text-sm font-semibold text-gray-900 dark:text-white">
+          {title}
+        </p>
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          {description}
+        </p>
+      </div>
+
+      <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
+        <label className="min-w-0 space-y-2 sm:col-span-2">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Dia da semana
+          </span>
+          <Select
+            value={diaValue}
+            onValueChange={(value) => {
+              if (value) onDiaChange(value);
+            }}
+          >
+            <SelectTrigger className="h-11 w-full rounded-xl">
+              <SelectValue placeholder="Selecione o dia">
+                {(value) =>
+                  diasSemana.find((dia) => String(dia.id) === String(value))
+                    ?.filterValue ?? "Selecione o dia"
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {diasSemana.map((dia) => (
+                <SelectItem key={dia.id} value={String(dia.id)}>
+                  {dia.filterValue}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </label>
+
+        <label className="min-w-0 space-y-2">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Horário inicial
+          </span>
+          <Input
+            type="time"
+            value={inicioValue}
+            onChange={(event) => onInicioChange(event.target.value)}
+            className="h-11 rounded-xl"
+            required={required}
+          />
+        </label>
+
+        <label className="min-w-0 space-y-2">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Horário final
+          </span>
+          <Input
+            type="time"
+            value={fimValue}
+            onChange={(event) => onFimChange(event.target.value)}
+            className="h-11 rounded-xl"
+            required={required}
+          />
+        </label>
+      </div>
+    </article>
   );
 }
 
