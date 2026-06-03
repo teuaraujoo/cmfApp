@@ -1,4 +1,4 @@
-import type { TurmaApiResponse, TurmaDashboardItem } from "./types";
+import type { TurmaApiResponse, TurmaDashboardItem } from "@/@types/turma/turma.types";
 
 export function toTurmaDashboardItems(
   turmas: TurmaApiResponse[],

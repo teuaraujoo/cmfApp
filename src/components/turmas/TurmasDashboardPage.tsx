@@ -7,7 +7,10 @@ import TurmaDeleteDialog from "./TurmaDeleteDialog";
 import TurmaFormDialog from "./TurmaFormDialog";
 import TurmasGrid from "./TurmasGrid";
 import TurmasOverview from "./TurmasOverview";
-import type { Modalidade, TurmaDashboardItem, Aluno, Professor } from "./types";
+import type { Modalidade } from "@/@types/modalidade/modalidade.type";
+import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
+import { Aluno } from "@/@types/aluno/aluno.types";
+import { Professor } from "@/@types/professor/professor.types";
 
 const diasSemanaFiltro = [
   { label: "Segunda", value: "Segunda-feira" },
@@ -23,7 +26,7 @@ type TurmasDashboardPageProps = {
   turmas?: TurmaDashboardItem[];
   modalidades: Modalidade[];
   alunos: Aluno[];
-  professores: Professor[]; 
+  professores: Professor[];
 };
 
 export default function TurmasDashboardPage({

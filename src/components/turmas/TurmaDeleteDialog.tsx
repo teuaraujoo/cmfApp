@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { TurmaDashboardItem } from "./types";
+import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
 
 type TurmaDeleteDialogProps = {
   turma: TurmaDashboardItem | null;

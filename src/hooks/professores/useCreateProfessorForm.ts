@@ -1,6 +1,6 @@
 "use client";
 
-import { createProfessor } from "@/services/professor/professores.client";
+import { createProfessor } from "@/services/users/users.client";
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { getPositiveNumber, getRequiredFormString } from "@/utils/forms-utils";

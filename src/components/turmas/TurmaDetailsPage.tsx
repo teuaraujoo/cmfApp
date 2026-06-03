@@ -14,7 +14,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TurmaFormDialog from "./TurmaFormDialog";
-import type { Aluno ,Modalidade, Professor, TurmaDashboardItem } from "./types";
+import type { Modalidade } from "@/@types/modalidade/modalidade.type";
+import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
+import { Aluno } from "@/@types/aluno/aluno.types";
+import { Professor } from "@/@types/professor/professor.types";
 
 const diasSemanaFormulario = [
   { label: "Segunda", value: "Segunda" },

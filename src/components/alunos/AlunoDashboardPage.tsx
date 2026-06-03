@@ -23,33 +23,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AlunosForm from "./AlunosForm";
-import { inactiveUser, activeUser } from "@/services/alunos/alunos.client";
+import { inactiveUser, activeUser } from "@/services/users/users.client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
-type Aluno = {
-  id?: number;
-  user_id: number;
-  nome: string;
-  email: string;
-  role: string;
-  tel?: string | null;
-  status?: string;
-  data_nasc?: string | Date | null;
-  serie?: string | null;
-  resp_tel?: string | null;
-  resp_nome?: string | null;
-  modalidade_id?: number | null;
-  modalidade?: unknown;
-  tempo_aula?: unknown;
-  horas_semana?: unknown;
-  tempo_contrato?: unknown;
-};
-
-type Modalidade = {
-  id: number;
-  tipo: string;
-};
+import type { Aluno } from "@/@types/aluno/aluno.types";
+import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 
 function getAge(value?: string | Date | null) {
   if (!value) {

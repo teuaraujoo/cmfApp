@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { TurmaDashboardItem } from "./types";
+import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
 
 type TurmasGridProps = {
   turmas: TurmaDashboardItem[];

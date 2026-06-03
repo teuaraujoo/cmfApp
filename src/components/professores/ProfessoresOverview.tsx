@@ -1,7 +1,7 @@
 "use client";
 
 import { BookOpen, UsersRound } from "lucide-react";
-import type { Professor } from "./types";
+import type { Professor } from "@/@types/professor/professor.types";
 
 type ProfessoresOverviewProps = {
   professores: Professor[];

@@ -1,5 +1,5 @@
-
 "use client";
+
 type ProfessorMateriaFiltersProps = {
   materias: string[];
   selectedMateria: string;

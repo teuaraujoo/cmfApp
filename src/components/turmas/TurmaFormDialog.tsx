@@ -21,7 +21,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import type { Aluno, DiaSemana, Modalidade, Professor, TurmaAgenda, TurmaDashboardItem } from "./types";
+import type { TurmaAgenda } from "@/@types/turma/turma.types";
+import type { Modalidade } from "@/@types/modalidade/modalidade.type";
+import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
+import { Aluno } from "@/@types/aluno/aluno.types";
+import { Professor } from "@/@types/professor/professor.types";
+
+type DiaSemana =
+  | "Segunda"
+  | "Terça"
+  | "Quarta"
+  | "Quinta"
+  | "Sexta"
+  | "Sábado";
+
 
 type DiaSemanaFiltro = {
   label: string;

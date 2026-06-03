@@ -1,22 +1,6 @@
 import apiRoutes from "@/lib/api";
-
-type CreateAlunoPayload = {
-    nome: string;
-    email: string;
-    temporary_password: string;
-    role: "ALUNO";
-    tel: string;
-    aluno: {
-        data_nasc: string;
-        serie: string;
-        resp_tel: string;
-        resp_nome: string;
-        modalidade_id: number;
-        tempo_aula: number;
-        horas_semana: number;
-        tempo_contrato: number;
-    };
-};
+import type { CreateProfessorPayload } from "@/@types/professor/professor.types";
+import type { CreateAlunoPayload } from "@/@types/aluno/aluno.types";
 
 type UpdateAlunoPayload = Omit<CreateAlunoPayload, "temporary_password">;
 
@@ -106,18 +90,7 @@ export async function activeUser(userId: number) {
     };
 };
 
-type ProfessorPayload = {
-    nome: string;
-    email: string;
-    role: "PROFESSOR";
-    tel: string;
-    professor: {
-        materia: string;
-        modalidade_id: number;
-    };
-};
-
-export async function createProfessor(professor: ProfessorPayload) {
+export async function createProfessor(professor: CreateProfessorPayload) {
 
     try {
         const response = await fetch(`${apiRoutes.users}`, {
@@ -141,7 +114,7 @@ export async function createProfessor(professor: ProfessorPayload) {
 
 };
 
-export async function updateProfessor(professor: ProfessorPayload, userId: number) {
+export async function updateProfessor(professor: CreateProfessorPayload, userId: number) {
     try {
         const response = await fetch(`${apiRoutes.users}/${userId}`, {
             method: "PUT",

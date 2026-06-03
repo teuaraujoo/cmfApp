@@ -3,7 +3,8 @@
 import { CircleUserRound, Mail, Phone, X } from "lucide-react";
 import type { FormEvent } from "react";
 import ProfessorForm from "./ProfessorForm";
-import type { Modalidade, Professor } from "./types";
+import type { Professor } from "@/@types/professor/professor.types";
+import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 
 type ProfessorDetailsPanelProps = {
   professor: Professor | null;

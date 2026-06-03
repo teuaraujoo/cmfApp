@@ -1,17 +1,3 @@
-export type DiaSemana =
-  | "Segunda"
-  | "Terça"
-  | "Quarta"
-  | "Quinta"
-  | "Sexta"
-  | "Sábado";
-
-export type Modalidade = {
-  id: number;
-  tipo: string;
-};
-
-
 export type TurmaAgenda = {
   horario_inicio: string;
   horario_fim: string;
@@ -32,21 +18,6 @@ export type TurmaProfessor = {
 export type TurmaModalidade = {
   id: number;
   tipo: string;
-};
-
-export type TurmaDashboardItem = {
-  id: number;
-  nome: string;
-  horas_semana: number;
-  status: string;
-  vigencia_inicio: string;
-  vigencia_fim: string;
-  modalidade_id?: number;
-  modalidade: string;
-  diasSemana: (string | number)[];
-  agenda: TurmaAgenda[];
-  alunos: TurmaAluno[];
-  professores: TurmaProfessor[];
 };
 
 export type TurmaApiResponse = {
@@ -82,36 +53,19 @@ export type TurmaApiResponse = {
       materia: string;
     };
   }>;
-};
+}
 
-export type Aluno = {
-  id?: number;
-  user_id: number;
-  nome: string;
-  email: string;
-  role: string;
-  tel?: string | null;
-  status?: string;
-  data_nasc?: string | Date | null;
-  serie?: string | null;
-  resp_tel?: string | null;
-  resp_nome?: string | null;
-  modalidade_id?: number | null;
-  modalidade?: unknown;
-  tempo_aula?: unknown;
-  horas_semana?: unknown;
-  tempo_contrato?: unknown;
-};
-
-export type Professor = {
+export type TurmaDashboardItem = {
   id: number;
-  user_id: number;
   nome: string;
-  email: string;
-  tel: string | null;
-  role: string;
+  horas_semana: number;
   status: string;
-  materia: string;
-  modalidade_id: number;
+  vigencia_inicio: string;
+  vigencia_fim: string;
+  modalidade_id?: number;
   modalidade: string;
+  diasSemana: (string | number)[];
+  agenda: TurmaAgenda[];
+  alunos: TurmaAluno[];
+  professores: TurmaProfessor[];
 };

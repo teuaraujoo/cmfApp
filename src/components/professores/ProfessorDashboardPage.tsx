@@ -8,10 +8,11 @@ import HeaderProfessoresPage from "./HeaderProfessoresPage";
 import ProfessoresGrid from "./ProfessoresGrid";
 import ProfessoresOverview from "./ProfessoresOverview";
 import ProfessorDetailsPanel from "./ProfessorDetailsPanel";
-import type { Modalidade, Professor } from "./types";
+import type { Professor } from "@/@types/professor/professor.types";
+import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 import { useCreateProfessorForm } from "@/hooks/professores/useCreateProfessorForm";
 import { useUpdateProfessorForm } from "@/hooks/professores/useUpdateProfessorForm";
-import { inactiveUser, activeUser } from "@/services/alunos/alunos.client";
+import { inactiveUser, activeUser } from "@/services/users/users.client";
 
 type ProfessorDashboardPageProps = {
   professores: Professor[];

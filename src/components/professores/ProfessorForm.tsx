@@ -13,7 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Modalidade, Professor } from "./types";
+import type { Professor } from "@/@types//professor/professor.types";
+import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 
 const materias = [
   { id: 1, tipo: "Matemática" },

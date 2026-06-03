@@ -1,6 +1,6 @@
 "use client";
 
-import { updateAluno } from "@/services/alunos/alunos.client";
+import { updateAluno } from "@/services/users/users.client";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { getPositiveNumber, getRequiredFormString, validateBirthDate } from "@/utils/forms-utils";

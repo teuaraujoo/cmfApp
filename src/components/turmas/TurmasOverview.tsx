@@ -1,5 +1,5 @@
 import { CalendarDays, Layers3 } from "lucide-react";
-import type { TurmaDashboardItem } from "./types";
+import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
 
 type DiaSemanaFiltro = {
   label: string;
