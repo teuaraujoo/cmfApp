@@ -109,7 +109,7 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
 
     const data = createTurmaSchema.parse(body);
 
-    await TurmaValidation.validateTurma(data);
+    await TurmaValidation.validateTurma(data, id);
 
     try {
         return await prisma.$transaction(async (tx) => {

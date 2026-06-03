@@ -27,7 +27,7 @@ type ScheduleSlot = {
 type GroupedSchedules = Map<number, ScheduleSlot[]>;
 export class TurmaValidation {
 
-    static async validateTurma(data: CreateTurmaBody) {
+    static async validateTurma(data: CreateTurmaBody, turmaId?: number) {
         const turmaNome = await TurmaRepositories.getByName(data.nome);
         const modalidade = await ModalidadeRepositories.getById(data.modalidade_id);
         const vigenciaInicioDate = new Date(data.vigencia_inicio);
@@ -39,7 +39,7 @@ export class TurmaValidation {
 
         if (!modalidade) throw new AppError("Modalidade não encontrada!", 400);
 
-        if (turmaNome) throw new AppError("Turma já existente com esse nome!", 400);
+        if (turmaNome && turmaNome.id !== turmaId) throw new AppError("Turma já existente com esse nome!", 400);
 
         if (!data.vigencia_fim || !data.vigencia_inicio) throw new AppError("Vigência é obrigatória", 400);
 
