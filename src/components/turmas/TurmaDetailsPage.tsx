@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import type { ReactNode } from "react";
 import {
   ArrowLeft,
@@ -18,16 +18,17 @@ import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
 import { Aluno } from "@/@types/aluno/aluno.types";
 import { Professor } from "@/@types/professor/professor.types";
+import { useUpdateTurmaForm } from "@/hooks/turmas/useUpdateTurmaForm";
+import { useRouter } from "next/navigation";
 
-const diasSemanaFormulario = [
-  { label: "Segunda", value: "Segunda" },
-  { label: "Terça", value: "Terça" },
-  { label: "Quarta", value: "Quarta" },
-  { label: "Quinta", value: "Quinta" },
-  { label: "Sexta", value: "Sexta" },
-  { label: "Sábado", value: "Sábado" },
+const diasSemanaOptions = [
+  { id: 1, label: "Segunda", filterValue: "Segunda-feira" },
+  { id: 2, label: "Terça", filterValue: "Terça-feira" },
+  { id: 3, label: "Quarta", filterValue: "Quarta-feira" },
+  { id: 4, label: "Quinta", filterValue: "Quinta-feira" },
+  { id: 5, label: "Sexta", filterValue: "Sexta-feira" },
+  { id: 6, label: "Sábado", filterValue: "Sábado" },
 ];
-
 
 type TurmaDetailsPageProps = {
   turma?: TurmaDashboardItem;
@@ -43,7 +44,33 @@ export default function TurmaDetailsPage({
   professores
 }: TurmaDetailsPageProps) {
 
+  const router = useRouter();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const {
+    error: updateError,
+    loading: updateLoading,
+    handleUpdateTurma,
+    resetForm: resetUpdateForm,
+  } = useUpdateTurmaForm({
+    onSuccess: () => {
+      setEditDialogOpen(false);
+      refreshTurma();
+    }
+  });
+
+  function refreshTurma() {
+    startTransition(() => {
+      router.refresh();
+    });
+  };
+
+  function handleEditDialogOpenChange(open: boolean) {
+    if (!open) {
+      resetUpdateForm();
+    };
+
+    setEditDialogOpen(open);
+  };
 
   if (!turma) {
     return (
@@ -156,8 +183,11 @@ export default function TurmaDetailsPage({
           modalidades={modalidades}
           alunos={alunos}
           professores={professores}
-          diasSemana={diasSemanaFormulario}
-          onOpenChange={setEditDialogOpen}
+          diasSemana={diasSemanaOptions}
+          error={updateError}
+          loading={updateLoading}
+          onSubmit={(event) => void handleUpdateTurma(event, turma.id)}
+          onOpenChange={handleEditDialogOpenChange}
         />
       )}
     </main>

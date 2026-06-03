@@ -17,8 +17,8 @@ type TurmaAgenda = {
 type CreateTurmaPayload = {
     nome: string,
     horas_semana: number,
-    vigencia_inicio: Date,
-    vigencia_fim: Date,
+    vigencia_inicio: string,
+    vigencia_fim: string,
     modalidade_id: number,
     turma_agenda: TurmaAgenda[],
     turma_alunos: TurmaAluno[]
@@ -47,6 +47,27 @@ export async function createTurma(turma: CreateTurmaPayload) {
     };
 };
 
+export async function updateTurma(turma: CreateTurmaPayload, turmaId: number) {
+    try {
+        const response = await fetch(`${apiRoutes.turmas}/${turmaId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(turma),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) return { err: result.message ?? "Não foi possível criar aluno." };
+
+        return result;
+
+    } catch {
+        return { err: "Nao foi possivel conectar ao servidor." };
+    };
+};
 
 export async function deleteTurma(turmaId: number) {
     try {

@@ -16,12 +16,14 @@ type TurmaDeleteDialogProps = {
   turma: TurmaDashboardItem | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onDelete: (turma: TurmaDashboardItem) => Promise<void>
 };
 
 export default function TurmaDeleteDialog({
   turma,
   open,
   onOpenChange,
+  onDelete
 }: TurmaDeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,9 +36,14 @@ export default function TurmaDeleteDialog({
             Deletar turma
           </DialogTitle>
           <DialogDescription className="text-gray-500 dark:text-gray-400">
-            {turma
-              ? `Você está prestes a deletar "${turma.nome}". Essa ação ainda não remove dados mockados.`
-              : "Selecione uma turma para deletar."}
+            {turma ? (
+              <>
+                Você está prestes a deletar{" "}
+                <span className="font-semibold">{turma.nome}</span>. Essa ação não é reversível, tem certeza que deseja deletar essa turma?
+              </>
+            ) : (
+              "Selecione uma turma para deletar."
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -44,14 +51,15 @@ export default function TurmaDeleteDialog({
           <Button
             type="button"
             variant="outline"
+            className="cursor-pointer"
             onClick={() => onOpenChange(false)}
           >
             Cancelar
           </Button>
           <Button
             type="button"
-            className="bg-red-700 text-white hover:bg-red-600"
-            onClick={() => onOpenChange(false)}
+            className="cursor-pointer bg-red-700 text-white hover:bg-red-600"
+            onClick={() => onDelete(turma!)}
           >
             Deletar turma
           </Button>

@@ -27,18 +27,10 @@ import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
 import { Aluno } from "@/@types/aluno/aluno.types";
 import { Professor } from "@/@types/professor/professor.types";
 
-type DiaSemana =
-  | "Segunda"
-  | "Terça"
-  | "Quarta"
-  | "Quinta"
-  | "Sexta"
-  | "Sábado";
-
-
 type DiaSemanaFiltro = {
+  id: number;
   label: string;
-  value: string;
+  filterValue: string;
 };
 
 type TurmaFormDialogProps = {
@@ -48,8 +40,11 @@ type TurmaFormDialogProps = {
   diasSemana: DiaSemanaFiltro[];
   modalidades: Modalidade[];
   alunos: Aluno[];
-  professores: Professor[]
+  professores: Professor[];
+  error: string;
+  loading: boolean;
   onOpenChange: (open: boolean) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };
 
 export default function TurmaFormDialog({
@@ -60,20 +55,36 @@ export default function TurmaFormDialog({
   modalidades,
   alunos,
   professores,
+  error,
+  loading,
   onOpenChange,
+  onSubmit
 }: TurmaFormDialogProps) {
+
+  function getDiaSemanaId(value: string | number | undefined) {
+    if (value === undefined || value === null) {
+      return "";
+    };
+
+    const option = diasSemana.find(
+      (dia) =>
+        String(dia.id) === String(value) ||
+        dia.filterValue === String(value) ||
+        dia.label === String(value),
+    );
+
+    return option ? String(option.id) : "";
+  };
+
   const [selectedAlunos, setSelectedAlunos] = useState<number[]>(
     () => turma?.alunos.map((aluno) => aluno.id) ?? [],
   );
   const [selectedProfessores, setSelectedProfessores] = useState<number[]>(
     () => turma?.professores.map((professor) => professor.id) ?? [],
   );
-  const [primeiroDiaSemana, setPrimeiroDiaSemana] = useState(
-    () => String(turma?.diasSemana[0] ?? ""),
-  );
-  const [segundoDiaSemana, setSegundoDiaSemana] = useState(
-    () => String(turma?.diasSemana[1] ?? ""),
-  );
+  const [primeiroDiaSemana, setPrimeiroDiaSemana] = useState(() => getDiaSemanaId(turma?.diasSemana[0]));
+  const [segundoDiaSemana, setSegundoDiaSemana] = useState(() => getDiaSemanaId(turma?.diasSemana[1]));
+
   const [horarioInicio, setHorarioInicio] = useState(
     () => turma?.agenda[0]?.horario_inicio ?? "",
   );
@@ -95,11 +106,6 @@ export default function TurmaFormDialog({
         ? current.filter((id) => id !== professorId)
         : [...current, professorId],
     );
-  };
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    onOpenChange(false);
   };
 
   function calculateHours(agenda: TurmaAgenda[] | undefined) {
@@ -151,7 +157,7 @@ export default function TurmaFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="side-panel-scroll flex max-h-[92vh] w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] overflow-hidden bg-white p-0 dark:bg-gray-950 sm:max-w-5xl">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={onSubmit}
           className="flex max-h-[92vh] min-h-0 w-full min-w-0 flex-col overflow-hidden"
         >
           <DialogHeader className="shrink-0 border-b border-gray-200 p-5 dark:border-gray-800 sm:p-6">
@@ -183,7 +189,7 @@ export default function TurmaFormDialog({
                   Modalidade
                 </span>
                 <Select
-                  name="modalidade_id"
+                  name="modalidade"
                   defaultValue={turma?.modalidade_id ? String(turma.modalidade_id) : undefined}
                 >
                   <SelectTrigger className="h-11 w-full rounded-xl mt-2">
@@ -207,25 +213,10 @@ export default function TurmaFormDialog({
 
               <label className="min-w-0 space-y-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Horas semanais
-                </span>
-                <Input
-                  name="horas_semana"
-                  type="number"
-                  step="0.5"
-                  min="0.5"
-                  value={horasSemana}
-                  className="h-11 rounded-xl mt-2"
-                  readOnly
-                />
-              </label>
-
-              <label className="min-w-0 space-y-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Inicio da vigencia
                 </span>
                 <Input
-                  name="vigencia_inicio"
+                  name="vigenciaInicio"
                   type="date"
                   defaultValue={turma?.vigencia_inicio}
                   className="h-11 rounded-xl mt-2"
@@ -238,7 +229,7 @@ export default function TurmaFormDialog({
                   Fim da vigencia
                 </span>
                 <Input
-                  name="vigencia_fim"
+                  name="vigenciaFim"
                   type="date"
                   defaultValue={turma?.vigencia_fim}
                   className="h-11 rounded-xl mt-2"
@@ -253,15 +244,20 @@ export default function TurmaFormDialog({
                 <Select
                   name="primeiro_dia_semana"
                   value={primeiroDiaSemana}
-                  onValueChange={(value) => setPrimeiroDiaSemana(value as DiaSemana)}
+                  onValueChange={(value) => { if (value) setPrimeiroDiaSemana(value) }}
                 >
                   <SelectTrigger className="h-11 w-full rounded-xl mt-2">
-                    <SelectValue placeholder="Selecione o primeiro dia" />
+                    <SelectValue placeholder="Selecione o primeiro dia" >
+                      {(value) => diasSemana.find(
+                        (dia) => String(dia.id) === String(value),
+                      )?.filterValue ?? "Selecione uma dia"
+                      }
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {diasSemana.map((dia) => (
-                      <SelectItem key={dia.label} value={dia.value}>
-                        {dia.value}
+                      <SelectItem key={dia.id} value={String(dia.id)}>
+                        {dia.filterValue}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -275,15 +271,20 @@ export default function TurmaFormDialog({
                 <Select
                   name="segundo_dia_semana"
                   value={segundoDiaSemana}
-                  onValueChange={(value) => setSegundoDiaSemana(value as DiaSemana)}
+                  onValueChange={(value) => { if (value) setSegundoDiaSemana(value) }}
                 >
                   <SelectTrigger className="h-11 w-full rounded-xl mt-2">
-                    <SelectValue placeholder="Selecione o segundo dia" />
+                    <SelectValue placeholder="Selecione o segundo dia" >
+                      {(value) => diasSemana.find(
+                        (dia) => String(dia.id) === String(value),
+                      )?.filterValue ?? "Selecione uma dia"
+                      }
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {diasSemana.map((dia) => (
-                      <SelectItem key={dia.label} value={dia.value}>
-                        {dia.value}
+                      <SelectItem key={dia.label} value={String(dia.id)}>
+                        {dia.filterValue}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -323,7 +324,7 @@ export default function TurmaFormDialog({
                   Horas semanais
                 </span>
                 <Input
-                  name="horas_semana"
+                  name="horasSemana"
                   type="number"
                   step="0.5"
                   min="0.5"
@@ -444,6 +445,12 @@ export default function TurmaFormDialog({
             </SelectionSection>
           </div>
 
+          {error ? (
+            <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300">
+              {error}
+            </p>
+          ) : null}
+
           <DialogFooter className="border border-gray-200 dark:border-gray-800 shrink-0 gap-3 bg-gray-50 px-5 py-4 dark:bg-gray-900/10 sm:gap-3 sm:px-6">
             <Button
               type="button"
@@ -454,7 +461,12 @@ export default function TurmaFormDialog({
               Cancelar
             </Button>
             <Button type="submit" className=" bg-sky-700 text-white hover:bg-sky-600 mb-[1rem] cursor-pointer">
-              {isEditing ? "Salvar alteracoes" : "Criar turma"}
+              {loading
+                ?
+                isEditing ? "Salvando..." : "Criando..."
+                :
+                isEditing ? "Salvar alterações" : "Criar turma"
+              }
             </Button>
           </DialogFooter>
         </form>

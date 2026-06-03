@@ -3,8 +3,9 @@
 import { Plus, Search } from "lucide-react";
 
 type DiaSemanaFiltro = {
+  id: number;
   label: string;
-  value: string;
+  filterValue: string;
 };
 
 type HeaderTurmasPageProps = {
@@ -77,13 +78,13 @@ export default function HeaderTurmasPage({
             </button>
 
             {diasSemana.map((dia) => {
-              const isSelected = selectedDia === dia.value;
+              const isSelected = selectedDia === dia.filterValue;
 
               return (
                 <button
-                  key={dia.value}
+                  key={dia.filterValue}
                   type="button"
-                  onClick={() => onSelectDia(dia.value)}
+                  onClick={() => onSelectDia(dia.filterValue)}
                   className={`inline-flex cursor-pointer items-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                     isSelected
                       ? "bg-[#1FA2E1] text-white"

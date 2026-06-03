@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { startTransition, useMemo, useState } from "react";
 import { CalendarX } from "lucide-react";
 import HeaderTurmasPage from "./HeaderTurmasPage";
 import TurmaDeleteDialog from "./TurmaDeleteDialog";
@@ -11,15 +11,18 @@ import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
 import { Aluno } from "@/@types/aluno/aluno.types";
 import { Professor } from "@/@types/professor/professor.types";
+import toast from "react-hot-toast";
+import { deleteTurma } from "@/services/turmas/turmas.client";
+import { useRouter } from "next/navigation";
+import { useCreateTurmaForm } from "@/hooks/turmas/useCreateTurmaForm";
 
-const diasSemanaFiltro = [
-  { label: "Segunda", value: "Segunda-feira" },
-  { label: "Terça", value: "Terça-feira" },
-  { label: "Quarta", value: "Quarta-feira" },
-  { label: "Quinta", value: "Quinta-feira" },
-  { label: "Sexta", value: "Sexta-feira" },
-  { label: "Sábado", value: "Sábado" },
-  { label: "Domingo", value: "Domingo" },
+const diasSemanaOptions = [
+  { id: 1, label: "Segunda", filterValue: "Segunda-feira" },
+  { id: 2, label: "Terça", filterValue: "Terça-feira" },
+  { id: 3, label: "Quarta", filterValue: "Quarta-feira" },
+  { id: 4, label: "Quinta", filterValue: "Quinta-feira" },
+  { id: 5, label: "Sexta", filterValue: "Sexta-feira" },
+  { id: 6, label: "Sábado", filterValue: "Sábado" },
 ];
 
 type TurmasDashboardPageProps = {
@@ -35,6 +38,7 @@ export default function TurmasDashboardPage({
   alunos,
   professores
 }: TurmasDashboardPageProps) {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [selectedDia, setSelectedDia] = useState("Todas");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -42,6 +46,17 @@ export default function TurmasDashboardPage({
   const [selectedTurma, setSelectedTurma] = useState<TurmaDashboardItem | null>(
     null,
   );
+  const {
+    error: createError,
+    loading: createLoading,
+    handleCreateTurma,
+    resetForm: resetCreateForm,
+  } = useCreateTurmaForm({
+    onSuccess: () => {
+      setCreateDialogOpen(false);
+      refreshTurmas();
+    }
+  });
 
   const filteredTurmas = useMemo(() => {
     const searchValue = search
@@ -78,7 +93,40 @@ export default function TurmasDashboardPage({
   function openDeleteDialog(turma: TurmaDashboardItem) {
     setSelectedTurma(turma);
     setDeleteDialogOpen(true);
-  }
+  };
+
+  function refreshTurmas() {
+    startTransition(() => {
+      router.refresh();
+    });
+  };
+  function handleCreateDialogOpenChange(open: boolean) {
+    if (!open) {
+      resetCreateForm();
+    }
+
+    setCreateDialogOpen(open);
+  };
+
+  async function handleDeleteTurma(turma: TurmaDashboardItem) {
+    if (!turma) {
+      return;
+    };
+
+    const result = await toast.promise(deleteTurma(turma.id), {
+      loading: 'Carregando...',
+      success: (response) => response?.message,
+      error: (error) => error?.message || "Error ao conectar com o servidor!",
+    });
+
+    if (result?.err) {
+      toast.error(result.err);
+      return;
+    };
+
+    refreshTurmas();
+    setDeleteDialogOpen(false);
+  };
 
   return (
     <main className="p-6">
@@ -86,7 +134,7 @@ export default function TurmasDashboardPage({
         <HeaderTurmasPage
           filteredCount={filteredTurmas.length}
           search={search}
-          diasSemana={diasSemanaFiltro}
+          diasSemana={diasSemanaOptions}
           selectedDia={selectedDia}
           onSearchChange={setSearch}
           onSelectDia={setSelectedDia}
@@ -116,7 +164,7 @@ export default function TurmasDashboardPage({
             )}
           </section>
 
-          <TurmasOverview turmas={turmas} diasSemana={diasSemanaFiltro} />
+          <TurmasOverview turmas={turmas} diasSemana={diasSemanaOptions} />
         </div>
       </div>
 
@@ -125,11 +173,14 @@ export default function TurmasDashboardPage({
           key="create-turma-form"
           open={createDialogOpen}
           mode="create"
-          diasSemana={diasSemanaFiltro}
-          onOpenChange={setCreateDialogOpen}
+          diasSemana={diasSemanaOptions}
+          onOpenChange={handleCreateDialogOpenChange}
           modalidades={modalidades}
           alunos={alunos}
           professores={professores}
+          error={createError}
+          loading={createLoading}
+          onSubmit={(event) => void handleCreateTurma(event)}
         />
       )}
 
@@ -137,6 +188,7 @@ export default function TurmasDashboardPage({
         turma={selectedTurma}
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
+        onDelete={handleDeleteTurma}
       />
     </main>
   );

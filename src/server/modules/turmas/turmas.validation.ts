@@ -69,7 +69,7 @@ export class TurmaValidation {
         const groupedNewSchedules = this.groupSchedulesByDay(newSchedules);
         this.assertNoInternalConflicts(
             groupedNewSchedules,
-            "A agenda da turma possuo horários conflitantes!"
+            "A agenda da turma possue horários conflitantes!"
         );
 
         const diasSemana = [...new Set(newAgenda.map((item) => item.dia_semana))];
