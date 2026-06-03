@@ -52,11 +52,11 @@ export default function AlunosCard({
           key={aluno.id ?? aluno.user_id}
           type="button"
           onClick={() => onOpenDetailsPanel(aluno)}
-          className="cursor-pointer group min-w-0 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50/70 p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white hover:shadow-lg dark:border-gray-800 dark:bg-gray-800/20 dark:hover:border-sky-900/60 dark:hover:bg-white/[0.04] sm:p-5"
+          className="group min-w-0 cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-lg dark:border-sky-500/30 dark:bg-gray-950/40 dark:hover:border-sky-400/50 dark:hover:bg-gray-950/70 sm:p-5"
         >
           <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex min-w-0 items-start gap-3 sm:gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-sky-600 shadow-sm transition-colors group-hover:bg-sky-50 dark:bg-gray-800 dark:text-sky-300 dark:group-hover:bg-sky-500/10">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-sky-700 shadow-sm transition-colors group-hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-300 dark:group-hover:bg-sky-500/20">
                 <GraduationCap className="size-5" />
               </div>
 
@@ -76,7 +76,7 @@ export default function AlunosCard({
           </div>
 
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-gray-200 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-900/70">
+            <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-900/50">
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
                 Serie
               </p>
@@ -85,7 +85,7 @@ export default function AlunosCard({
               </p>
             </div>
 
-            <div className="rounded-xl border border-gray-200 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-900/70">
+            <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-900/50">
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
                 Modalidade
               </p>

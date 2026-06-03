@@ -50,7 +50,7 @@ export default function ProfessoresGrid({
       {professores.map((professor) => (
         <article
           key={professor.id}
-          className="group rounded-2xl border border-gray-200 bg-gray-50/70 p-4 transition-all duration-200 hover:border-sky-200 hover:bg-white hover:shadow-md dark:border-gray-800 dark:bg-gray-800/20 dark:hover:border-sky-900/60 dark:hover:bg-white/[0.04]"
+          className="group rounded-2xl border border-gray-200 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md dark:border-sky-500/30 dark:bg-gray-950/40 dark:hover:border-sky-400/50 dark:hover:bg-gray-950/70"
         >
           <div className="flex min-w-0 items-start justify-between gap-3">
             <button
@@ -58,7 +58,7 @@ export default function ProfessoresGrid({
               onClick={() => onOpenDetailsPanel(professor)}
               className="flex min-w-0 flex-1 cursor-pointer items-start gap-3 text-left"
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-sky-600 shadow-sm transition-colors group-hover:bg-sky-50 dark:bg-gray-800 dark:text-sky-300 dark:group-hover:bg-sky-500/10">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-sky-700 shadow-sm transition-colors group-hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-300 dark:group-hover:bg-sky-500/20">
                 <CircleUserRound className="size-5" />
               </div>
 
@@ -76,11 +76,11 @@ export default function ProfessoresGrid({
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-gray-900/70 dark:text-gray-200">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-sky-500/10 dark:text-gray-300">
                     <BookOpen className="size-3.5 text-sky-500" />
                     {professor.materia}
                   </span>
-                  <span className="inline-flex rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-gray-900/70 dark:text-gray-200">
+                  <span className="inline-flex rounded-full bg-sky-50 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-sky-500/10 dark:text-gray-300">
                     {professor.modalidade}
                   </span>
                 </div>

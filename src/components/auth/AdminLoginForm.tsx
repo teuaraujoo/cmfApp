@@ -137,7 +137,7 @@ export default function AdminLoginForm({
                             Esqueceu seu login e/ou senha?{" "}
                             <a
                                 href="#"
-                                className="font-medium text-white !no-underline"
+                                className="font-medium text-white transition-colors hover:text-sky-200 !no-underline"
                             >
                                 Fale com o administrador
                             </a>
