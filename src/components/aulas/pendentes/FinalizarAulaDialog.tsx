@@ -9,15 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { AulasGet } from "@/components/aulas/types";
+import { Aula } from "@/@types/aulas/aulas.types";
 import { formatHorarioLocal } from "@/utils/date-utils";
 
 type FinalizarAulaDialogProps = {
-  aula: AulasGet | null;
+  aula: Aula | null;
   notes: string;
   onNotesChange: (notes: string) => void;
   onClose: () => void;
-  onFinalize: (aulas: AulasGet) => Promise<void>;
+  onFinalize: (aulas: Aula) => Promise<void>;
 };
 
 export function FinalizarAulaDialog({

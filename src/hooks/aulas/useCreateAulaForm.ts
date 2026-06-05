@@ -8,7 +8,6 @@ type UseCreateAulaFormParamas = {
     onSuccess?: () => void;
 };
 
-
 export function useCreateAulaForm({ onSuccess, }: UseCreateAulaFormParamas = {}) {
 
     const [loading, setLoading] = useState(false);
@@ -59,6 +58,7 @@ export function useCreateAulaForm({ onSuccess, }: UseCreateAulaFormParamas = {})
         resetForm
     };
 };
+
 function buildPayload(data: FormData) {
     const aulaDate = getRequiredFormString(data, "data", "Data da aula");
     const horarioInicio = getRequiredFormString(data, "horario_inicio", "Horario inicial");

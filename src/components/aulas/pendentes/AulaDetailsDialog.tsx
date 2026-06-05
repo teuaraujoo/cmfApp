@@ -5,12 +5,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { AulasGet } from "@/components/aulas/types";
 import { DIAS_SEMANAS, formatHorarioLocal } from "@/utils/date-utils";
-
+import { Aula } from "@/@types/aulas/aulas.types";
 
 type AulaDetailsDialogProps = {
-  aula: AulasGet | null;
+  aula: Aula | null;
   onClose: () => void;
 };
 

@@ -1,13 +1,5 @@
 import apiRoutes from "@/lib/api";
-
-type CreateAulaPayload = {
-    aluno_id: number;
-    professor_id: number;
-    modalidade_id: number;
-    started_at: string;
-    ended_at: string;
-    notas?: string;
-};
+import { CreateAulaPayload } from "@/@types/aulas/aulas.types";
 
 export async function createAula(aula: CreateAulaPayload) {
     try {

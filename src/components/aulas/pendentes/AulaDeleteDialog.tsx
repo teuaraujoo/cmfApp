@@ -9,12 +9,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { AulasGet } from "@/components/aulas/types";
+import { Aula } from "@/@types/aulas/aulas.types";
 
 type AulaDeleteDialogProps = {
-  aula: AulasGet | null;
+  aula: Aula | null;
   onClose: () => void;
-  onDelete: (aula: AulasGet) => Promise<void>;
+  onDelete: (aula: Aula) => Promise<void>;
 };
 
 export function AulaDeleteDialog({

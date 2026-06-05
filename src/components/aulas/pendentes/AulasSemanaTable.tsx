@@ -8,13 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { AulasGet } from "@/components/aulas/types";
+import { Aula } from "@/@types/aulas/aulas.types";
 
 type AulasSemanaTableProps = {
-  aulas: AulasGet[];
-  onOpenDetails: (aula: AulasGet) => void;
-  onOpenFinalize: (aula: AulasGet) => void;
-  onOpenDelete: (aula: AulasGet) => void;
+  aulas: Aula[];
+  onOpenDetails: (aula: Aula) => void;
+  onOpenFinalize: (aula: Aula) => void;
+  onOpenDelete: (aula: Aula) => void;
 };
 
 export function AulasSemanaTable({

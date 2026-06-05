@@ -2,14 +2,13 @@
 
 import { startTransition, useState } from "react";
 
-import { AulaDeleteDialog } from "@/components/aulas/AulaDeleteDialog";
-import { AulaDetailsDialog } from "@/components/aulas/AulaDetailsDialog";
-import { AulasSemanaHeader } from "@/components/aulas/AulasSemanaHeader";
-import { AulasSemanaStats } from "@/components/aulas/AulasSemanaStats";
-import { AulasSemanaTable } from "@/components/aulas/AulasSemanaTable";
-import { FinalizarAulaDialog } from "@/components/aulas/FinalizarAulaDialog";
-import { NovaAulaDialog } from "@/components/aulas/NovaAulaDialog";
-import type { AulasGet } from "@/components/aulas/types";
+import { AulaDeleteDialog } from "@/components/aulas/pendentes/AulaDeleteDialog";
+import { AulaDetailsDialog } from "@/components/aulas/pendentes/AulaDetailsDialog";
+import { AulasSemanaHeader } from "@/components/aulas/pendentes/AulasSemanaHeader";
+import { AulasSemanaStats } from "@/components/aulas/pendentes/AulasSemanaStats";
+import { AulasSemanaTable } from "@/components/aulas/pendentes/AulasSemanaTable";
+import { FinalizarAulaDialog } from "@/components/aulas/pendentes/FinalizarAulaDialog";
+import { NovaAulaDialog } from "@/components/aulas/pendentes/NovaAulaDialog";
 import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -17,12 +16,13 @@ import { Aluno } from "@/@types/aluno/aluno.types";
 import { Professor } from "@/@types/professor/professor.types";
 import { Modalidade } from "@/@types/modalidade/modalidade.type";
 import { useCreateAulaForm } from "@/hooks/aulas/useCreateAulaForm";
+import { Aula } from "@/@types/aulas/aulas.types";
 
-export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos, professores, modalidades }: { aulas: AulasGet[], alunosWithAula: number, alunos: Aluno[], professores: Professor[], modalidades: Modalidade[] }) {
+export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos, professores, modalidades }: { aulas: Aula[], alunosWithAula: number, alunos: Aluno[], professores: Professor[], modalidades: Modalidade[] }) {
   const router = useRouter();
-  const [selectedAula, setSelectedAula] = useState<AulasGet | null>(null);
-  const [deletedAula, setDeleteAula] = useState<AulasGet | null>(null);
-  const [detailsAula, setDetailsAula] = useState<AulasGet | null>(null);
+  const [selectedAula, setSelectedAula] = useState<Aula | null>(null);
+  const [deletedAula, setDeleteAula] = useState<Aula | null>(null);
+  const [detailsAula, setDetailsAula] = useState<Aula | null>(null);
   const [notes, setNotes] = useState("");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const finalizedAulas = aulas.filter((aula) => aula.encerrada).length;
@@ -50,7 +50,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
     setCreateDialogOpen(false);
   }
 
-  function openFinalizeDialog(aula: AulasGet) {
+  function openFinalizeDialog(aula: Aula) {
     if (aula.encerrada) {
       return;
     };
@@ -70,7 +70,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
     });
   };
 
-  async function handleFinalizeAula(aula: AulasGet) {
+  async function handleFinalizeAula(aula: Aula) {
     if (!selectedAula) {
       return;
     };
@@ -90,7 +90,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
     closeFinalizeDialog();
   };
 
-  async function handleDeleteAula(aula: AulasGet) {
+  async function handleDeleteAula(aula: Aula) {
     if (!deleteAula) {
       return;
     };
