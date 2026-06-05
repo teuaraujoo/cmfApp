@@ -211,6 +211,10 @@ export async function getAlunoByUserId(userId: number) {
   return AlunoMapper.toResponseAlunoGet(aluno);
 };
 
+export async function getTotalAlunosWithAulaIndividual() {
+  return AlunosRepositories.getTotalAlunosWithAulaIndividual();
+};
+
 /* =================    PROFESSOR     =================*/
 
 export async function getAllProfessores() {

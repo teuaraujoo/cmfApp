@@ -9,14 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { AulaSemana } from "@/components/aulas/types";
+import type { AulasGet } from "@/components/aulas/types";
+import { formatHorarioLocal } from "@/utils/date-utils";
 
 type FinalizarAulaDialogProps = {
-  aula: AulaSemana | null;
+  aula: AulasGet | null;
   notes: string;
   onNotesChange: (notes: string) => void;
   onClose: () => void;
-  onFinalize: () => void;
+  onFinalize: (aulas: AulasGet) => Promise<void>;
 };
 
 export function FinalizarAulaDialog({
@@ -39,7 +40,7 @@ export function FinalizarAulaDialog({
           <DialogDescription className="text-gray-500 dark:text-gray-400">
             {aula ? (
               <>
-                Voce esta finalizando a aula{" "}
+                Você está finalizando a aula{" "}
                 <span className="font-semibold text-gray-900 dark:text-white">
                   #{aula.id}
                 </span>{" "}
@@ -47,7 +48,7 @@ export function FinalizarAulaDialog({
                 <span className="font-semibold text-gray-900 dark:text-white">
                   {aula.aluno.nome}
                 </span>
-                . Depois disso ela sera marcada como concluida. Tem certeza que
+                . Depois disso ela será marcada como concluída. Tem certeza que
                 deseja continuar?
               </>
             ) : (
@@ -63,13 +64,13 @@ export function FinalizarAulaDialog({
                 {aula.aluno.nome} com {aula.professor.nome}
               </p>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {aula.dia}, {aula.horario_inicio} - {aula.horario_fim}
+                {`${aula.inicio.toLocaleDateString("pt-BR")} de ${formatHorarioLocal(aula.inicio)} às ${formatHorarioLocal(aula.fim)}`}
               </p>
             </div>
 
             <label className="block space-y-2">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Anotacoes da aula
+                Anotações da aula
               </span>
               <textarea
                 value={notes}
@@ -92,7 +93,7 @@ export function FinalizarAulaDialog({
           </Button>
           <Button
             type="button"
-            onClick={onFinalize}
+            onClick={() => void onFinalize(aula!)}
             className="cursor-pointer bg-red-700 text-white hover:bg-red-600"
           >
             Finalizar aula

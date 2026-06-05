@@ -46,7 +46,6 @@ export class AulasRepositories {
                     gte: start,
                     lt: end
                 },
-                encerrada: false
             },
             include: {
                 professores: {

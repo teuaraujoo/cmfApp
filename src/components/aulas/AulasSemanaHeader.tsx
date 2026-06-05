@@ -12,14 +12,14 @@ export function AulasSemanaHeader({ onCreateAula }: AulasSemanaHeaderProps) {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-3xl">
           <p className="text-sm font-medium text-sky-600 dark:text-sky-300">
-            Gestao de aulas
+            Gestão de aulas
           </p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
             Aulas da semana
           </h1>
           <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
             Acompanhe as aulas agendadas, consulte detalhes rapidamente e
-            finalize aulas com anotacoes para manter o historico organizado.
+            finalize aulas com anotações para manter o histórico organizado.
           </p>
         </div>
 
@@ -34,4 +34,4 @@ export function AulasSemanaHeader({ onCreateAula }: AulasSemanaHeaderProps) {
       </div>
     </section>
   );
-}
+};

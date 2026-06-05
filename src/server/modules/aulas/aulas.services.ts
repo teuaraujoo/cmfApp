@@ -37,7 +37,7 @@ export async function getTotalAulas() {
 export async function getAulasCountByModalidade() {
 
     const groupedAulas = await AulasRepositories.getAulasCountByModalidade();
-    
+
     if (!groupedAulas.length) {
         return [];
     };
@@ -45,7 +45,7 @@ export async function getAulasCountByModalidade() {
     const modalidadeIds = groupedAulas.map((item) => item.modalidade_id);
 
     const modalidades = await ModalidadeRepositories.getModalidadeByAulaModalidadeId(modalidadeIds);
-    
+
     const modalidadeById = new Map(
         modalidades.map((modalidade) => [modalidade.id, modalidade.tipo])
     );
@@ -84,6 +84,20 @@ export async function getAllAulasByProfessorId(professorId: number) {
 
 };
 
+export async function createAula(body: CreateAulasBody) {
+    const data = createAulasSchema.parse(body);
+    await AulaValidation.validateAula(data);
+
+    try {
+        const aula = await AulasRepositories.createAula(data);
+
+        return aula;
+
+    } catch (err) {
+        throw err;
+    };
+};
+
 /* =================   ALUNOS     =================*/
 
 export async function getAulasByAlunoId(alunoId: number) {
@@ -108,20 +122,6 @@ export async function getAulasNotFinishedByAlunoId(alunoId: number) {
     if (!aulas) throw new AppError("Aulas não encontradas!");
 
     return aulas.map((aula) => AulasMapper.toResponseAulasAlunoGet(aula));
-};
-
-export async function createAula(body: CreateAulasBody) {
-    const data = createAulasSchema.parse(body);
-    await AulaValidation.validateAula(data);
-
-    try {
-        const aula = await AulasRepositories.createAula(data);
-
-        return aula;
-
-    } catch (err) {
-        throw err;
-    };
 };
 
 export async function deleteAula(aulaId: number) {

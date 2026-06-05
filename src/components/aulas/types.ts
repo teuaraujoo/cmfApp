@@ -45,3 +45,22 @@ export type CreateAulaPayload = {
   ended_at: string;
   notas?: string;
 };
+
+export type AulasGet = {
+  id: number;
+  aluno_id: number;
+  professor_id: number;
+  modalidade: string;
+  inicio: Date;
+  fim: Date;
+  encerrada: boolean;
+  notas?: string | null;
+  aluno: {
+    nome: string;
+    serie: string | null;
+  };
+  professor: {
+    nome: string;
+    materia: string;
+  };
+};

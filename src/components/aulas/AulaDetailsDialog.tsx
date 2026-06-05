@@ -5,11 +5,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { formatAulaDate } from "@/components/aulas/aulas-formatters";
-import type { AulaSemana } from "@/components/aulas/types";
+import type { AulasGet } from "@/components/aulas/types";
+import { DIAS_SEMANAS, formatHorarioLocal } from "@/utils/date-utils";
+
 
 type AulaDetailsDialogProps = {
-  aula: AulaSemana | null;
+  aula: AulasGet | null;
   onClose: () => void;
 };
 
@@ -22,7 +23,7 @@ export function AulaDetailsDialog({ aula, onClose }: AulaDetailsDialogProps) {
             Detalhes da aula
           </DialogTitle>
           <DialogDescription>
-            Informacoes completas da aula selecionada.
+            Informações completas da aula selecionada.
           </DialogDescription>
         </DialogHeader>
 
@@ -30,22 +31,23 @@ export function AulaDetailsDialog({ aula, onClose }: AulaDetailsDialogProps) {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <DetailItem label="ID" value={`#${aula.id}`} />
             <DetailItem label="Aluno" value={aula.aluno.nome} />
+            <DetailItem label="Série" value={aula.aluno.serie} />
             <DetailItem label="Professor" value={aula.professor.nome} />
             <DetailItem label="Disciplina" value={aula.professor.materia} />
-            <DetailItem label="Modalidade" value={aula.modalidade.tipo} />
-            <DetailItem label="Dia" value={aula.dia} />
-            <DetailItem label="Data" value={formatAulaDate(aula.data)} />
+            <DetailItem label="Modalidade" value={aula.modalidade} />
+            <DetailItem label="Dia" value={DIAS_SEMANAS[aula.inicio.getUTCDay()]} />
+            <DetailItem label="Data" value={aula.inicio.toLocaleDateString("pt-BR")} />
             <DetailItem
-              label="Horario"
-              value={`${aula.horario_inicio} - ${aula.horario_fim}`}
+              label="Horário"
+              value={`${formatHorarioLocal(aula.inicio)} - ${formatHorarioLocal(aula.fim)}`}
             />
             <DetailItem
               label="Status"
               value={aula.encerrada ? "Finalizada" : "Pendente"}
             />
             <DetailItem
-              label="Anotacoes"
-              value={aula.anotacoes || "Sem anotacoes registradas."}
+              label="Anotações"
+              value={aula.notas || "Sem anotações registradas."}
             />
           </div>
         ) : null}
@@ -54,14 +56,14 @@ export function AulaDetailsDialog({ aula, onClose }: AulaDetailsDialogProps) {
   );
 }
 
-function DetailItem({ label, value }: { label: string; value: string }) {
+function DetailItem({ label, value }: { label: string; value: string | null | number }) {
   return (
     <div className="rounded-2xl border border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/50">
       <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
         {label}
       </p>
       <p className="mt-1 break-words text-sm font-semibold text-gray-900 dark:text-white">
-        {value}
+        {value ?? ""}
       </p>
     </div>
   );

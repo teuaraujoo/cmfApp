@@ -48,6 +48,7 @@ export class AulasMapper {
             inicio: aula.started_at,
             fim: aula.ended_at,
             encerrada: aula.encerrada,
+            notas: aula.notas,
             aluno: {
                 nome: aula.alunos.users.nome,
                 serie: aula.alunos.serie,

@@ -8,13 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { AulaSemana } from "@/components/aulas/types";
+import type { AulasGet } from "@/components/aulas/types";
 
 type AulasSemanaTableProps = {
-  aulas: AulaSemana[];
-  onOpenDetails: (aula: AulaSemana) => void;
-  onOpenFinalize: (aula: AulaSemana) => void;
-  onOpenDelete: (aula: AulaSemana) => void;
+  aulas: AulasGet[];
+  onOpenDetails: (aula: AulasGet) => void;
+  onOpenFinalize: (aula: AulasGet) => void;
+  onOpenDelete: (aula: AulasGet) => void;
 };
 
 export function AulasSemanaTable({
@@ -31,8 +31,7 @@ export function AulasSemanaTable({
             Agenda semanal
           </h2>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Lista mockada seguindo a estrutura principal de aula, aluno,
-            professor e modalidade.
+            Lista com todas as aulas desta semana.
           </p>
         </div>
       </div>
@@ -110,28 +109,29 @@ export function AulasSemanaTable({
                     aria-checked={aula.encerrada}
                     disabled={aula.encerrada}
                     onClick={() => onOpenFinalize(aula)}
-                    className={`relative inline-flex h-6 w-10 items-center rounded-full transition-colors sm:h-7 sm:w-12 ${
-                      aula.encerrada
-                        ? "cursor-not-allowed bg-emerald-500"
-                        : "cursor-pointer bg-gray-300 hover:bg-sky-300 dark:bg-gray-700 dark:hover:bg-sky-500/60"
-                    }`}
+                    className={`relative inline-flex h-6 w-10 items-center rounded-full transition-colors sm:h-7 sm:w-12 ${aula.encerrada
+                      ? "cursor-not-allowed bg-emerald-500"
+                      : "cursor-pointer bg-gray-300 hover:bg-sky-300 dark:bg-gray-700 dark:hover:bg-sky-500/60"
+                      }`}
                   >
                     <span
-                      className={`inline-block size-4 rounded-full bg-white shadow transition-transform sm:size-5 ${
-                        aula.encerrada ? "translate-x-5 sm:translate-x-6" : "translate-x-1"
-                      }`}
+                      className={`inline-block size-4 rounded-full bg-white shadow transition-transform sm:size-5 ${aula.encerrada ? "translate-x-5 sm:translate-x-6" : "translate-x-1"
+                        }`}
                     />
                   </button>
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-3 sm:py-4">
-                  <button
-                    type="button"
-                    onClick={() => onOpenDelete(aula)}
-                    className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-red-50 p-2 text-red-700 transition-colors hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
-                    aria-label={`Excluir aula ${aula.id}`}
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
+                  {aula.encerrada
+                    ? ""
+                    : <button
+                      type="button"
+                      onClick={() => onOpenDelete(aula)}
+                      className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-red-50 p-2 text-red-700 transition-colors hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
+                      aria-label={`Excluir aula ${aula.id}`}
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  }
                 </TableCell>
               </TableRow>
             ))}

@@ -9,12 +9,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { AulaSemana } from "@/components/aulas/types";
+import type { AulasGet } from "@/components/aulas/types";
 
 type AulaDeleteDialogProps = {
-  aula: AulaSemana | null;
+  aula: AulasGet | null;
   onClose: () => void;
-  onDelete: () => void;
+  onDelete: (aula: AulasGet) => Promise<void>;
 };
 
 export function AulaDeleteDialog({
@@ -22,6 +22,7 @@ export function AulaDeleteDialog({
   onClose,
   onDelete,
 }: AulaDeleteDialogProps) {
+
   return (
     <Dialog open={Boolean(aula)} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="bg-white dark:bg-gray-950">
@@ -35,7 +36,7 @@ export function AulaDeleteDialog({
           <DialogDescription className="text-gray-500 dark:text-gray-400">
             {aula ? (
               <>
-                Voce esta prestes a deletar a aula{" "}
+                Você está prestes a deletar a aula{" "}
                 <span className="font-semibold text-gray-900 dark:text-white">
                   #{aula.id}
                 </span>{" "}
@@ -43,7 +44,7 @@ export function AulaDeleteDialog({
                 <span className="font-semibold text-gray-900 dark:text-white">
                   {aula.aluno.nome}
                 </span>
-                . Essa acao nao e reversivel, tem certeza que deseja continuar?
+                . Essa ação não e reversível, tem certeza que deseja continuar?
               </>
             ) : (
               "Selecione uma aula para deletar."
@@ -63,7 +64,7 @@ export function AulaDeleteDialog({
           <Button
             type="button"
             className="cursor-pointer bg-red-700 text-white hover:bg-red-600"
-            onClick={onDelete}
+            onClick={() => void onDelete(aula!)}
             disabled={!aula}
           >
             Deletar aula

@@ -38,7 +38,7 @@ export async function createTurma(turma: CreateTurmaPayload) {
 
         const result = await response.json();
 
-        if (!response.ok) return { err: result.message ?? "Não foi possível criar aluno." };
+        if (!response.ok) return { err: result.message ?? "Não foi possível criar turma." };
 
         return result;
 
@@ -60,7 +60,7 @@ export async function updateTurma(turma: CreateTurmaPayload, turmaId: number) {
 
         const result = await response.json();
 
-        if (!response.ok) return { err: result.message ?? "Não foi possível criar aluno." };
+        if (!response.ok) return { err: result.message ?? "Não foi possível atualizar turma." };
 
         return result;
 

@@ -93,6 +93,18 @@ export class AlunosRepositories {
     return prisma.alunos.findUnique({ where: { id } });
   };
 
+  static async getTotalAlunosWithAulaIndividual() {
+    return prisma.alunos.count({
+      where: {
+        aulas_individuais: {
+          some: {
+            encerrada: true
+          }
+        }
+      },
+    });
+  };
+
   static async findManyByIds(ids: number[]) {
     return prisma.alunos.findMany({ where: { id: { in: ids } } });
   };
@@ -118,55 +130,55 @@ export class AlunosRepositories {
 
 export class ProfessoresRepositories {
 
-    static async getAll() {
-        return prisma.professores.findMany({
-            orderBy: {
-                created_at: "desc"
-            },
-            include: {
-                users: true,
-                modalidades: true
-            }
-        });
-    };
+  static async getAll() {
+    return prisma.professores.findMany({
+      orderBy: {
+        created_at: "desc"
+      },
+      include: {
+        users: true,
+        modalidades: true
+      }
+    });
+  };
 
-    static async getTotal() {
-        return prisma.professores.count();
-    };
+  static async getTotal() {
+    return prisma.professores.count();
+  };
 
-    static async getById(id: number) {
-      return prisma.professores.findUnique({ where: { id } });
-    };
+  static async getById(id: number) {
+    return prisma.professores.findUnique({ where: { id } });
+  };
 
-    static async getByUserId(id: number) {
-        return prisma.professores.findUnique({
-            where: {
-                user_id: id
-            },
-            include: {
-                users: true,
-                modalidades: true
-            }
-        });
-    };
+  static async getByUserId(id: number) {
+    return prisma.professores.findUnique({
+      where: {
+        user_id: id
+      },
+      include: {
+        users: true,
+        modalidades: true
+      }
+    });
+  };
 
-    static async findManyByIds(ids: number[]) {
-        return prisma.professores.findMany({ where: { id: { in: ids } } });
-    };
+  static async findManyByIds(ids: number[]) {
+    return prisma.professores.findMany({ where: { id: { in: ids } } });
+  };
 
-    static async createProfessor(tx: Prisma.TransactionClient, professor: Prisma.professoresUncheckedCreateInput) {
-        return tx.professores.create({ data: professor });
-    };
+  static async createProfessor(tx: Prisma.TransactionClient, professor: Prisma.professoresUncheckedCreateInput) {
+    return tx.professores.create({ data: professor });
+  };
 
-    static async inactiveProfessor(tx: Prisma.TransactionClient, userId: number) {
-        return tx.professores.update({ where: { user_id: userId }, data: { status: "INATIVO" } });
-    };
+  static async inactiveProfessor(tx: Prisma.TransactionClient, userId: number) {
+    return tx.professores.update({ where: { user_id: userId }, data: { status: "INATIVO" } });
+  };
 
-    static async activeProfessor(tx: Prisma.TransactionClient, userId: number) {
-        return tx.professores.update({ where: { user_id: userId }, data: { status: "ATIVO" } });
-    };
+  static async activeProfessor(tx: Prisma.TransactionClient, userId: number) {
+    return tx.professores.update({ where: { user_id: userId }, data: { status: "ATIVO" } });
+  };
 
-    static async updateProfessor(tx: Prisma.TransactionClient, data: Prisma.professoresUpdateInput, id: number) {
-        return tx.professores.update({ where: { user_id: id }, data })
-    };
+  static async updateProfessor(tx: Prisma.TransactionClient, data: Prisma.professoresUpdateInput, id: number) {
+    return tx.professores.update({ where: { user_id: id }, data })
+  };
 };

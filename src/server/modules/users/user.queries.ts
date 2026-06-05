@@ -1,5 +1,5 @@
 import { requireAdminUser } from "../auth/auth.services";
-import { getAllAlunos, getAllProfessores, getTotalAlunos, getTotalProfessores } from "./users.services";
+import { getAllAlunos, getAllProfessores, getTotalAlunos, getTotalProfessores, getTotalAlunosWithAulaIndividual } from "./users.services";
 
 // ALUNOS
 
@@ -12,6 +12,11 @@ export async function getAllAlunosForAdmin() {
     await requireAdminUser();
     return getAllAlunos();
 };
+
+export async function getAlunosWithAulaIndividual() {
+    await requireAdminUser();
+    return getTotalAlunosWithAulaIndividual();
+}; 
 
 // PROFESSORES
 
