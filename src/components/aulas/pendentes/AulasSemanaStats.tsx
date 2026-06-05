@@ -15,7 +15,7 @@ export function AulasSemanaStats({
   return (
     <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 lg:gap-4">
       <StatCard
-        title="Finalizadas no mês"
+        title="Finalizadas na semana"
         value={finalizedAulas}
         description="Aulas já concluídas no período atual."
         icon={<CheckCircle2 className="size-5" />}
@@ -27,9 +27,9 @@ export function AulasSemanaStats({
         icon={<Clock3 className="size-5" />}
       />
       <StatCard
-        title="Alunos do curso"
+        title="Alunos com aulas"
         value={totalStudents}
-        description="Total de alunos que fizeram aula individual."
+        description="Total de alunos que já fizeram aula individual no curso."
         icon={<Users className="size-5" />}
       />
     </section>
