@@ -1,4 +1,4 @@
-import { Info, Trash2 } from "lucide-react";
+import { Info, Search, Trash2 } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
 import {
@@ -12,6 +12,8 @@ import { Aula } from "@/@types/aulas/aulas.types";
 
 type AulasSemanaTableProps = {
   aulas: Aula[];
+  search: string;
+  onSearchChange: (value: string) => void;
   onOpenDetails: (aula: Aula) => void;
   onOpenFinalize: (aula: Aula) => void;
   onOpenDelete: (aula: Aula) => void;
@@ -19,13 +21,15 @@ type AulasSemanaTableProps = {
 
 export function AulasSemanaTable({
   aulas,
+  search,
+  onSearchChange,
   onOpenDetails,
   onOpenFinalize,
   onOpenDelete,
 }: AulasSemanaTableProps) {
   return (
     <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-2 pb-4 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-5 lg:px-6">
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">
             Agenda semanal
@@ -33,6 +37,17 @@ export function AulasSemanaTable({
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Lista com todas as aulas desta semana.
           </p>
+        </div>
+
+        <div className="relative w-full sm:max-w-sm">
+          <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+          <input
+            type="text"
+            value={search}
+            onChange={(event) => onSearchChange(event.target.value)}
+            placeholder="Pesquisar por aluno, professor ou modalidade"
+            className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 text-sm text-gray-800 outline-none transition-colors placeholder:text-gray-400 focus:border-sky-300 focus:bg-white dark:border-gray-800 dark:bg-gray-900/70 dark:text-white/90 dark:placeholder:text-gray-500 dark:focus:border-sky-700"
+          />
         </div>
       </div>
 

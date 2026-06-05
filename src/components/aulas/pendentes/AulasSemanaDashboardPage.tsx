@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useState } from "react";
+import { startTransition, useMemo, useState } from "react";
 
 import { AulaDeleteDialog } from "@/components/aulas/pendentes/AulaDeleteDialog";
 import { AulaDetailsDialog } from "@/components/aulas/pendentes/AulaDetailsDialog";
@@ -24,10 +24,40 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   const [deletedAula, setDeleteAula] = useState<Aula | null>(null);
   const [detailsAula, setDetailsAula] = useState<Aula | null>(null);
   const [notes, setNotes] = useState("");
+  const [search, setSearch] = useState("");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const finalizedAulas = aulas.filter((aula) => aula.encerrada).length;
   const upcomingAulas = aulas.filter((aula) => !aula.encerrada).length;
   const totalStudents = alunosWithAula;
+  const filteredAulas = useMemo(() => {
+    const searchValue = search
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    if (!searchValue) {
+      return aulas;
+    }
+
+    return aulas.filter((aula) => {
+      const searchableText = [
+        aula.id,
+        aula.aluno.nome,
+        aula.aluno.serie,
+        aula.professor.nome,
+        aula.professor.materia,
+        aula.modalidade,
+        aula.encerrada ? "finalizada" : "pendente",
+      ]
+        .join(" ")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+      return searchableText.includes(searchValue);
+    });
+  }, [aulas, search]);
   const {
     error: createError,
     loading: createLoading,
@@ -122,7 +152,9 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
         />
 
         <AulasSemanaTable
-          aulas={aulas}
+          aulas={filteredAulas}
+          search={search}
+          onSearchChange={setSearch}
           onOpenDetails={setDetailsAula}
           onOpenFinalize={openFinalizeDialog}
           onOpenDelete={setDeleteAula}
