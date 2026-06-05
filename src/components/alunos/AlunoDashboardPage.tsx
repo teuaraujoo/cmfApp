@@ -8,7 +8,7 @@ import {
   UserRoundSearch,
   X,
   EllipsisVertical,
-  Pencil, 
+  Pencil,
   ShieldCheck,
   ShieldOff
 } from "lucide-react";
@@ -28,27 +28,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import type { Aluno } from "@/@types/aluno/aluno.types";
 import type { Modalidade } from "@/@types/modalidade/modalidade.type";
-
-function getAge(value?: string | Date | null) {
-  if (!value) {
-    return "-";
-  };
-
-  const date = value instanceof Date ? value : new Date(value);
-
-  return new Date().getFullYear() - date.getFullYear();
-};
-
-function formatBirthDay(value?: string | Date | null) {
-  if (!value) {
-    return "-";
-  };
-
-  const date = value instanceof Date ? value : new Date(value);
-
-  return date.toLocaleDateString("pt-BR")
-};
-
+import { getAge, formatBirthDay } from "@/utils/date-utils";
 
 function AlunoStatusBadge({ status }: { status: Aluno["status"] }) {
   const statusClassName =
@@ -241,8 +221,8 @@ export default function StudentsDashboardPage({
                 {isCreatePanelOpen
                   ? "Novo aluno"
                   : editingAluno
-                  ? "Editar aluno"
-                  : selectedAluno?.nome ?? "Aluno"}
+                    ? "Editar aluno"
+                    : selectedAluno?.nome ?? "Aluno"}
               </h2>
             </div>
 
@@ -322,7 +302,7 @@ export default function StudentsDashboardPage({
                         className={`cursor-pointer dark:hover:bg-gray-700 
                         ${selectedAluno.status === "ATIVO" ? "text-red-500" : "text-green-500"}`}
                       >
-                         {selectedAluno.status === "ATIVO" ? <ShieldOff/> : <ShieldCheck />}
+                        {selectedAluno.status === "ATIVO" ? <ShieldOff /> : <ShieldCheck />}
                         {selectedAluno.status === "ATIVO" ? "Desativar" : "Ativar"}
                       </DropdownMenuItem>
 
