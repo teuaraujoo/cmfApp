@@ -4,6 +4,13 @@ import type { CreateAlunoPayload } from "@/@types/aluno/aluno.types";
 
 type UpdateAlunoPayload = Omit<CreateAlunoPayload, "temporary_password">;
 
+export type UpdateUserProfilePayload = {
+    nome: string;
+    email: string;
+    role: "ADMIN" | "ALUNO" | "PROFESSOR";
+    tel: string | null;
+};
+
 export async function createAluno(aluno: CreateAlunoPayload) {
     try {
         const response = await fetch(`${apiRoutes.users}`, {
@@ -128,6 +135,27 @@ export async function updateProfessor(professor: CreateProfessorPayload, userId:
         const result = await response.json();
 
         if (!response.ok) return { err: result.message ?? "Nao foi possivel atualizar professor." };
+
+        return result;
+    } catch {
+        return { err: "Nao foi possivel conectar ao servidor." };
+    };
+};
+
+export async function updateUser(user: UpdateUserProfilePayload, userId: number) {
+    try {
+        const response = await fetch(`${apiRoutes.users}/${userId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(user)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) return { err: result.message ?? "Nao foi possivel atualizar suas informações." };
 
         return result;
     } catch {

@@ -36,6 +36,8 @@ export type CreateUserBody = z.infer<typeof createUserSchema>;
 
 export const updateUserSchema = createUserSchema.omit({
   temporary_password: true,
+}).extend({
+  tel: z.string().min(11, "O telefone deve ter pelo menos 11 dígitos.").nullable(),
 });
 
 export type UpdateUserBody = z.infer<typeof updateUserSchema>;

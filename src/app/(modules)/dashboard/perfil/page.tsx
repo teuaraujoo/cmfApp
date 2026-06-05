@@ -1,10 +1,19 @@
-export default function ConfiguracoesPage() {
-  return (
-    <main className="p-6">
-      <h1 className="text-2xl font-semibold">Configuracoes</h1>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-        Pagina placeholder para testar a navegacao da sidebar.
-      </p>
-    </main>
-  );
+import PerfilDashboardPage from "@/components/perfil/PerfilDashboardPage";
+import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
+
+type AppUserRole = "ADMIN" | "ALUNO" | "PROFESSOR";
+
+export default async function PerfilPage() {
+  const { appUser } = await getCurrentAppUser();
+
+  const userInfo = {
+    id: appUser.id,
+    nome: appUser.nome,
+    email: appUser.email,
+    tel: appUser.tel,
+    role: appUser.role as AppUserRole,
+    createdAt: appUser.created_at.toISOString(),
+  };
+
+  return <PerfilDashboardPage userInfo={userInfo} />;
 }

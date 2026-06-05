@@ -1,5 +1,4 @@
 import apiRoutes from "@/lib/api"
-import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
 
 type LoginData = {
     email: string,
