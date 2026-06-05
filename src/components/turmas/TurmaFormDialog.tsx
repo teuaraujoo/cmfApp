@@ -171,7 +171,7 @@ export default function TurmaFormDialog({
               {isEditing ? "Editar turma" : "Cadastrar turma"}
             </DialogTitle>
             <DialogDescription className="text-gray-500 dark:text-gray-400">
-              {isEditing ? "Preencha os campos abaixo para criar uma turma" : "Atualize os dados abaixo e salve as alterações"}
+              {isEditing ? "Atualize os dados abaixo e salve as alterações" : "Preencha os campos abaixo para criar uma turma"}
             </DialogDescription>
           </DialogHeader>
 
