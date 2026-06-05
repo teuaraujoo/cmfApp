@@ -15,15 +15,7 @@ import toast from "react-hot-toast";
 import { deleteTurma } from "@/services/turmas/turmas.client";
 import { useRouter } from "next/navigation";
 import { useCreateTurmaForm } from "@/hooks/turmas/useCreateTurmaForm";
-
-const diasSemanaOptions = [
-  { id: 1, label: "Segunda", filterValue: "Segunda-feira" },
-  { id: 2, label: "Terça", filterValue: "Terça-feira" },
-  { id: 3, label: "Quarta", filterValue: "Quarta-feira" },
-  { id: 4, label: "Quinta", filterValue: "Quinta-feira" },
-  { id: 5, label: "Sexta", filterValue: "Sexta-feira" },
-  { id: 6, label: "Sábado", filterValue: "Sábado" },
-];
+import { diasSemanaOptions } from "@/utils/date-utils";
 
 type TurmasDashboardPageProps = {
   turmas?: TurmaDashboardItem[];

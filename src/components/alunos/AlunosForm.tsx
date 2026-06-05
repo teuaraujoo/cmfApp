@@ -13,11 +13,7 @@ import {
 import { Field, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import type { FormEvent } from "react";
-
-type Modalidade = {
-    id: number;
-    tipo: string;
-};
+import { Modalidade } from "@/@types/modalidade/modalidade.type";
 
 type AlunoFormInitialData = {
     nome?: string;

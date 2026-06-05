@@ -20,15 +20,7 @@ import { Aluno } from "@/@types/aluno/aluno.types";
 import { Professor } from "@/@types/professor/professor.types";
 import { useUpdateTurmaForm } from "@/hooks/turmas/useUpdateTurmaForm";
 import { useRouter } from "next/navigation";
-
-const diasSemanaOptions = [
-  { id: 1, label: "Segunda", filterValue: "Segunda-feira" },
-  { id: 2, label: "Terça", filterValue: "Terça-feira" },
-  { id: 3, label: "Quarta", filterValue: "Quarta-feira" },
-  { id: 4, label: "Quinta", filterValue: "Quinta-feira" },
-  { id: 5, label: "Sexta", filterValue: "Sexta-feira" },
-  { id: 6, label: "Sábado", filterValue: "Sábado" },
-];
+import { diasSemanaOptions } from "@/utils/date-utils";
 
 type TurmaDetailsPageProps = {
   turma?: TurmaDashboardItem;

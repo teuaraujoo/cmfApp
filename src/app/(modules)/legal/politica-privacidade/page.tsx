@@ -1,4 +1,4 @@
-import LegalDocument from "@/components/LegalDocuments";
+import LegalDocument from "@/components/legal/LegalDocuments";
 
 const sections = [
   {
