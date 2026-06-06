@@ -38,16 +38,17 @@ export async function POST(request: Request) {
   try {
 
     await validateRequestOrigin(request);
-    
+
     const session = await requireAdminUser();
     await rateLimitByIdentifier(`users:create:admin:${session.appUser.id}`, adminMutationRateLimit);
 
     const body = await request.json();
     const user = await createUser(body);
+    const message = user.role === "ADMIN" ? "Usuário criado com sucesso!" : user.role === "PROFESSOR" ? "Professor criado com sucesso!" : "Aluno criado com sucesso!";
 
     return Response.json(
       {
-        message: "Usuário criado com sucesso!",
+        message: message,
         data: user,
       },
       { status: 201 }

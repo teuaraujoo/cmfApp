@@ -20,7 +20,7 @@ test("admin cria aluno", async ({ page }) => {
 
   await page.getByTestId("addAluno-button").click();
 
-  await page.fill('input[name="nome"]', "Aluno Teste E2E");
+  await page.fill('input[name="nome"]', "Aluno Teste E2E 07");
   await page.fill('input[name="email"]', email);
   await page.fill('input[name="dataNasc"]', "2010-01-01");
   await page.fill('input[name="telefone"]', "11999999999");
@@ -43,5 +43,5 @@ test("admin cria aluno", async ({ page }) => {
   await page.getByTestId("aluno-submit").click();
 
   await expect(page.getByText(/aluno salvo|criado com sucesso/i)).toBeVisible();
-  await expect(page.getByText("Aluno Teste E2E")).toBeVisible();
+  await expect(page.getByText("Aluno Teste E2E 07")).toBeVisible();
 });
