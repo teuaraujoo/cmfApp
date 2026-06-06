@@ -7,13 +7,22 @@ import {
 } from "@/components/ui/dialog";
 import { DIAS_SEMANAS, formatHorarioLocal } from "@/utils/date-utils";
 import { Aula } from "@/@types/aulas/aulas.types";
+import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
 
 type AulaDetailsDialogProps = {
   aula: Aula | null;
   onClose: () => void;
+  onFinalize?: (aula: Aula) => void;
+  onDelete?: (aula: Aula) => void;
 };
 
-export function AulaDetailsDialog({ aula, onClose }: AulaDetailsDialogProps) {
+export function AulaDetailsDialog({
+  aula,
+  onClose,
+  onFinalize,
+  onDelete,
+}: AulaDetailsDialogProps) {
   return (
     <Dialog open={Boolean(aula)} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[92vh] w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] overflow-y-auto bg-white dark:bg-gray-950 sm:max-w-3xl">
@@ -49,6 +58,30 @@ export function AulaDetailsDialog({ aula, onClose }: AulaDetailsDialogProps) {
               value={aula.notas || "Sem anotações registradas."}
             />
           </div>
+        ) : null}
+
+        {aula && !aula.encerrada && (onFinalize || onDelete) ? (
+          <DialogFooter className="gap-3 border-t border-gray-100 pt-4 dark:border-gray-800">
+            {onDelete ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="cursor-pointer border-red-200 text-red-700 hover:bg-red-50 dark:border-red-500/30 dark:text-red-300 dark:hover:bg-red-500/10"
+                onClick={() => onDelete(aula)}
+              >
+                Excluir aula
+              </Button>
+            ) : null}
+            {onFinalize ? (
+              <Button
+                type="button"
+                className="cursor-pointer bg-red-700 text-white hover:bg-red-600"
+                onClick={() => onFinalize(aula)}
+              >
+                Finalizar aula
+              </Button>
+            ) : null}
+          </DialogFooter>
         ) : null}
       </DialogContent>
     </Dialog>

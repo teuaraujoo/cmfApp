@@ -37,6 +37,31 @@ export class AulasRepositories {
         })
     };
 
+    static async getAulasByPeriod(start: Date, end: Date) {
+        return prisma.aulas_individuais.findMany({
+            where: {
+                started_at: { lt: end },
+                ended_at: { gt: start },
+            },
+            include: {
+                professores: {
+                    include: {
+                        users: true,
+                    },
+                },
+                alunos: {
+                    include: {
+                        users: true,
+                    },
+                },
+                modalidades: true,
+            },
+            orderBy: {
+                started_at: "asc",
+            },
+        });
+    };
+
     static async getAulasWeek() {
         const { start, end } = DateUtils.getCurrentWeekRangeUTC();
 

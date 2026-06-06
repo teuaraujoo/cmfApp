@@ -4,11 +4,13 @@ import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalida
 import { getAllAlunosForAdmin, getAllProfessoresForAdmin, getAlunosWithAulaIndividual } from "@/server/modules/users/user.queries";
 
 export default async function AulasSemanaPage() {
-  const aulas = await getAulasForAdmin();
-  const alunosWithAula = await getAlunosWithAulaIndividual();
-  const alunos = await getAllAlunosForAdmin();
-  const professores = await getAllProfessoresForAdmin();
-  const modalidades = await getAllModalidadesForAdmin();
+  const [aulas, alunosWithAula, alunos, professores, modalidades] = await Promise.all([
+    getAulasForAdmin(),
+    getAlunosWithAulaIndividual(),
+    getAllAlunosForAdmin(),
+    getAllProfessoresForAdmin(),
+    getAllModalidadesForAdmin()
+  ]);
 
   return <AulasSemanaDashboardPage aulas={aulas} alunosWithAula={alunosWithAula} alunos={alunos} professores={professores} modalidades={modalidades} />;
 };

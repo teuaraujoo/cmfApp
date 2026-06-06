@@ -36,6 +36,7 @@ type NovaAulaDialogProps = {
   alunos: Aluno[];
   professores: Professor[];
   modalidades: Modalidade[];
+  initialDate?: string;
 };
 
 export function NovaAulaDialog({
@@ -46,7 +47,8 @@ export function NovaAulaDialog({
   onOpenChange,
   alunos,
   professores,
-  modalidades
+  modalidades,
+  initialDate,
 }: NovaAulaDialogProps) {
   const [selectedAlunoId, setSelectedAlunoId] = useState<number | null>(null);
   const [selectedProfessorId, setSelectedProfessorId] = useState<number | null>(null);
@@ -196,6 +198,7 @@ export function NovaAulaDialog({
               <Input
                 type="date"
                 name="data"
+                defaultValue={initialDate}
                 required
                 className="h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
               />

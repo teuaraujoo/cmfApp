@@ -9,7 +9,8 @@ const apiRoutes = {
     totalAlunos: "/api/alunos/total",
     totalProfessores: "/api/professores/total",
     turmas: "/api/turmas",
-    aulas: "/api/aulas"
+    aulas: "/api/aulas",
+    calendario: "/api/calendario"
 };
 
 export default apiRoutes;

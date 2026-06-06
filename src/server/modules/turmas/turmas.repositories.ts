@@ -30,6 +30,40 @@ export class TurmaRepositories {
         });
     };
 
+    static async getByPeriod(start: Date, end: Date) {
+        return prisma.turmas.findMany({
+            where: {
+                vigencia_inicio: { lt: end },
+                vigencia_fim: { gte: start },
+            },
+            include: {
+                modalidades: true,
+                turma_agenda: true,
+                turma_alunos: {
+                    include: {
+                        alunos: {
+                            include: {
+                                users: true,
+                            },
+                        },
+                    },
+                },
+                turma_professores: {
+                    include: {
+                        professores: {
+                            include: {
+                                users: true,
+                            },
+                        },
+                    },
+                },
+            },
+            orderBy: {
+                vigencia_inicio: "asc",
+            },
+        });
+    };
+
     static async getById(id: number) {
         return prisma.turmas.findUnique({
             where: {

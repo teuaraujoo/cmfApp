@@ -46,3 +46,18 @@ export function formatBirthDay(value?: string | Date | null) {
     return date.toLocaleDateString("pt-BR")
 };
 
+
+export function formatDate(value: string) {
+  return new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" }).format(
+    new Date(`${value}T00:00:00Z`),
+  );
+};
+
+export function formatCalendarTime(value: Date) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "UTC",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(value);
+};
+
