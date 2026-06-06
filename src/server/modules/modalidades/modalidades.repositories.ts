@@ -4,7 +4,9 @@ import { Prisma } from "@/generated/prisma/client";
 export class ModalidadeRepositories {
 
     static async getAll() {
-        return prisma.modalidades.findMany();
+        return prisma.modalidades.findMany({
+            orderBy: { tipo: "asc" },
+        });
     };
 
     static async getById(id: number) {

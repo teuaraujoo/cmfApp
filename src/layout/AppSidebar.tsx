@@ -13,7 +13,8 @@ import {
   Component,
   BookOpenText,
   Ellipsis,
-  FileUser
+  FileUser,
+  Shapes
 } from "lucide-react";
 
 type NavItem = {
@@ -60,6 +61,11 @@ const navItems: NavItem[] = [
   //   name: "Configurações",
   //   path: "/dashboard/configuracoes",
   // },
+  {
+    icon: <Shapes />,
+    name: "Modalidades",
+    path: "/dashboard/modalidades",
+  },
   {
     icon: <FileUser />,
     name: "Perfil",
