@@ -2,13 +2,13 @@
 
 import { startTransition, useMemo, useState } from "react";
 
-import { AulaDeleteDialog } from "@/components/aulas/pendentes/AulaDeleteDialog";
-import { AulaDetailsDialog } from "@/components/aulas/pendentes/AulaDetailsDialog";
-import { AulasSemanaHeader } from "@/components/aulas/pendentes/AulasSemanaHeader";
-import { AulasSemanaStats } from "@/components/aulas/pendentes/AulasSemanaStats";
-import { AulasSemanaTable } from "@/components/aulas/pendentes/AulasSemanaTable";
-import { FinalizarAulaDialog } from "@/components/aulas/pendentes/FinalizarAulaDialog";
-import { NovaAulaDialog } from "@/components/aulas/pendentes/NovaAulaDialog";
+import { AulaDeleteDialog } from "@/components/aulas/semana/AulaDeleteDialog";
+import { AulaDetailsDialog } from "@/components/aulas/semana/AulaDetailsDialog";
+import { AulasSemanaHeader } from "@/components/aulas/semana/AulasSemanaHeader";
+import { AulasSemanaStats } from "@/components/aulas/semana/AulasSemanaStats";
+import { AulasSemanaTable } from "@/components/aulas/semana/AulasSemanaTable";
+import { FinalizarAulaDialog } from "@/components/aulas/semana/FinalizarAulaDialog";
+import { NovaAulaDialog } from "@/components/aulas/semana/NovaAulaDialog";
 import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -73,12 +73,12 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   function openCreateDialog() {
     resetCreateForm();
     setCreateDialogOpen(true);
-  }
+  };
 
   function closeCreateDialog() {
     resetCreateForm();
     setCreateDialogOpen(false);
-  }
+  };
 
   function openFinalizeDialog(aula: Aula) {
     if (aula.encerrada) {
@@ -121,7 +121,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   };
 
   async function handleDeleteAula(aula: Aula) {
-    if (!deleteAula) {
+    if (!deletedAula) {
       return;
     };
 

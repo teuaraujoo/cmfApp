@@ -68,7 +68,7 @@ export function AulasSemanaTable({
                 Status
               </TableCell>
               <TableCell isHeader className="py-3 pr-2 text-start text-[10px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-xs">
-                Info
+                Detalhes
               </TableCell>
               <TableCell isHeader className="py-3 pr-2 text-start text-[10px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-xs">
                 <span className="sm:hidden">Fim</span>
@@ -89,9 +89,15 @@ export function AulasSemanaTable({
                 </TableCell>
                 <TableCell className="max-w-32 truncate whitespace-nowrap py-3 pr-2 text-xs text-gray-600 dark:text-gray-300 sm:max-w-none sm:py-4 sm:pr-4 sm:text-sm">
                   {aula.aluno.nome}
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    {aula.aluno.serie ?? "Sem serie"}
+                  </p>
                 </TableCell>
                 <TableCell className="hidden whitespace-nowrap py-4 pr-4 text-sm text-gray-600 dark:text-gray-300 md:table-cell">
                   {aula.professor.nome}
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    {aula.professor.materia}
+                  </p>
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-3 pr-2 sm:py-4 sm:pr-4">
                   <Badge

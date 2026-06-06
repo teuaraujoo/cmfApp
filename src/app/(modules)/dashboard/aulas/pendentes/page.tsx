@@ -1,10 +1,8 @@
-export default function AulasPendentesPage() {
-  return (
-    <main className="p-6">
-      <h1 className="text-2xl font-semibold">Aulas Pendentes</h1>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-        Pagina placeholder para testar a navegacao da sidebar.
-      </p>
-    </main>
-  );
-}
+import AulasPendenciasDashboardPage from "@/components/aulas/pendentes/AulasPendenciasDashboardPage";
+import { getAulasNotFinishedForAdmin } from "@/server/modules/aulas/aulas.queries";
+
+export default async function AulasPendentesPage() {
+  const aulas = await getAulasNotFinishedForAdmin();
+
+  return <AulasPendenciasDashboardPage aulas={aulas}/>;
+};

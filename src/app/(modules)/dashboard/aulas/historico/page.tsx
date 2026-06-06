@@ -1,10 +1,8 @@
-export default function AulasHistoricoPage() {
-  return (
-    <main className="p-6">
-      <h1 className="text-2xl font-semibold">Historico de Aulas</h1>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-        Pagina placeholder para testar a navegacao da sidebar.
-      </p>
-    </main>
-  );
-}
+import AulasHistoricoDashboardPage from "@/components/aulas/historico/AulasHistoricoDashboardPage";
+import { getAllAulasForAdmin } from "@/server/modules/aulas/aulas.queries";
+
+export default async function AulasHistoricoPage() {
+  const aulas = await getAllAulasForAdmin();
+
+  return <AulasHistoricoDashboardPage aulas={aulas} />;
+};
