@@ -3,11 +3,11 @@
 import { useMemo, useState } from "react";
 
 import type { Aula } from "@/@types/aulas/aulas.types";
-import { AulaDeleteDialog } from "@/components/aulas/semana/AulaDeleteDialog";
-import { AulaDetailsDialog } from "@/components/aulas/semana/AulaDetailsDialog";
-import { FinalizarAulaDialog } from "@/components/aulas/semana/FinalizarAulaDialog";
-import { AulasPendenciasHeader } from "@/components/aulas/pendentes/AulasPendenciasHeader";
-import { AulasPendenciasTable } from "@/components/aulas/pendentes/AulasPendenciasTable";
+import { AulaDeleteDialog } from "@/components/dashboard/aulas/semana/AulaDeleteDialog";
+import { AulaDetailsDialog } from "@/components/dashboard/aulas/semana/AulaDetailsDialog";
+import { FinalizarAulaDialog } from "@/components/dashboard/aulas/semana/FinalizarAulaDialog";
+import { AulasPendenciasHeader } from "@/components/dashboard/aulas/pendentes/AulasPendenciasHeader";
+import { AulasPendenciasTable } from "@/components/dashboard/aulas/pendentes/AulasPendenciasTable";
 import { useRouter } from "next/navigation";
 import { startTransition } from "react";
 import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";

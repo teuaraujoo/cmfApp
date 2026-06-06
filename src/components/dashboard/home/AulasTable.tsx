@@ -4,8 +4,8 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import Badge from "../ui/Badge";
+} from "@/components/ui/table";
+import Badge from "@/components/ui/Badge";
 import { getAulasForAdmin } from "@/server/modules/aulas/aulas.queries";
 import Link from "next/link";
 

@@ -9,9 +9,9 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "../ui/select";
-import { Field, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+} from "@/components/ui/select";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import type { FormEvent } from "react";
 import { Modalidade } from "@/@types/modalidade/modalidade.type";
 

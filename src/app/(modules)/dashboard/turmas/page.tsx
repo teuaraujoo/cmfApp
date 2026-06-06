@@ -1,6 +1,6 @@
-import TurmasDashboardPage from "@/components/turmas/TurmasDashboardPage";
-import { toTurmaDashboardItems } from "@/components/turmas/turmas-view.mapper";
-import type { TurmaApiResponse } from "@/components/turmas/types";
+import TurmasDashboardPage from "@/components/dashboard/turmas/TurmasDashboardPage";
+import { toTurmaDashboardItems } from "@/components/dashboard/turmas/turmas-view.mapper";
+import type { TurmaApiResponse } from "@/@types/turma/turma.types";
 import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
 import { getAllTurmasForAdmin } from "@/server/modules/turmas/turmas.queries";
 import { getAllAlunosForAdmin, getAllProfessoresForAdmin } from "@/server/modules/users/user.queries";

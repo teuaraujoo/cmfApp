@@ -1,4 +1,4 @@
-import AulasPendenciasDashboardPage from "@/components/aulas/pendentes/AulasPendenciasDashboardPage";
+import AulasPendenciasDashboardPage from "@/components/dashboard/aulas/pendentes/AulasPendenciasDashboardPage";
 import { getAulasNotFinishedForAdmin } from "@/server/modules/aulas/aulas.queries";
 
 export default async function AulasPendentesPage() {

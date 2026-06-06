@@ -1,8 +1,8 @@
-import InformationCard from "@/components/dashboard/InformationCard";
-import RecentClasses from "@/components/dashboard/AulasTable";
-import StatisticsChart from "@/components/dashboard/StatisticsChart";
-import PendingAulasCard from "@/components/dashboard/PendingAulasCard";
-import RecentStudentsGrid from "@/components/dashboard/RecentStudentsGrid";
+import InformationCard from "@/components/dashboard/home/InformationCard";
+import RecentClasses from "@/components/dashboard/home/AulasTable";
+import StatisticsChart from "@/components/dashboard/home/StatisticsChart";
+import PendingAulasCard from "@/components/dashboard/home/PendingAulasCard";
+import RecentStudentsGrid from "@/components/dashboard/home/RecentStudentsGrid";
 
 export default function Home() {
 

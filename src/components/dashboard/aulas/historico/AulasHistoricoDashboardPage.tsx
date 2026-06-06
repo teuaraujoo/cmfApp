@@ -3,9 +3,9 @@
 import { useMemo, useState } from "react";
 
 import type { Aula } from "@/@types/aulas/aulas.types";
-import { AulaDetailsDialog } from "@/components/aulas/semana/AulaDetailsDialog";
-import { AulasHistoricoHeader } from "@/components/aulas/historico/AulasHistoricoHeader";
-import { AulasHistoricoTable } from "@/components/aulas/historico/AulasHistoricoTable";
+import { AulaDetailsDialog } from "@/components/dashboard/aulas/semana/AulaDetailsDialog";
+import { AulasHistoricoHeader } from "@/components/dashboard/aulas/historico/AulasHistoricoHeader";
+import { AulasHistoricoTable } from "@/components/dashboard/aulas/historico/AulasHistoricoTable";
 
 export default function AulasHistoricoDashboardPage({ aulas }: { aulas: Aula[] }) {
   const [search, setSearch] = useState("");

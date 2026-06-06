@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import HeaderAlunosPage from "./HeaderAlunosPage";
 import AlunosCard from "./AlunosCard";
-import { useCreateAlunoForm } from "../../hooks/alunos/useCreateAlunoForm";
+import { useCreateAlunoForm } from "@/hooks/alunos/useCreateAlunoForm";
 import { useUpdateAlunoForm } from "@/hooks/alunos/useUpdateAlunoForm";
 import {
   DropdownMenu,

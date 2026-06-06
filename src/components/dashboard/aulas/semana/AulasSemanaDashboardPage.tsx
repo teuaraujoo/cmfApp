@@ -2,13 +2,13 @@
 
 import { startTransition, useMemo, useState } from "react";
 
-import { AulaDeleteDialog } from "@/components/aulas/semana/AulaDeleteDialog";
-import { AulaDetailsDialog } from "@/components/aulas/semana/AulaDetailsDialog";
-import { AulasSemanaHeader } from "@/components/aulas/semana/AulasSemanaHeader";
-import { AulasSemanaStats } from "@/components/aulas/semana/AulasSemanaStats";
-import { AulasSemanaTable } from "@/components/aulas/semana/AulasSemanaTable";
-import { FinalizarAulaDialog } from "@/components/aulas/semana/FinalizarAulaDialog";
-import { NovaAulaDialog } from "@/components/aulas/semana/NovaAulaDialog";
+import { AulaDeleteDialog } from "@/components/dashboard/aulas/semana/AulaDeleteDialog";
+import { AulaDetailsDialog } from "@/components/dashboard/aulas/semana/AulaDetailsDialog";
+import { AulasSemanaHeader } from "@/components/dashboard/aulas/semana/AulasSemanaHeader";
+import { AulasSemanaStats } from "@/components/dashboard/aulas/semana/AulasSemanaStats";
+import { AulasSemanaTable } from "@/components/dashboard/aulas/semana/AulasSemanaTable";
+import { FinalizarAulaDialog } from "@/components/dashboard/aulas/semana/FinalizarAulaDialog";
+import { NovaAulaDialog } from "@/components/dashboard/aulas/semana/NovaAulaDialog";
 import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";

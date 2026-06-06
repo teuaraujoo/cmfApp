@@ -1,4 +1,4 @@
-import StudentsDashboardPage from "@/components/alunos/AlunoDashboardPage";
+import StudentsDashboardPage from "@/components/dashboard/alunos/AlunoDashboardPage";
 import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
 import { getAllAlunosForAdmin } from "@/server/modules/users/user.queries";
 

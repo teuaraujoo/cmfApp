@@ -13,14 +13,14 @@ import type { Aluno } from "@/@types/aluno/aluno.types";
 import type { Aula } from "@/@types/aulas/aulas.types";
 import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 import type { Professor } from "@/@types/professor/professor.types";
-import { AulaDeleteDialog } from "@/components/aulas/semana/AulaDeleteDialog";
-import { AulaDetailsDialog } from "@/components/aulas/semana/AulaDetailsDialog";
-import { FinalizarAulaDialog } from "@/components/aulas/semana/FinalizarAulaDialog";
-import { NovaAulaDialog } from "@/components/aulas/semana/NovaAulaDialog";
+import { AulaDeleteDialog } from "@/components/dashboard/aulas/semana/AulaDeleteDialog";
+import { AulaDetailsDialog } from "@/components/dashboard/aulas/semana/AulaDetailsDialog";
+import { FinalizarAulaDialog } from "@/components/dashboard/aulas/semana/FinalizarAulaDialog";
+import { NovaAulaDialog } from "@/components/dashboard/aulas/semana/NovaAulaDialog";
 import {
   type CalendarTurmaDetails,
   TurmaCalendarDetailsDialog,
-} from "@/components/calendar/TurmaCalendarDetailsDialog";
+} from "@/components/dashboard/calendar/TurmaCalendarDetailsDialog";
 import { useCreateAulaForm } from "@/hooks/aulas/useCreateAulaForm";
 import { useCalendarEvents } from "@/hooks/calendar/useCalendarEvents";
 import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";

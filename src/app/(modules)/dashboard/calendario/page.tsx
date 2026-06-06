@@ -1,5 +1,5 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import Calendar from "@/components/calendar/Calendar";
+import Calendar from "@/components/dashboard/calendar/Calendar";
 import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
 import {
   getAllAlunosForAdmin,

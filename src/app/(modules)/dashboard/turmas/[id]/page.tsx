@@ -1,5 +1,5 @@
-import TurmaDetailsPage from "@/components/turmas/TurmaDetailsPage";
-import { toTurmaDashboardItem } from "@/components/turmas/turmas-view.mapper";
+import TurmaDetailsPage from "@/components/dashboard/turmas/TurmaDetailsPage";
+import { toTurmaDashboardItem } from "@/components/dashboard/turmas/turmas-view.mapper";
 import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
 import { getTurmaByIdForAdmin } from "@/server/modules/turmas/turmas.queries";
 import { getAllAlunosForAdmin } from "@/server/modules/users/user.queries";
