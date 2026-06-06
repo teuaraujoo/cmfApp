@@ -15,8 +15,6 @@ export class AulasRepositories {
                 },
             },
         });
-
-    
     };
 
     static async getAllAulas() {
@@ -84,6 +82,9 @@ export class AulasRepositories {
                     }
                 },
                 modalidades: true
+            },
+            orderBy: {
+                created_at: "desc"
             }
         });
     };

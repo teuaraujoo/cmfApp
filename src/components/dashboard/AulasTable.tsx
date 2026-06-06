@@ -145,7 +145,7 @@ export default async function RecentClasses() {
                     <Badge
                       size="sm"
                       color={
-                        aula.encerrada ? "error" : "success"
+                        aula.encerrada ? "success" : "warning"
                       }
                     >
                       {aula.encerrada ? 'ENCERRADA' : 'AGENDADA'}
