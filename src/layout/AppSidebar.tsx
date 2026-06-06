@@ -14,8 +14,12 @@ import {
   BookOpenText,
   Ellipsis,
   FileUser,
-  Shapes
+  Shapes,
+  MessageCircleQuestionMark
 } from "lucide-react";
+
+const supportWhatsappUrl =
+  process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP_URL ?? "https://wa.me/";
 
 type NavItem = {
   name: string;
@@ -327,7 +331,7 @@ const AppSidebar: React.FC = () => {
           )}
         </Link>
       </div>
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+      <div className="no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto duration-300 ease-linear">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
             <div>
@@ -349,6 +353,40 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
+
+        {(isExpanded || isHovered || isMobileOpen) && (
+          <aside className="mt-auto mb-5 rounded-2xl border border-sky-200 bg-sky-50/80 p-4 shadow-sm dark:border-sky-500/20 dark:bg-sky-500/10">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-white text-sky-700 shadow-sm dark:bg-gray-900 dark:text-sky-300">
+              <MessageCircleQuestionMark className="size-5" />
+            </div>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-900 dark:text-white">
+              Precisa de ajuda?
+            </h3>
+            <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-300">
+              Pensou em alguma melhoria do sistema?
+            </p>
+            <p className="mt-3 text-xs leading-5 text-gray-500 dark:text-gray-400">
+              Entre em contato com o administrador do sistema.
+            </p>
+
+            <a
+              href={supportWhatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#1FA2E1] px-3 text-sm font-medium text-white transition-colors hover:bg-[#178CC5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+            >
+              <Image
+                src="/whatsapp.svg"
+                // className="size-4"
+                alt="Logo WhatsApp"
+                width={15}
+                height={15}
+              />
+              WhatsApp
+            </a>
+          </aside>
+        )}
       </div>
     </aside>
   );
