@@ -224,7 +224,7 @@ export async function getAllProfessores() {
     throw new AppError("Error ao encontrar professores", 404);
   };
 
-  return professores.map((professor) => ProfessorMapper.toResponseProfessorGet(professor, professor.users, professor.modalidades));
+  return professores.map((professor) => ProfessorMapper.toResponseProfessorGet(professor, professor.users));
 };
 
 export async function getTotalProfessores() {
@@ -238,7 +238,7 @@ export async function getProfessorByUserId(id: number) {
     throw new AppError("Não foi possível encontrar professor!", 404);
   };
 
-  return ProfessorMapper.toResponseProfessorGet(professor, professor.users, professor.modalidades);
+  return ProfessorMapper.toResponseProfessorGet(professor, professor.users);
 };
 
 

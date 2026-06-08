@@ -502,8 +502,8 @@ model webauthn_credentials {
 model alunos {
   id                Int                 @id @default(autoincrement())
   user_id           Int                 @unique
-  data_nasc         DateTime?           @db.Date
-  serie             String?             @db.VarChar(50)
+  data_nasc         DateTime            @db.Date
+  serie             String              @db.VarChar(50)
   resp_tel          String?             @db.VarChar(20)
   resp_nome         String?             @db.VarChar(120)
   tempo_aula        Int
@@ -511,7 +511,7 @@ model alunos {
   status            String              @default("ATIVO") @db.VarChar(20)
   created_at        DateTime            @default(now()) @db.Timestamp(6)
   updated_at        DateTime            @default(now()) @db.Timestamp(6)
-  escola            String?             @db.VarChar(150)
+  escola            String              @db.VarChar(150)
   users             public_users        @relation(fields: [user_id], references: [id], map: "fk_alunos_user")
   aulas_individuais aulas_individuais[]
   frequencia_aluno  frequencia_aluno[]
@@ -652,13 +652,13 @@ model turmas {
   status            String              @default("ATIVO") @db.VarChar(20)
   created_at        DateTime            @default(now()) @db.Timestamp(6)
   updated_at        DateTime            @default(now()) @db.Timestamp(6)
-  vigencia_inicio   DateTime?           @db.Date
-  vigencia_fim      DateTime?           @db.Date
-  modalidade_id     Int?
+  vigencia_inicio   DateTime            @db.Date
+  vigencia_fim      DateTime            @db.Date
+  modalidade_id     Int
   turma_agenda      turma_agenda[]
   turma_alunos      turma_alunos[]
   turma_professores turma_professores[]
-  modalidades       modalidades?        @relation(fields: [modalidade_id], references: [id], onDelete: Restrict, map: "fk_turma_modalidade")
+  modalidades       modalidades         @relation(fields: [modalidade_id], references: [id], map: "fk_turma_modalidade")
 
   @@index([status], map: "idx_turmas_status")
   @@index([vigencia_fim], map: "idx_turmas_vigencia_fim")
