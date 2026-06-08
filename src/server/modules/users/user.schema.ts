@@ -1,29 +1,18 @@
 import { z } from "zod";
 
-// Esta senha temporária será entregue pelo admin ao usuário.
-// As regras abaixo tentam evitar senhas muito fracas já no backend.
-const temporaryPasswordSchema = z
-  .string()
-  .min(8, "A senha temporária deve ter pelo menos 8 caracteres.")
-  .regex(/[A-Za-z]/, "A senha temporária deve conter ao menos uma letra.")
-  .regex(/[0-9]/, "A senha temporária deve conter ao menos um número.");
-
 export const createUserSchema = z.object({
   nome: z.string().min(4, "O nome deve ter pelo menos 4 caracteres."),
   email: z.email("Informe um email válido."),
-  temporary_password: temporaryPasswordSchema,
   role: z.enum(["ADMIN", "ALUNO", "PROFESSOR"]),
   tel: z.string().min(11, "O telefone deve ter pelo menos 11 dígitos."),
 
   aluno: z.object({
       data_nasc: z.coerce.date(),
       serie: z.string(),
-      resp_tel: z.string().min(11, "O telefone do responsável é obrigatório."),
+      escola: z.string().min(2, "A escola é obrigatória."),
+      resp_tel: z.string().min(11, "O telefone do responsável deve ter pelo menos 11 dígitos."),
       resp_nome: z.string().min(4, "O nome do responsável é obrigatório."),
-      modalidade_id: z.number().int(),
-      tempo_aula: z.number().positive(),
-      horas_semana: z.number().positive(),
-      tempo_contrato: z.number().int().positive(),
+      horas_mensais: z.number().positive(),
     }).optional(),
 
   professor: z.object({
@@ -34,9 +23,7 @@ export const createUserSchema = z.object({
 
 export type CreateUserBody = z.infer<typeof createUserSchema>;
 
-export const updateUserSchema = createUserSchema.omit({
-  temporary_password: true,
-}).extend({
+export const updateUserSchema = createUserSchema.extend({
   tel: z.string().min(11, "O telefone deve ter pelo menos 11 dígitos.").nullable(),
 });
 

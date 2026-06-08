@@ -1,9 +1,14 @@
 "use client";
 
-import { updateAluno } from "@/services/users/users.client";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
-import { getPositiveNumber, getRequiredFormString, validateBirthDate } from "@/utils/forms-utils";
+
+import { updateAluno } from "@/services/users/users.client";
+import {
+  getPositiveNumber,
+  getRequiredFormString,
+  validateBirthDate,
+} from "@/utils/forms-utils";
 
 type UseUpdateAlunoFormParams = {
   onSuccess?: () => void;
@@ -17,9 +22,12 @@ export function useUpdateAlunoForm({
 
   function resetForm() {
     setError("");
-  };
+  }
 
-  async function handleUpdateAluno(event: FormEvent<HTMLFormElement>, userId: number) {
+  async function handleUpdateAluno(
+    event: FormEvent<HTMLFormElement>,
+    userId: number,
+  ) {
     event.preventDefault();
     setError("");
 
@@ -28,7 +36,7 @@ export function useUpdateAlunoForm({
 
       const formData = new FormData(event.currentTarget);
       const dataNasc = validateBirthDate(
-        getRequiredFormString(formData, "dataNasc", "Data de nascimento")
+        getRequiredFormString(formData, "dataNasc", "Data de nascimento"),
       );
 
       const data = {
@@ -38,28 +46,22 @@ export function useUpdateAlunoForm({
         tel: getRequiredFormString(formData, "telefone", "Telefone"),
         aluno: {
           data_nasc: dataNasc,
-          serie: getRequiredFormString(formData, "serie", "Série"),
+          serie: getRequiredFormString(formData, "serie", "Serie"),
+          escola: getRequiredFormString(formData, "escola", "Escola"),
           resp_tel: getRequiredFormString(
             formData,
             "respTel",
-            "Telefone do responsável"
+            "Telefone do responsavel",
           ),
           resp_nome: getRequiredFormString(
             formData,
             "respNome",
-            "Nome do responsável"
+            "Nome do responsavel",
           ),
-          modalidade_id: getPositiveNumber(formData, "modalidade", "Modalidade"),
-          tempo_aula: getPositiveNumber(formData, "tempoAula", "Tempo de aula"),
-          horas_semana: getPositiveNumber(
+          horas_mensais: getPositiveNumber(
             formData,
-            "horasSemana",
-            "Horas semanais"
-          ),
-          tempo_contrato: getPositiveNumber(
-            formData,
-            "tempoContrato",
-            "Tempo de contrato"
+            "horasMensais",
+            "Horas mensais",
           ),
         },
       };
@@ -69,7 +71,7 @@ export function useUpdateAlunoForm({
       if (request?.err) {
         setError(request.err);
         return;
-      };
+      }
 
       toast.success(request?.message ?? "Aluno atualizado com sucesso!");
       onSuccess?.();
@@ -82,8 +84,8 @@ export function useUpdateAlunoForm({
       setError(message);
     } finally {
       setLoading(false);
-    };
-  };
+    }
+  }
 
   return {
     error,
@@ -91,4 +93,4 @@ export function useUpdateAlunoForm({
     handleUpdateAluno,
     resetForm,
   };
-};
+}

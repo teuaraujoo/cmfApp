@@ -109,11 +109,11 @@ export class TurmaAlunosMapper {
                     tel: aluno.alunos.users.tel,
                     data_nasc: aluno.alunos.data_nasc,
                     serie: aluno.alunos.serie,
+                    escola: aluno.alunos.escola,
                     resp_nome: aluno.alunos.resp_nome,
                     resp_tel: aluno.alunos.resp_tel,
                     tempo_aula: aluno.alunos.tempo_aula,
-                    horas_semana: aluno.alunos.horas_semana,
-                    tempo_contrato: aluno.alunos.tempo_contrato,
+                    horas_mensais: aluno.alunos.horas_mensais,
                     status: aluno.alunos.status,
                 },
             };

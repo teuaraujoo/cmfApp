@@ -1,11 +1,14 @@
 "use client";
 
-import { createAluno } from "@/services/users/users.client";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
-import { getPositiveNumber, getRequiredFormString, validateBirthDate } from "@/utils/forms-utils";
 
-const TEMP_PASSWORD = "Temp1234";
+import { createAluno } from "@/services/users/users.client";
+import {
+  getPositiveNumber,
+  getRequiredFormString,
+  validateBirthDate,
+} from "@/utils/forms-utils";
 
 type UseCreateAlunoFormParams = {
   onSuccess?: () => void;
@@ -17,9 +20,10 @@ export function useCreateAlunoForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+
   function resetForm() {
     setError("");
-  };
+  }
 
   async function handleCreateAluno(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,39 +35,41 @@ export function useCreateAlunoForm({
       const form = event.currentTarget;
       const formData = new FormData(form);
       const dataNasc = validateBirthDate(
-        getRequiredFormString(formData, "dataNasc", "Data de nascimento")
+        getRequiredFormString(formData, "dataNasc", "Data de nascimento"),
       );
+      const respTel = getRequiredFormString(
+        formData,
+        "respTel",
+        "Telefone do responsável",
+      )
+        .replace(/\D/g, "");
+
+      const telefone = getRequiredFormString(
+        formData,
+        "telefone",
+        "Telefone",
+      )
+        .replace(/\D/g, "");
 
       const data = {
         nome: getRequiredFormString(formData, "nome", "Nome"),
         email: getRequiredFormString(formData, "email", "Email"),
-        temporary_password: TEMP_PASSWORD,
         role: "ALUNO" as const,
-        tel: getRequiredFormString(formData, "telefone", "Telefone"),
+        tel: telefone,
         aluno: {
           data_nasc: dataNasc,
-          serie: getRequiredFormString(formData, "serie", "Série"),
-          resp_tel: getRequiredFormString(
-            formData,
-            "respTel",
-            "Telefone do responsável"
-          ),
+          serie: getRequiredFormString(formData, "serie", "Serie"),
+          escola: getRequiredFormString(formData, "escola", "Escola"),
+          resp_tel: respTel,
           resp_nome: getRequiredFormString(
             formData,
             "respNome",
-            "Nome do responsável"
+            "Nome do responsável",
           ),
-          modalidade_id: getPositiveNumber(formData, "modalidade", "Modalidade"),
-          tempo_aula: getPositiveNumber(formData, "tempoAula", "Tempo de aula"),
-          horas_semana: getPositiveNumber(
+          horas_mensais: getPositiveNumber(
             formData,
-            "horasSemana",
-            "Horas semanais"
-          ),
-          tempo_contrato: getPositiveNumber(
-            formData,
-            "tempoContrato",
-            "Tempo de contrato"
+            "horasMensais",
+            "Horas mensais",
           ),
         },
       };
@@ -73,7 +79,7 @@ export function useCreateAlunoForm({
       if (request?.err) {
         setError(request.err);
         return;
-      };
+      }
 
       toast.success(request?.message ?? "Aluno salvo com sucesso!");
       form.reset();
@@ -87,8 +93,8 @@ export function useCreateAlunoForm({
       setError(message);
     } finally {
       setLoading(false);
-    };
-  };
+    }
+  }
 
   return {
     error,
@@ -96,4 +102,4 @@ export function useCreateAlunoForm({
     handleCreateAluno,
     resetForm,
   };
-};
+}

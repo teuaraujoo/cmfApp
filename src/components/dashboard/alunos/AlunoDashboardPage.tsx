@@ -27,7 +27,6 @@ import { inactiveUser, activeUser } from "@/services/users/users.client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import type { Aluno } from "@/@types/aluno/aluno.types";
-import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 import { getAge, formatBirthDay } from "@/utils/date-utils";
 
 function AlunoStatusBadge({ status }: { status: Aluno["status"] }) {
@@ -55,10 +54,8 @@ function formatDisplayValue(value: unknown) {
 
 export default function StudentsDashboardPage({
   alunos,
-  modalidades,
 }: {
   alunos: Aluno[];
-  modalidades: Modalidade[];
 }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
@@ -97,7 +94,7 @@ export default function StudentsDashboardPage({
     }
 
     return alunos.filter((aluno) =>
-      [aluno.nome, aluno.email, aluno.serie, aluno.modalidade]
+      [aluno.nome, aluno.email, aluno.serie]
         .join(" ")
         .toLowerCase()
         .includes(searchValue)
@@ -241,7 +238,6 @@ export default function StudentsDashboardPage({
                 key={editingAluno?.user_id ?? "create"}
                 mode={editingAluno ? "update" : "create"}
                 aluno={editingAluno}
-                modalidades={modalidades}
                 error={editingAluno ? updateError : createError}
                 loading={editingAluno ? updateLoading : createLoading}
                 onSubmit={(event) => {
@@ -289,23 +285,37 @@ export default function StudentsDashboardPage({
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={openEditPanel}
-                        className="cursor-pointer dark:hover:bg-gray-700"
-                      >
-                        <Pencil />
-                        Editar aluno
-                      </DropdownMenuItem>
+                      {selectedAluno.status === "ATIVO" ?
+                        <>
+                          <DropdownMenuItem
+                            onClick={openEditPanel}
+                            className="cursor-pointer dark:hover:bg-gray-700"
+                          >
+                            <Pencil />
+                            Editar aluno
+                          </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        onClick={() => handleToggleAlunoStatus()}
-                        className={`cursor-pointer dark:hover:bg-gray-700 
+                          <DropdownMenuItem
+                            onClick={() => handleToggleAlunoStatus()}
+                            className={`cursor-pointer dark:hover:bg-gray-700 
+                          ${selectedAluno.status === "ATIVO" ? "text-red-500" : "text-green-500"}`}
+                          >
+                            {selectedAluno.status === "ATIVO" ? <ShieldOff /> : <ShieldCheck />}
+                            {selectedAluno.status === "ATIVO" ? "Desativar" : "Ativar"}
+                          </DropdownMenuItem>
+                        </>
+                        :
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => handleToggleAlunoStatus()}
+                            className={`cursor-pointer dark:hover:bg-gray-700 
                         ${selectedAluno.status === "ATIVO" ? "text-red-500" : "text-green-500"}`}
-                      >
-                        {selectedAluno.status === "ATIVO" ? <ShieldOff /> : <ShieldCheck />}
-                        {selectedAluno.status === "ATIVO" ? "Desativar" : "Ativar"}
-                      </DropdownMenuItem>
-
+                          >
+                            {selectedAluno.status === "ATIVO" ? <ShieldOff /> : <ShieldCheck />}
+                            {selectedAluno.status === "ATIVO" ? "Desativar" : "Ativar"}
+                          </DropdownMenuItem>
+                        </>
+                      }
                     </DropdownMenuContent>
                   </DropdownMenu>
 
@@ -346,34 +356,26 @@ export default function StudentsDashboardPage({
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
                       <p className="text-xs text-gray-400 dark:text-gray-500">
+                        Escola
+                      </p>
+                      <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                        {selectedAluno.escola ?? "-"}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
+                      <p className="text-xs text-gray-400 dark:text-gray-500">
                         Tempo de aula
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatDisplayValue(selectedAluno.tempo_aula)}
+                        {`${formatDisplayValue(selectedAluno.tempo_aula)} horas`}
                       </p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
                       <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Horas semanais
+                        Horas mensais
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatDisplayValue(selectedAluno.horas_semana)}
-                      </p>
-                    </div>
-                    <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
-                      <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Tempo de contrato
-                      </p>
-                      <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatDisplayValue(selectedAluno.tempo_contrato)}
-                      </p>
-                    </div>
-                    <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
-                      <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Modalidade
-                      </p>
-                      <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                        {formatDisplayValue(selectedAluno.modalidade)}
+                        {`${formatDisplayValue(selectedAluno.horas_mensais)} horas`}
                       </p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">

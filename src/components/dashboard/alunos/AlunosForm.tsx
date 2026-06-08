@@ -1,6 +1,10 @@
 "use client";
 
 import { Plus } from "lucide-react";
+import type { FormEvent } from "react";
+
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
@@ -10,30 +14,24 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import type { FormEvent } from "react";
-import { Modalidade } from "@/@types/modalidade/modalidade.type";
+import { MaskedPhoneInput } from "@/components/ui/forms/MaskedPhoneInput";
 
 type AlunoFormInitialData = {
     nome?: string;
     email?: string;
     tel?: string | null;
-    status?: string;
     data_nasc?: string | Date | null;
     serie?: string | null;
+    escola?: string | null;
     resp_tel?: string | null;
     resp_nome?: string | null;
-    modalidade_id?: number | null;
     tempo_aula?: unknown;
-    horas_semana?: unknown;
-    tempo_contrato?: unknown;
+    horas_mensais?: unknown;
 };
 
 type AlunosFormProps = {
     mode: "create" | "update";
     aluno?: AlunoFormInitialData | null;
-    modalidades: Modalidade[];
     loading: boolean;
     error: string;
     onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -41,26 +39,36 @@ type AlunosFormProps = {
 };
 
 const series = [
-    { id: 1, tipo: "6º Ano do Ensino Fundamental" },
-    { id: 2, tipo: "7º Ano do Ensino Fundamental" },
-    { id: 3, tipo: "8º Ano do Ensino Fundamental" },
-    { id: 4, tipo: "9º Ano do Ensino Fundamental" },
-    { id: 5, tipo: "1º Ano do Ensino Médio" },
-    { id: 6, tipo: "2º Ano do Ensino Médio" },
-    { id: 7, tipo: "3º Ano do Ensino Médio" },
+    { id: 1, tipo: "6° Ano do Ensino Fundamental" },
+    { id: 2, tipo: "7° Ano do Ensino Fundamental" },
+    { id: 3, tipo: "8° Ano do Ensino Fundamental" },
+    { id: 4, tipo: "9° Ano do Ensino Fundamental" },
+    { id: 5, tipo: "1° Ano do Ensino Médio" },
+    { id: 6, tipo: "2° Ano do Ensino Médio" },
+    { id: 7, tipo: "3° Ano do Ensino Médio" },
 ];
+
+const horasMensaisOptions = [
+    { value: "6", label: "6 horas mensais" },
+    { value: "8", label: "8 horas mensais" },
+];
+
+const inputClassName =
+    "h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700";
+
+const selectTriggerClassName =
+    "h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700";
 
 export default function AlunosForm({
     mode,
     aluno,
-    modalidades,
     loading,
     error,
     onSubmit,
     onCancel,
 }: AlunosFormProps) {
     const isUpdate = mode === "update";
-    const birthDateValue = aluno?.data_nasc ? new Date(aluno.data_nasc).toISOString().slice(0, 10) : "";
+    const birthDateValue = toDateInputValue(aluno?.data_nasc);
 
     return (
         <form className="space-y-6" onSubmit={onSubmit}>
@@ -75,47 +83,56 @@ export default function AlunosForm({
                         </p>
                         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                             {isUpdate
-                                ? "Atualize os dados abaixo para salvar as alterações."
+                                ? "Atualize os dados abaixo para salvar as alteracoes."
                                 : "Preencha os dados abaixo para criar um aluno."}
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <FormSection title="Dados do aluno">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Nome
-                        </FieldLabel>
-                        <Input
-                            id="nome"
-                            type="text"
-                            name="nome"
-                            defaultValue={aluno?.nome ?? ""}
-                            required
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
-
+                    <TextField
+                        id="nome"
+                        name="nome"
+                        label="Nome"
+                        defaultValue={aluno?.nome}
+                        required
+                    />
+                    <TextField
+                        id="email"
+                        type="email"
+                        name="email"
+                        label="Email"
+                        defaultValue={aluno?.email}
+                        required
+                    />
+                    <MaskedPhoneInput
+                        id="telefone"
+                        name="telefone"
+                        label="Telefone"
+                        defaultValue={aluno?.tel}
+                        required
+                    />
+                    <TextField
+                        id="dataNasc"
+                        type="date"
+                        name="dataNasc"
+                        label="Data de nascimento"
+                        defaultValue={birthDateValue}
+                        required
+                    />
                     <Field className="space-y-2">
                         <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Série
                         </FieldLabel>
-                        <Select
-                            name="serie"
-                            defaultValue={aluno?.serie ?? undefined}
-                            required
-                        >
-                            <SelectTrigger
-                                id="serie"
-                                className="h-14 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                            >
-                                <SelectValue placeholder="Selecione uma série" />
+                        <Select name="serie" defaultValue={aluno?.serie ?? undefined} required>
+                            <SelectTrigger id="serie" className={selectTriggerClassName}>
+                                <SelectValue placeholder="Selecione uma serie" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    <SelectLabel>Series</SelectLabel>
+                                    <SelectLabel>Séries</SelectLabel>
                                     {series.map((serie) => (
                                         <SelectItem
                                             key={serie.id}
@@ -129,54 +146,48 @@ export default function AlunosForm({
                             </SelectContent>
                         </Select>
                     </Field>
-                </div>
-
-                <Field className="space-y-2">
-                    <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Email
-                    </FieldLabel>
-                    <Input
-                        id="email"
-                        type="email"
-                        name="email"
-                        defaultValue={aluno?.email ?? ""}
+                    <TextField
+                        id="escola"
+                        name="escola"
+                        label="Escola"
+                        defaultValue={aluno?.escola}
                         required
-                        className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
                     />
-                </Field>
+                </div>
+            </FormSection>
 
+            <FormSection title="Dados academicos">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <Field className="space-y-2">
                         <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Modalidade
+                            Horas mensais
                         </FieldLabel>
                         <Select
-                            name="modalidade"
+                            name="horasMensais"
                             defaultValue={
-                                aluno?.modalidade_id ? String(aluno.modalidade_id) : undefined
+                                aluno?.horas_mensais ? String(aluno.horas_mensais) : undefined
                             }
                             required
                         >
-                            <SelectTrigger
-                                id="modalidade"
-                                className="h-14 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                            >
-                                <SelectValue placeholder="Selecione a modalidade">
-                                    {(value) => modalidades.find((modalidade) => String(modalidade.id) === String(value))
-                                        ?.tipo ?? "Selecione a modalidade"
+                            <SelectTrigger id="horasMensais" className={selectTriggerClassName}>
+                                <SelectValue placeholder="Selecione um pacote">
+                                    {(value) =>
+                                        horasMensaisOptions.find(
+                                            (horas) => horas.value === String(value),
+                                        )?.label ?? "Selecione um pacote"
                                     }
                                 </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    <SelectLabel>Modalidades</SelectLabel>
-                                    {modalidades.map((modalidade) => (
+                                    <SelectLabel>Pacotes</SelectLabel>
+                                    {horasMensaisOptions.map((horas) => (
                                         <SelectItem
-                                            key={modalidade.id}
-                                            value={modalidade.id}
+                                            key={horas.value}
+                                            value={horas.value}
                                             className="cursor-pointer"
                                         >
-                                            {modalidade.tipo}
+                                            {horas.label}
                                         </SelectItem>
                                     ))}
                                 </SelectGroup>
@@ -184,137 +195,34 @@ export default function AlunosForm({
                         </Select>
                     </Field>
 
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Data de Nascimento
-                        </FieldLabel>
-                        <Input
-                            id="dataNasc"
-                            type="date"
-                            name="dataNasc"
-                            defaultValue={birthDateValue}
-                            required
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
                 </div>
 
+            </FormSection>
+
+            <FormSection title="Responsavel">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Telefone
-                        </FieldLabel>
-                        <Input
-                            id="telefone"
-                            type="tel"
-                            name="telefone"
-                            defaultValue={aluno?.tel ?? ""}
-                            required
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
-
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Status
-                        </FieldLabel>
-                        <Input
-                            id="status"
-                            type="text"
-                            name="status"
-                            defaultValue={aluno?.status ?? "ATIVO"}
-                            readOnly
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
+                    <TextField
+                        id="respNome"
+                        name="respNome"
+                        label="Nome do responsavel"
+                        defaultValue={aluno?.resp_nome}
+                        required
+                    />
+                    <MaskedPhoneInput
+                        id="respTel"
+                        name="respTel"
+                        label="Telefone do responsável"
+                        defaultValue={aluno?.resp_tel}
+                        required
+                    />
                 </div>
+            </FormSection>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Horas semanais
-                        </FieldLabel>
-                        <Input
-                            id="horasSemana"
-                            type="number"
-                            name="horasSemana"
-                            min={1}
-                            defaultValue={String(aluno?.horas_semana ?? "")}
-                            required
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
-
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Tempo de aula
-                        </FieldLabel>
-                        <Input
-                            id="tempoAula"
-                            type="number"
-                            name="tempoAula"
-                            min={1}
-                            defaultValue={String(aluno?.tempo_aula ?? "")}
-                            required
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Tempo de contrato
-                        </FieldLabel>
-                        <Input
-                            id="tempoContrato"
-                            type="number"
-                            name="tempoContrato"
-                            min={1}
-                            defaultValue={String(aluno?.tempo_contrato ?? "")}
-                            required
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
-
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Nome do Responsavel
-                        </FieldLabel>
-                        <Input
-                            id="respNome"
-                            type="text"
-                            name="respNome"
-                            defaultValue={aluno?.resp_nome ?? ""}
-                            required
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
-                    <Field className="space-y-2">
-                        <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Telefone do Responsavel
-                        </FieldLabel>
-                        <Input
-                            id="respTel"
-                            type="tel"
-                            name="respTel"
-                            defaultValue={aluno?.resp_tel ?? ""}
-                            required
-                            className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-                        />
-                    </Field>
-                </div>
-            </div>
-
-            {error && (
+            {error ? (
                 <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300">
                     {error}
                 </p>
-            )}
+            ) : null}
 
             <div className="flex flex-col gap-3 border-t border-gray-200 pt-5 dark:border-gray-800 sm:flex-row sm:justify-end">
                 <button
@@ -332,10 +240,69 @@ export default function AlunosForm({
                 >
                     <Plus className="size-4" />
                     {loading
-                        ? isUpdate ? "Salvando..." : "Criando..."
-                        : isUpdate ? "Salvar alterações" : "Criar aluno"}
+                        ? isUpdate
+                            ? "Salvando..."
+                            : "Criando..."
+                        : isUpdate
+                            ? "Salvar alteracoes"
+                            : "Criar aluno"}
                 </button>
             </div>
         </form>
     );
+}
+
+function FormSection({
+    title,
+    children,
+}: {
+    title: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h3 className="mb-4 text-base font-semibold text-gray-900 dark:text-white">
+                {title}
+            </h3>
+            {children}
+        </section>
+    );
+}
+
+function TextField({
+    id,
+    label,
+    defaultValue,
+    type = "text",
+    ...props
+}: {
+    id: string;
+    label: string;
+    name: string;
+    defaultValue?: string | number | null;
+    type?: React.HTMLInputTypeAttribute;
+    required?: boolean;
+    min?: number;
+}) {
+    return (
+        <Field className="space-y-2">
+            <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {label}
+            </FieldLabel>
+            <Input
+                id={id}
+                type={type}
+                defaultValue={defaultValue ?? ""}
+                className={inputClassName}
+                {...props}
+            />
+        </Field>
+    );
+}
+
+function toDateInputValue(value: string | Date | null | undefined) {
+    if (!value) return "";
+    if (value instanceof Date) return value.toISOString().slice(0, 10);
+
+    return value.slice(0, 10);
 }

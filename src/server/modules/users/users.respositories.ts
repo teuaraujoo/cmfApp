@@ -68,7 +68,6 @@ export class AlunosRepositories {
       },
       include: {
         users: true,
-        modalidades: true
       }
     });
   };
@@ -84,7 +83,6 @@ export class AlunosRepositories {
       },
       include: {
         users: true,
-        modalidades: true
       }
     });
   };

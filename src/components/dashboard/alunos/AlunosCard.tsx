@@ -10,7 +10,7 @@ type AlunoCardItem = {
   role: string;
   status?: string;
   serie?: string | null;
-  modalidade?: unknown;
+  escola?: string | null;
 };
 
 type AlunosCardProps = {
@@ -78,7 +78,7 @@ export default function AlunosCard({
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-900/50">
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
-                Serie
+                Série
               </p>
               <p className="mt-1 break-words text-sm font-medium text-gray-700 dark:text-gray-200">
                 {aluno.serie ?? "-"}
@@ -87,10 +87,10 @@ export default function AlunosCard({
 
             <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-900/50">
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
-                Modalidade
+                Escola
               </p>
               <p className="mt-1 break-words text-sm font-medium text-gray-700 dark:text-gray-200">
-                {formatDisplayValue(aluno.modalidade)}
+                {formatDisplayValue(aluno.escola)}
               </p>
             </div>
           </div>

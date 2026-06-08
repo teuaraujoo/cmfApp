@@ -1,11 +1,11 @@
 import { CreateUserBody, UpdateUserBody } from "@/server/modules/users/user.schema";
 import { public_users } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
+import { AppError } from "@/server/error/app-errors";
 
 export type AlunosWithRelations = Prisma.alunosGetPayload<{
   include: {
     users: true,
-    modalidades: true
   }
 }>;
 
@@ -15,6 +15,19 @@ export type ProfessoresWithRelations = Prisma.professoresGetPayload<{
     modalidades: true
   }
 }>;
+
+function calculateTempoAula(horasMensais: number) {
+  const today = new Date();
+
+  if (!horasMensais || horasMensais <= 0) {
+    throw new AppError("Horas mensais é obrigatório");
+  };
+
+  const mesAtual = today.getMonth();
+  const mesesAteFimDoAno = 12 - mesAtual;
+
+  return horasMensais * mesesAteFimDoAno;
+};
 
 export class UserMapper {
 
@@ -87,12 +100,11 @@ export class AlunoMapper {
       user_id: id,
       data_nasc: aluno.aluno!.data_nasc,
       serie: aluno.aluno!.serie,
+      escola: aluno.aluno!.escola,
       resp_tel: aluno.aluno!.resp_tel,
       resp_nome: aluno.aluno!.resp_nome,
-      modalidade_id: aluno.aluno!.modalidade_id,
-      tempo_aula: aluno.aluno!.tempo_aula,
-      horas_semana: aluno.aluno!.horas_semana,
-      tempo_contrato: aluno.aluno!.tempo_contrato,
+      tempo_aula: calculateTempoAula(aluno.aluno!.horas_mensais),
+      horas_mensais: aluno.aluno!.horas_mensais,
     };
   };
 
@@ -107,13 +119,11 @@ export class AlunoMapper {
       status: aluno.status,
       data_nasc: aluno.data_nasc,
       serie: aluno.serie,
+      escola: aluno.escola,
       resp_tel: aluno.resp_tel,
       resp_nome: aluno.resp_nome,
-      modalidade_id: aluno.modalidade_id,
-      modalidade: aluno.modalidades.tipo,
       tempo_aula: Number(aluno.tempo_aula),
-      horas_semana: Number(aluno.horas_semana),
-      tempo_contrato: Number(aluno.tempo_contrato),
+      horas_mensais: Number(aluno.horas_mensais),
     };
   };
 };

@@ -255,6 +255,8 @@ async function validateUser(data: CreateUserBody) {
     throw new AppError("Dados do aluno são obrigatórios!", 400);
   };
 
+  console.log(data.aluno!.resp_tel);
+
   if (data.role === "ALUNO") {
     if (data.aluno!.resp_tel.length > 11) {
       throw new AppError("Número do responsável inválido", 400);
