@@ -3,7 +3,7 @@
 import { createProfessor } from "@/services/users/users.client";
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
-import { getPositiveNumber, getRequiredFormString } from "@/utils/forms-utils";
+import { getRequiredFormString } from "@/utils/forms-utils";
 
 const TEMP_PASSWORD = "Temp1234";
 
@@ -38,7 +38,6 @@ export function useCreateProfessorForm({ onSuccess, }: UseCreateProfessorFormPar
                 tel: getRequiredFormString(formData, "telefone", "Telefone"),
                 professor: {
                     materia: getRequiredFormString(formData, "materia", "Materia"),
-                    modalidade_id: getPositiveNumber(formData, "modalidade", "Modalidade"),
                 }
             };
 

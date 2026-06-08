@@ -9,19 +9,16 @@ import ProfessoresGrid from "./ProfessoresGrid";
 import ProfessoresOverview from "./ProfessoresOverview";
 import ProfessorDetailsPanel from "./ProfessorDetailsPanel";
 import type { Professor } from "@/@types/professor/professor.types";
-import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 import { useCreateProfessorForm } from "@/hooks/professores/useCreateProfessorForm";
 import { useUpdateProfessorForm } from "@/hooks/professores/useUpdateProfessorForm";
 import { inactiveUser, activeUser } from "@/services/users/users.client";
 
 type ProfessorDashboardPageProps = {
   professores: Professor[];
-  modalidades: Modalidade[];
 };
 
 export default function ProfessorDashboardPage({
   professores,
-  modalidades,
 }: ProfessorDashboardPageProps) {
   const router = useRouter();
   const [, startTransition] = useTransition();
@@ -74,7 +71,6 @@ export default function ProfessorDashboardPage({
           professor.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
           professor.email.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
           professor.materia.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
-          professor.modalidade.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
         ]
           .join(" ")
           .toLowerCase()
@@ -189,7 +185,6 @@ export default function ProfessorDashboardPage({
         professor={selectedProfessor}
         isOpen={panelMode === "create" || Boolean(selectedProfessor)}
         mode={panelMode}
-        modalidades={modalidades}
         loading={editingProfessor ? updateLoading : createLoading}
         error={editingProfessor ? updateError : createError}
         onSubmit={(event) => {

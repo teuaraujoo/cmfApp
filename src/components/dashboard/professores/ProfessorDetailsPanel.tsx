@@ -4,13 +4,11 @@ import { CircleUserRound, Mail, Phone, X } from "lucide-react";
 import type { FormEvent } from "react";
 import ProfessorForm from "./ProfessorForm";
 import type { Professor } from "@/@types/professor/professor.types";
-import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 
 type ProfessorDetailsPanelProps = {
   professor: Professor | null;
   isOpen: boolean;
   mode: "details" | "edit" | "create";
-  modalidades: Modalidade[];
   loading: boolean;
   error: string;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -29,7 +27,6 @@ export default function ProfessorDetailsPanel({
   professor,
   isOpen,
   mode,
-  modalidades,
   loading,
   error,
   onSubmit,
@@ -38,18 +35,16 @@ export default function ProfessorDetailsPanel({
   return (
     <>
       <div
-        className={`fixed inset-0 z-[100000] transition ${
-          isOpen
+        className={`fixed inset-0 z-[100000] transition ${isOpen
             ? "pointer-events-auto bg-gray-900/50 backdrop-blur-[1px]"
             : "pointer-events-none bg-transparent"
-        }`}
+          }`}
         onClick={onClose}
       />
 
       <aside
-        className={`fixed right-0 top-0 z-[100001] h-screen w-full max-w-md transform border-l border-gray-200 bg-white shadow-2xl transition-transform duration-300 dark:border-gray-800 dark:bg-gray-900 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed right-0 top-0 z-[100001] h-screen w-full max-w-md transform border-l border-gray-200 bg-white shadow-2xl transition-transform duration-300 dark:border-gray-800 dark:bg-gray-900 ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex h-full flex-col">
           <div className="flex items-start justify-between border-b border-gray-200 px-5 py-5 dark:border-gray-800 sm:px-6">
@@ -58,8 +53,8 @@ export default function ProfessorDetailsPanel({
                 {mode === "create"
                   ? "Cadastro de professor"
                   : mode === "edit"
-                  ? "Editar professor"
-                  : "Detalhes do professor"}
+                    ? "Editar professor"
+                    : "Detalhes do professor"}
               </p>
               <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
                 {mode === "create" ? "Novo professor" : professor?.nome ?? "Professor"}
@@ -81,7 +76,6 @@ export default function ProfessorDetailsPanel({
                 key={professor?.user_id ?? "create"}
                 mode={mode === "create" ? "create" : "edit"}
                 professor={professor}
-                modalidades={modalidades}
                 loading={loading}
                 error={error}
                 onSubmit={onSubmit}
@@ -126,7 +120,7 @@ export default function ProfessorDetailsPanel({
 
               <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-800/20">
                 <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
-                  Academico
+                  Acadêmico
                 </p>
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
@@ -135,14 +129,6 @@ export default function ProfessorDetailsPanel({
                     </p>
                     <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                       {professor.materia}
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-gray-900/70">
-                    <p className="text-xs text-gray-400 dark:text-gray-500">
-                      Modalidade
-                    </p>
-                    <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                      {professor.modalidade}
                     </p>
                   </div>
                 </div>

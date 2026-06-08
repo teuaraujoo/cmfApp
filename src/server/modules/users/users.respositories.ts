@@ -135,7 +135,6 @@ export class ProfessoresRepositories {
       },
       include: {
         users: true,
-        modalidades: true
       }
     });
   };
@@ -155,7 +154,6 @@ export class ProfessoresRepositories {
       },
       include: {
         users: true,
-        modalidades: true
       }
     });
   };

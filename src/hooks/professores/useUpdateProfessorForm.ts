@@ -1,7 +1,7 @@
 "use client";
 
 import { updateProfessor } from "@/services/users/users.client";
-import { getPositiveNumber, getRequiredFormString } from "@/utils/forms-utils";
+import { getRequiredFormString } from "@/utils/forms-utils";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 
@@ -37,11 +37,6 @@ export function useUpdateProfessorForm({
         tel: getRequiredFormString(formData, "telefone", "Telefone"),
         professor: {
           materia: getRequiredFormString(formData, "materia", "Materia"),
-          modalidade_id: getPositiveNumber(
-            formData,
-            "modalidade",
-            "Modalidade",
-          ),
         },
       };
 

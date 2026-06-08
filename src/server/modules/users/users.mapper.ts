@@ -12,7 +12,6 @@ export type AlunosWithRelations = Prisma.alunosGetPayload<{
 export type ProfessoresWithRelations = Prisma.professoresGetPayload<{
   include: {
     users: true,
-    modalidades: true
   }
 }>;
 
@@ -136,14 +135,12 @@ export class ProfessorMapper {
     return {
       user_id: id,
       materia: professor.professor!.materia,
-      modalidade_id: professor.professor!.modalidade_id,
     };
   };
 
   static toResponseProfessorGet(
     professor: ProfessoresWithRelations,
     user: ProfessoresWithRelations["users"],
-    modalidade: ProfessoresWithRelations["modalidades"]
   ) {
     return {
       id: professor.id,
@@ -154,8 +151,6 @@ export class ProfessorMapper {
       role: user.role,
       status: user.status,
       materia: professor.materia,
-      modalidade_id: professor.modalidade_id,
-      modalidade: modalidade.tipo,
     };
   };
 };

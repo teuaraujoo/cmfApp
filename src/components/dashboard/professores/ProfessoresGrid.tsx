@@ -80,9 +80,6 @@ export default function ProfessoresGrid({
                     <BookOpen className="size-3.5 text-sky-500" />
                     {professor.materia}
                   </span>
-                  <span className="inline-flex rounded-full bg-sky-50 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-sky-500/10 dark:text-gray-300">
-                    {professor.modalidade}
-                  </span>
                 </div>
               </div>
             </button>

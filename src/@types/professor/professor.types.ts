@@ -7,8 +7,6 @@ export type Professor = {
     role: string;
     status: string;
     materia: string;
-    modalidade_id: number;
-    modalidade: string;
 };
 
 export type CreateProfessorPayload = {
@@ -18,6 +16,5 @@ export type CreateProfessorPayload = {
     tel: string;
     professor: {
         materia: string;
-        modalidade_id: number;
     };
 };

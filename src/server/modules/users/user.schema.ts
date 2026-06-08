@@ -17,7 +17,6 @@ export const createUserSchema = z.object({
 
   professor: z.object({
       materia: z.string().min(2, "A matéria é obrigatória."),
-      modalidade_id: z.number().int(),
     }).optional(),
 });
 
