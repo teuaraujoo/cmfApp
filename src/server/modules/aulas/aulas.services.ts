@@ -1,3 +1,5 @@
+import "server-only";
+
 import { AppError } from "@/server/error/app-errors";
 import { AulasRepositories } from "./aulas.repositories";
 import { AulasMapper } from "./aulas.mapper";

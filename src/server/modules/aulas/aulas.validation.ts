@@ -1,3 +1,5 @@
+import "server-only";
+
 import { AppError } from "@/server/error/app-errors";
 import { AlunosRepositories, ProfessoresRepositories } from "../users/users.respositories";
 import { CreateAulasBody } from "./aulas.schemas";

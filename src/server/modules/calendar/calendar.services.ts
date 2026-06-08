@@ -1,3 +1,5 @@
+import "server-only";
+
 import { AulasRepositories } from "@/server/modules/aulas/aulas.repositories";
 import { calendarWallTimeToInstant } from "@/server/modules/calendar/calendar-date.utils";
 import {

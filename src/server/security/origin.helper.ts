@@ -1,3 +1,5 @@
+import "server-only";
+
 import { AppError } from "../error/app-errors";
 
 export async function validateRequestOrigin(request: Request) {

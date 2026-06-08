@@ -1,3 +1,5 @@
+import "server-only";
+
 import { requireAdminUser } from "../auth/auth.services";
 import { getAllAlunos, getAllProfessores, getTotalAlunos, getTotalProfessores, getTotalAlunosWithAulaIndividual } from "./users.services";
 

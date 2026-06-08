@@ -1,3 +1,5 @@
+import "server-only";
+
 import { CreateTurmaBody, CreateTurmaAgendaBody } from "./turmas.shema";
 import { AppError } from "@/server/error/app-errors";
 import { TurmaRepositories } from "./turmas.repositories";

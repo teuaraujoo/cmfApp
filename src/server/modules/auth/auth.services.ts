@@ -1,3 +1,5 @@
+import "server-only";
+
 import { AppError } from "@/server/error/app-errors";
 import { LoginBody, loginSchema, ChangePasswordBody, changePasswordSchema } from "@/server/modules/auth/auth.schema";
 import { createClient } from "@/server/libs/supabase/server";

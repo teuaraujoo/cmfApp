@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/server/libs/prisma";
 import { AppError } from "@/server/error/app-errors";

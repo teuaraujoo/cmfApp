@@ -1,3 +1,5 @@
+import "server-only";
+
 import { requireAdminUser } from "../auth/auth.services";
 import { getAllTurmas, getTotalTurmas, getTurmaById } from "./turmas.services";
 

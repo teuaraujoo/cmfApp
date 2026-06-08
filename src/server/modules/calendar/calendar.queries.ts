@@ -1,3 +1,5 @@
+import "server-only";
+
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getCalendarEvents } from "@/server/modules/calendar/calendar.services";
 

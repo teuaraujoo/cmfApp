@@ -1,3 +1,5 @@
+import "server-only";
+
 import { AppError } from "@/server/error/app-errors";
 import { UsersRepositories } from "@/server/modules/users/users.respositories";
 import { AuthError, User } from "@supabase/supabase-js";

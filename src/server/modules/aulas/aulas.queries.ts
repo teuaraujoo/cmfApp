@@ -1,3 +1,5 @@
+import "server-only";
+
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getAllAulas, getAulas, getAulasCountByModalidade, getAulasNotFinished, getTotalAulas } from "./aulas.services";
 

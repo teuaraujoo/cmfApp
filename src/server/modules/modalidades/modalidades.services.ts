@@ -1,3 +1,5 @@
+import "server-only";
+
 import { ModalidadeRepositories } from "@/server/modules/modalidades/modalidades.repositories";
 import { createModalidadeSchema, CreateModalidadeBody } from "@/server/modules/modalidades/modalida.schema";
 import { AppError } from "@/server/error/app-errors";
