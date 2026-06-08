@@ -156,7 +156,7 @@ export default function AlunosForm({
                 </div>
             </FormSection>
 
-            <FormSection title="Dados academicos">
+            <FormSection title="Dados acadêmicos">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <Field className="space-y-2">
                         <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -199,7 +199,7 @@ export default function AlunosForm({
 
             </FormSection>
 
-            <FormSection title="Responsavel">
+            <FormSection title="Responsável">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <TextField
                         id="respNome"
