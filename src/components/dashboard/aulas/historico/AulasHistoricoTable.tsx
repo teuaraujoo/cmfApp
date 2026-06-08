@@ -2,6 +2,7 @@ import { Info, Search } from "lucide-react";
 
 import type { Aula } from "@/@types/aulas/aulas.types";
 import Badge from "@/components/ui/Badge";
+import { AulasEmptyState } from "@/components/dashboard/aulas/AulasEmptyState";
 import {
   Table,
   TableBody,
@@ -55,6 +56,12 @@ export function AulasHistoricoTable({
         </div>
       </div>
 
+      {aulas.length === 0 ? (
+        <AulasEmptyState
+          title="Nenhum histórico encontrado"
+          description="As aulas finalizadas aparecerão aqui quando existirem registros encerrados ou quando a busca encontrar resultados."
+        />
+      ) : (
       <div className="max-w-full overflow-x-auto rounded-xl">
         <Table className="w-full min-w-[720px] lg:min-w-full">
           <TableHeader className="border-y border-gray-100 dark:border-gray-800">
@@ -130,6 +137,7 @@ export function AulasHistoricoTable({
           </TableBody>
         </Table>
       </div>
+      )}
     </section>
   );
 }

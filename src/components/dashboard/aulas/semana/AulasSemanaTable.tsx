@@ -1,6 +1,7 @@
 import { Info, Search, Trash2 } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
+import { AulasEmptyState } from "@/components/dashboard/aulas/AulasEmptyState";
 import {
   Table,
   TableBody,
@@ -51,6 +52,12 @@ export function AulasSemanaTable({
         </div>
       </div>
 
+      {aulas.length === 0 ? (
+        <AulasEmptyState
+          title="Nenhuma aula para exibir"
+          description="Quando houver aulas cadastradas para esta semana ou a busca encontrar resultados, elas aparecerão nesta tabela."
+        />
+      ) : (
       <div className="max-w-full overflow-x-auto rounded-xl">
         <Table className="w-full min-w-[520px] sm:min-w-[760px] lg:min-w-full">
           <TableHeader className="border-y border-gray-100 dark:border-gray-800">
@@ -159,6 +166,7 @@ export function AulasSemanaTable({
           </TableBody>
         </Table>
       </div>
+      )}
     </section>
   );
 }
