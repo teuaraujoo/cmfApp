@@ -25,3 +25,12 @@ export type Aula = {
     materia: string;
   };
 };
+
+export type AulasPagination = {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+};

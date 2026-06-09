@@ -37,6 +37,92 @@ export class AulasRepositories {
         })
     };
 
+    static async getAulasHistoricoPaginated(page: number, pageSize: number, search?: string) {
+        const searchId = search && /^\d+$/.test(search) ? Number(search) : undefined;
+        const where: Prisma.aulas_individuaisWhereInput = {
+            encerrada: true,
+            ...(search
+                ? {
+                    OR: [
+                        ...(searchId ? [{ id: searchId }] : []),
+                        {
+                            alunos: {
+                                users: {
+                                    nome: {
+                                        contains: search,
+                                        mode: "insensitive",
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            alunos: {
+                                serie: {
+                                    contains: search,
+                                    mode: "insensitive",
+                                },
+                            },
+                        },
+                        {
+                            professores: {
+                                users: {
+                                    nome: {
+                                        contains: search,
+                                        mode: "insensitive",
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            professores: {
+                                materia: {
+                                    contains: search,
+                                    mode: "insensitive",
+                                },
+                            },
+                        },
+                        {
+                            modalidades: {
+                                tipo: {
+                                    contains: search,
+                                    mode: "insensitive",
+                                },
+                            },
+                        },
+                    ],
+                }
+                : {}),
+        };
+
+        const [aulas, totalItems] = await prisma.$transaction([
+            prisma.aulas_individuais.findMany({
+                where,
+                skip: (page - 1) * pageSize,
+                take: pageSize,
+                orderBy: [
+                    { started_at: "desc" },
+                    { id: "desc" },
+                ],
+                include: {
+                    professores: {
+                        include: {
+                            users: true,
+                        },
+                    },
+                    alunos: {
+                        include: {
+                            users: true,
+                        },
+                    },
+                    modalidades: true,
+                },
+            }),
+            prisma.aulas_individuais.count({ where }),
+        ]);
+
+        return { aulas, totalItems };
+    };
+
     static async getAulasByPeriod(start: Date, end: Date) {
         return prisma.aulas_individuais.findMany({
             where: {

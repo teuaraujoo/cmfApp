@@ -24,6 +24,23 @@ export async function getAllAulas() {
     return aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
 };
 
+export async function getAulasHistoricoPaginated(page: number, pageSize: number, search?: string) {
+    const result = await AulasRepositories.getAulasHistoricoPaginated(page, pageSize, search);
+    const totalPages = Math.ceil(result.totalItems / pageSize);
+
+    return {
+        data: result.aulas.map((aula) => AulasMapper.toResponseAulasGet(aula)),
+        pagination: {
+            page,
+            pageSize,
+            totalItems: result.totalItems,
+            totalPages,
+            hasNextPage: page < totalPages,
+            hasPreviousPage: page > 1,
+        },
+    };
+};
+
 export async function getAulasNotFinished() {
     const aulas = await AulasRepositories.getAulasNotFinished();
 

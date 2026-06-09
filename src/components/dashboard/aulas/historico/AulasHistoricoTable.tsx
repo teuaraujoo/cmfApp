@@ -1,6 +1,6 @@
-import { Info, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Info, Search } from "lucide-react";
 
-import type { Aula } from "@/@types/aulas/aulas.types";
+import type { Aula, AulasPagination } from "@/@types/aulas/aulas.types";
 import Badge from "@/components/ui/Badge";
 import { AulasEmptyState } from "@/components/dashboard/aulas/AulasEmptyState";
 import {
@@ -14,18 +14,22 @@ import { formatHorarioLocal } from "@/utils/date-utils";
 
 type AulasHistoricoTableProps = {
   aulas: Aula[];
-  totalAulas: number;
+  pagination: AulasPagination;
   search: string;
   onSearchChange: (value: string) => void;
   onOpenDetails: (aula: Aula) => void;
+  onPageChange: (page: number) => void;
+  isPending: boolean;
 };
 
 export function AulasHistoricoTable({
   aulas,
-  totalAulas,
+  pagination,
   search,
   onSearchChange,
   onOpenDetails,
+  onPageChange,
+  isPending,
 }: AulasHistoricoTableProps) {
   return (
     <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-2 pb-4 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-5 lg:px-6">
@@ -51,7 +55,7 @@ export function AulasHistoricoTable({
             />
           </div>
           <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">
-            {aulas.length} de {totalAulas} aulas encontradas.
+            {pagination.totalItems} aula{pagination.totalItems === 1 ? "" : "s"} encontrada{pagination.totalItems === 1 ? "" : "s"}.
           </p>
         </div>
       </div>
@@ -62,8 +66,9 @@ export function AulasHistoricoTable({
           description="As aulas finalizadas aparecerão aqui quando existirem registros encerrados ou quando a busca encontrar resultados."
         />
       ) : (
-      <div className="max-w-full overflow-x-auto rounded-xl">
-        <Table className="w-full min-w-[720px] lg:min-w-full">
+      <>
+        <div className={`max-w-full overflow-x-auto rounded-xl transition-opacity ${isPending ? "opacity-60" : "opacity-100"}`}>
+          <Table className="w-full min-w-[720px] lg:min-w-full">
           <TableHeader className="border-y border-gray-100 dark:border-gray-800">
             <TableRow>
               <TableCell isHeader className="py-3 pr-4 text-start text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -135,8 +140,38 @@ export function AulasHistoricoTable({
               </TableRow>
             ))}
           </TableBody>
-        </Table>
-      </div>
+          </Table>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3 border-t border-gray-100 pt-4 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Página <strong className="font-semibold text-gray-700 dark:text-gray-200">{pagination.page}</strong> de{" "}
+            <strong className="font-semibold text-gray-700 dark:text-gray-200">{pagination.totalPages}</strong>
+          </p>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={!pagination.hasPreviousPage || isPending}
+              onClick={() => onPageChange(pagination.page - 1)}
+              className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-colors hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10 dark:hover:text-sky-300"
+            >
+              <ChevronLeft className="size-4" />
+              Anterior
+            </button>
+
+            <button
+              type="button"
+              disabled={!pagination.hasNextPage || isPending}
+              onClick={() => onPageChange(pagination.page + 1)}
+              className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-colors hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10 dark:hover:text-sky-300"
+            >
+              Próxima
+              <ChevronRight className="size-4" />
+            </button>
+          </div>
+        </div>
+      </>
       )}
     </section>
   );
