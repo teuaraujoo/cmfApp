@@ -7,6 +7,12 @@ export type CreateAulaPayload = {
   notas?: string;
 };
 
+export type AulaStatus =
+  | "AGENDADA"
+  | "EM_ANDAMENTO"
+  | "PENDENTE_FINALIZACAO"
+  | "FINALIZADA";
+
 export type Aula = {
   id: number;
   aluno_id: number;
@@ -15,7 +21,15 @@ export type Aula = {
   inicio: Date;
   fim: Date;
   encerrada: boolean;
+  status: AulaStatus;
   notas?: string | null;
+  finished_at?: Date | null;
+  finished_by?: number | null;
+  finished_role?: string | null;
+  finalizado_por?: {
+    id: number;
+    nome: string;
+  } | null;
   aluno: {
     nome: string;
     serie: string | null;

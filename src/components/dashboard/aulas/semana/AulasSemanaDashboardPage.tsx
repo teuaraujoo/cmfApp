@@ -9,7 +9,7 @@ import { AulasSemanaStats } from "@/components/dashboard/aulas/semana/AulasSeman
 import { AulasSemanaTable } from "@/components/dashboard/aulas/semana/AulasSemanaTable";
 import { FinalizarAulaDialog } from "@/components/dashboard/aulas/semana/FinalizarAulaDialog";
 import { NovaAulaDialog } from "@/components/dashboard/aulas/semana/NovaAulaDialog";
-import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";
+import { deleteAula, finalizarAula, iniciarAula } from "@/services/aulas/aulas.client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Aluno } from "@/@types/aluno/aluno.types";
@@ -17,6 +17,7 @@ import { Professor } from "@/@types/professor/professor.types";
 import { Modalidade } from "@/@types/modalidade/modalidade.type";
 import { useCreateAulaForm } from "@/hooks/aulas/useCreateAulaForm";
 import { Aula } from "@/@types/aulas/aulas.types";
+import { canFinishAula, getAulaStatusConfig } from "@/components/dashboard/aulas/aula-status";
 
 export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos, professores, modalidades }: { aulas: Aula[], alunosWithAula: number, alunos: Aluno[], professores: Professor[], modalidades: Modalidade[] }) {
   const router = useRouter();
@@ -26,8 +27,8 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const finalizedAulas = aulas.filter((aula) => aula.encerrada).length;
-  const upcomingAulas = aulas.filter((aula) => !aula.encerrada).length;
+  const finalizedAulas = aulas.filter((aula) => aula.status === "FINALIZADA").length;
+  const upcomingAulas = aulas.filter((aula) => aula.status === "AGENDADA").length;
   const totalStudents = alunosWithAula;
   const filteredAulas = useMemo(() => {
     const searchValue = search
@@ -48,7 +49,8 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
         aula.professor.nome,
         aula.professor.materia,
         aula.modalidade,
-        aula.encerrada ? "finalizada" : "pendente",
+        aula.status,
+        getAulaStatusConfig(aula.status).label,
       ]
         .join(" ")
         .toLowerCase()
@@ -81,7 +83,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   };
 
   function openFinalizeDialog(aula: Aula) {
-    if (aula.encerrada) {
+    if (!canFinishAula(aula.status)) {
       return;
     };
 
@@ -105,7 +107,20 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
       return;
     };
 
-    const result = await toast.promise(finalizarAula(aula.id, notes), {
+    const result = await finalizarAula(aula.id, notes);
+
+    if (result?.err) {
+      toast.error(result.err);
+      return;
+    };
+
+    toast.success(result.message ?? "Aula finalizada com sucesso!");
+    refreshAulas();
+    closeFinalizeDialog();
+  };
+
+  async function handleStartAula(aula: Aula) {
+    const result = await toast.promise(iniciarAula(aula.id), {
       loading: 'Carregando...',
       success: (response) => response?.message,
       error: (error) => error?.message || "Error ao conectar com o servidor!",
@@ -117,7 +132,6 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
     };
 
     refreshAulas();
-    closeFinalizeDialog();
   };
 
   async function handleDeleteAula(aula: Aula) {
@@ -156,6 +170,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
           search={search}
           onSearchChange={setSearch}
           onOpenDetails={setDetailsAula}
+          onStart={handleStartAula}
           onOpenFinalize={openFinalizeDialog}
           onOpenDelete={setDeleteAula}
         />

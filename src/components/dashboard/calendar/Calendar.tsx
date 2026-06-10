@@ -246,6 +246,7 @@ function toAulaDetails({ event }: EventClickArg): Aula {
     inicio: props.startedAt ? new Date(String(props.startedAt)) : new Date(),
     fim: props.endedAt ? new Date(String(props.endedAt)) : new Date(),
     encerrada: props.status === "Finalizada",
+    status: props.aulaStatus ?? (props.status === "Finalizada" ? "FINALIZADA" : "AGENDADA"),
     notas: props.notas ? String(props.notas) : null,
     aluno: {
       nome: String(props.aluno ?? ""),

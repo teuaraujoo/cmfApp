@@ -9,6 +9,12 @@ import { DIAS_SEMANAS, formatHorarioLocal } from "@/utils/date-utils";
 import { Aula } from "@/@types/aulas/aulas.types";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
+import Badge from "@/components/ui/Badge";
+import {
+  canDeleteAula,
+  canFinishAula,
+  getAulaStatusConfig,
+} from "@/components/dashboard/aulas/aula-status";
 
 type AulaDetailsDialogProps = {
   aula: Aula | null;
@@ -23,6 +29,8 @@ export function AulaDetailsDialog({
   onFinalize,
   onDelete,
 }: AulaDetailsDialogProps) {
+  const status = aula ? getAulaStatusConfig(aula.status) : null;
+
   return (
     <Dialog open={Boolean(aula)} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[92vh] w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] overflow-y-auto bg-white dark:bg-gray-950 sm:max-w-3xl">
@@ -51,7 +59,21 @@ export function AulaDetailsDialog({
             />
             <DetailItem
               label="Status"
-              value={aula.encerrada ? "Finalizada" : "Pendente"}
+              value={
+                status ? (
+                  <Badge color={status.color} size="sm">
+                    {status.label}
+                  </Badge>
+                ) : null
+              }
+            />
+            <DetailItem
+              label="Finalizada em"
+              value={formatFinishedAt(aula.finished_at)}
+            />
+            <DetailItem
+              label="Finalizada por"
+              value={formatFinishedBy(aula)}
             />
             <DetailItem
               label="Anotações"
@@ -60,9 +82,9 @@ export function AulaDetailsDialog({
           </div>
         ) : null}
 
-        {aula && !aula.encerrada && (onFinalize || onDelete) ? (
+        {aula && (onFinalize || onDelete) ? (
           <DialogFooter className="gap-3 border-t border-gray-100 pt-4 dark:border-gray-800">
-            {onDelete ? (
+            {onDelete && canDeleteAula(aula.status) ? (
               <Button
                 type="button"
                 variant="outline"
@@ -72,7 +94,7 @@ export function AulaDetailsDialog({
                 Excluir aula
               </Button>
             ) : null}
-            {onFinalize ? (
+            {onFinalize && canFinishAula(aula.status) ? (
               <Button
                 type="button"
                 className="cursor-pointer bg-red-700 text-white hover:bg-red-600"
@@ -88,15 +110,40 @@ export function AulaDetailsDialog({
   );
 }
 
-function DetailItem({ label, value }: { label: string; value: string | null | number }) {
+function DetailItem({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/50">
       <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
         {label}
       </p>
       <p className="mt-1 break-words text-sm font-semibold text-gray-900 dark:text-white">
-        {value ?? ""}
+        {value ?? "Não informado"}
       </p>
     </div>
   );
+}
+
+function formatFinishedAt(value?: Date | null) {
+  if (!value) {
+    return "Ainda não finalizada";
+  }
+
+  const date = new Date(value);
+
+  return `${date.toLocaleDateString("pt-BR")} às ${formatHorarioLocal(date)}`;
+}
+
+function formatFinishedBy(aula: Aula) {
+  if (!aula.finished_by) {
+    return "Ainda não finalizada";
+  }
+
+  const role = aula.finished_role === "ADMIN"
+    ? "Administrador"
+    : aula.finished_role === "PROFESSOR"
+      ? "Professor"
+      : "Perfil não informado";
+  const name = aula.finalizado_por?.nome ?? `Usuário #${aula.finished_by}`;
+
+  return `${name} (${role})`;
 }

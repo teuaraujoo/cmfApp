@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatHorarioLocal } from "@/utils/date-utils";
+import { getAulaStatusConfig } from "@/components/dashboard/aulas/aula-status";
 
 type AulasHistoricoTableProps = {
   aulas: Aula[];
@@ -93,7 +94,10 @@ export function AulasHistoricoTable({
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {aulas.map((aula) => (
+            {aulas.map((aula) => {
+              const status = getAulaStatusConfig(aula.status);
+
+              return (
               <TableRow key={aula.id}>
                 <TableCell className="whitespace-nowrap py-4 pr-4 text-sm font-semibold text-gray-800 dark:text-white/90">
                   #{aula.id}
@@ -123,8 +127,8 @@ export function AulasHistoricoTable({
                   {formatHorarioLocal(aula.inicio)}
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-4 pr-4">
-                  <Badge color="success" size="sm">
-                    Finalizada
+                  <Badge color={status.color} size="sm">
+                    {status.label}
                   </Badge>
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-4">
@@ -138,7 +142,8 @@ export function AulasHistoricoTable({
                   </button>
                 </TableCell>
               </TableRow>
-            ))}
+              );
+            })}
           </TableBody>
           </Table>
         </div>

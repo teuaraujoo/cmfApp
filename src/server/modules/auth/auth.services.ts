@@ -76,6 +76,16 @@ export async function requireAdminUser() {
   return session;
 };
 
+export async function requireAdminOrProfessor() {
+    const session = await requireOnboardedUser();
+
+    if (!(["ADMIN", "PROFESSOR"] as const).includes(session.appUser.role as "ADMIN" | "PROFESSOR")) {
+      throw new AppError("Apenas administradores ou professores podem executar esta ação!", 403);
+    };
+
+    return session;
+};
+
 // Busca o usuário autenticado no Supabase e o traduz para o perfil local da aplicação.
 export async function getCurrentAppUser() {
   const supabase = await createClient();

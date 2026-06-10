@@ -1,4 +1,4 @@
-import { Info, Search, Trash2 } from "lucide-react";
+import { CheckCircle2, Clock3, Info, Play, Search, Trash2 } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
 import { AulasEmptyState } from "@/components/dashboard/aulas/AulasEmptyState";
@@ -10,12 +10,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Aula } from "@/@types/aulas/aulas.types";
+import {
+  canDeleteAula,
+  canFinishAula,
+  canStartAula,
+  getAulaStatusConfig,
+} from "@/components/dashboard/aulas/aula-status";
 
 type AulasSemanaTableProps = {
   aulas: Aula[];
   search: string;
   onSearchChange: (value: string) => void;
   onOpenDetails: (aula: Aula) => void;
+  onStart: (aula: Aula) => void;
   onOpenFinalize: (aula: Aula) => void;
   onOpenDelete: (aula: Aula) => void;
 };
@@ -25,6 +32,7 @@ export function AulasSemanaTable({
   search,
   onSearchChange,
   onOpenDetails,
+  onStart,
   onOpenFinalize,
   onOpenDelete,
 }: AulasSemanaTableProps) {
@@ -78,8 +86,7 @@ export function AulasSemanaTable({
                 Detalhes
               </TableCell>
               <TableCell isHeader className="py-3 pr-2 text-start text-[10px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-xs">
-                <span className="sm:hidden">Fim</span>
-                <span className="hidden sm:inline">Finalizar</span>
+                Ação
               </TableCell>
               <TableCell isHeader className="py-3 text-start text-[10px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-xs">
                 <span className="sm:hidden">Del</span>
@@ -89,7 +96,10 @@ export function AulasSemanaTable({
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {aulas.map((aula) => (
+            {aulas.map((aula) => {
+              const status = getAulaStatusConfig(aula.status);
+
+              return (
               <TableRow key={aula.id}>
                 <TableCell className="whitespace-nowrap py-3 pr-2 text-xs font-semibold text-gray-800 dark:text-white/90 sm:py-4 sm:pr-4 sm:text-sm">
                   #{aula.id}
@@ -108,14 +118,14 @@ export function AulasSemanaTable({
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-3 pr-2 sm:py-4 sm:pr-4">
                   <Badge
-                    color={aula.encerrada ? "success" : "warning"}
+                    color={status.color}
                     size="sm"
                   >
                     <span className="sm:hidden">
-                      {aula.encerrada ? "Ok" : "Pend."}
+                      {status.shortLabel}
                     </span>
                     <span className="hidden sm:inline">
-                      {aula.encerrada ? "Finalizada" : "Pendente"}
+                      {status.label}
                     </span>
                   </Badge>
                 </TableCell>
@@ -131,27 +141,44 @@ export function AulasSemanaTable({
                   </button>
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-3 pr-2 sm:py-4 sm:pr-4">
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={aula.encerrada}
-                    disabled={aula.encerrada}
-                    onClick={() => onOpenFinalize(aula)}
-                    className={`relative inline-flex h-6 w-10 items-center rounded-full transition-colors sm:h-7 sm:w-12 ${aula.encerrada
-                      ? "cursor-not-allowed bg-emerald-500"
-                      : "cursor-pointer bg-gray-300 hover:bg-sky-300 dark:bg-gray-700 dark:hover:bg-sky-500/60"
-                      }`}
-                  >
-                    <span
-                      className={`inline-block size-4 rounded-full bg-white shadow transition-transform sm:size-5 ${aula.encerrada ? "translate-x-5 sm:translate-x-6" : "translate-x-1"
-                        }`}
-                    />
-                  </button>
+                  {canStartAula(aula.status) ? (
+                    <button
+                      type="button"
+                      onClick={() => onStart(aula)}
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-sky-50 p-2 text-xs font-medium text-sky-700 transition-colors hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/20 sm:px-3 sm:text-sm"
+                      aria-label={`Iniciar aula ${aula.id}`}
+                    >
+                      <Play className="size-4" />
+                      <span className="hidden sm:inline">Iniciar</span>
+                    </button>
+                  ) : null}
+                  {aula.status === "EM_ANDAMENTO" ? (
+                    <span className="inline-flex items-center gap-2 text-xs font-medium text-sky-700 dark:text-sky-300 sm:text-sm">
+                      <Clock3 className="size-4" />
+                      <span className="hidden sm:inline">Em andamento</span>
+                    </span>
+                  ) : null}
+                  {canFinishAula(aula.status) ? (
+                    <button
+                      type="button"
+                      onClick={() => onOpenFinalize(aula)}
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-amber-50 p-2 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20 sm:px-3 sm:text-sm"
+                      aria-label={`Finalizar aula ${aula.id}`}
+                    >
+                      <CheckCircle2 className="size-4" />
+                      <span className="hidden sm:inline">Finalizar</span>
+                    </button>
+                  ) : null}
+                  {aula.status === "FINALIZADA" ? (
+                    <span className="inline-flex items-center gap-2 text-xs font-medium text-emerald-700 dark:text-emerald-300 sm:text-sm">
+                      <CheckCircle2 className="size-4" />
+                      <span className="hidden sm:inline">Concluída</span>
+                    </span>
+                  ) : null}
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-3 sm:py-4">
-                  {aula.encerrada
-                    ? ""
-                    : <button
+                  {canDeleteAula(aula.status) ? (
+                    <button
                       type="button"
                       onClick={() => onOpenDelete(aula)}
                       className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-red-50 p-2 text-red-700 transition-colors hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
@@ -159,10 +186,11 @@ export function AulasSemanaTable({
                     >
                       <Trash2 className="size-4" />
                     </button>
-                  }
+                  ) : null}
                 </TableCell>
               </TableRow>
-            ))}
+              );
+            })}
           </TableBody>
         </Table>
       </div>

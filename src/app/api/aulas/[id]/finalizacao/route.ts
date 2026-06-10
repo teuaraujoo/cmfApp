@@ -1,24 +1,31 @@
 import { AppError } from "@/server/error/app-errors";
-import { requireAdminUser } from "@/server/modules/auth/auth.services";
+import { requireAdminOrProfessor } from "@/server/modules/auth/auth.services";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
-import { deleteAula } from "@/server/modules/aulas/aulas.services";
+import { finishAula } from "@/server/modules/aulas/aulas.services";
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
 
         await validateRequestOrigin(request);
 
-        const session = await requireAdminUser();
-        await rateLimitByIdentifier(`aulas:delete:admin:${session.appUser.id}`, adminMutationRateLimit);
+        const session = await requireAdminOrProfessor();
+        await rateLimitByIdentifier(`aulas:complete:${session.appUser.id}`, adminMutationRateLimit);
 
+        const body = await request.json();
         const { id } = await params;
 
-        const aula = await deleteAula(Number(id));
+        const actor = {
+            userId: session.appUser.id,
+            professorId: session.appUser.professores?.id ?? null,
+            role: session.appUser.role
+        };
+
+        const aula = await finishAula(Number(id), body, actor);
 
         return Response.json({
-            message: "Aula deletada com sucesso!",
+            message: "Aula finalizada com sucesso!",
             data: aula
         },
             { status: 200 });

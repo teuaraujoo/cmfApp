@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { startTransition } from "react";
 import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";
 import toast from "react-hot-toast";
+import { getAulaStatusConfig } from "@/components/dashboard/aulas/aula-status";
 
 export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] }) {
   const router = useRouter();
@@ -46,17 +47,14 @@ export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] 
       return;
     };
 
-    const result = await toast.promise(finalizarAula(aula.id, notes), {
-      loading: 'Carregando...',
-      success: (response) => response?.message,
-      error: (error) => error?.message || "Error ao conectar com o servidor!",
-    });
+    const result = await finalizarAula(aula.id, notes);
 
     if (result?.err) {
       toast.error(result.err);
       return;
     };
 
+    toast.success(result.message ?? "Aula finalizada com sucesso!");
     refreshAulas();
     closeFinalizeDialog();
   };
@@ -66,17 +64,14 @@ export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] 
       return;
     };
 
-    const result = await toast.promise(deleteAula(aula.id), {
-      loading: 'Carregando...',
-      success: (response) => response?.message,
-      error: (error) => error?.message || "Error ao conectar com o servidor!",
-    });
+    const result = await deleteAula(aula.id);
 
     if (result?.err) {
       toast.error(result.err);
       return;
     };
 
+    toast.success(result.message ?? "Aula excluída com sucesso!");
     refreshAulas();
     setDeleteAula(null);
   };
@@ -135,7 +130,8 @@ function filterAulas(aulas: Aula[], search: string) {
         aula.professor.nome,
         aula.professor.materia,
         aula.modalidade,
-        aula.encerrada ? "finalizada" : "pendente",
+        aula.status,
+        getAulaStatusConfig(aula.status).label,
       ].join(" "),
     );
 

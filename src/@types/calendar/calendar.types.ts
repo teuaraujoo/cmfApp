@@ -27,6 +27,7 @@ export type CalendarEvent = {
     vigenciaInicio?: string;
     vigenciaFim?: string;
     notas?: string | null;
+    aulaStatus?: AulaStatus;
     status: string;
   };
 };
@@ -35,3 +36,4 @@ export type CalendarEventsResponse = {
   message: string;
   data: CalendarEvent[];
 };
+import type { AulaStatus } from "@/@types/aulas/aulas.types";

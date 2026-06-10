@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getAulaStatusConfig } from "@/components/dashboard/aulas/aula-status";
 
 type AulasPendenciasTableProps = {
   aulas: Aula[];
@@ -91,7 +92,10 @@ export function AulasPendenciasTable({
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {aulas.map((aula) => (
+            {aulas.map((aula) => {
+              const status = getAulaStatusConfig(aula.status);
+
+              return (
               <TableRow key={aula.id}>
                 <TableCell className="whitespace-nowrap py-4 pr-4 text-sm font-semibold text-gray-800 dark:text-white/90">
                   #{aula.id}
@@ -120,8 +124,8 @@ export function AulasPendenciasTable({
                   {aula.modalidade}
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-4 pr-4">
-                  <Badge color="warning" size="sm">
-                    Pendente
+                  <Badge color={status.color} size="sm">
+                    {status.label}
                   </Badge>
                 </TableCell>
                 <TableCell className="whitespace-nowrap py-4">
@@ -136,13 +140,11 @@ export function AulasPendenciasTable({
                     </button>
                     <button
                       type="button"
-                      role="switch"
-                      aria-checked={false}
                       onClick={() => onOpenFinalize(aula)}
-                      className="relative inline-flex h-7 w-12 cursor-pointer items-center rounded-full bg-gray-300 transition-colors hover:bg-sky-300 dark:bg-gray-700 dark:hover:bg-sky-500/60"
+                      className="inline-flex cursor-pointer items-center rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20"
                       aria-label={`Finalizar aula ${aula.id}`}
                     >
-                      <span className="inline-block size-5 translate-x-1 rounded-full bg-white shadow transition-transform" />
+                      Finalizar
                     </button>
                     <button
                       type="button"
@@ -155,7 +157,8 @@ export function AulasPendenciasTable({
                   </div>
                 </TableCell>
               </TableRow>
-            ))}
+              );
+            })}
           </TableBody>
         </Table>
       </div>

@@ -34,6 +34,9 @@ export function mapAulasToCalendarEvents(
       startedAt: aula.started_at.toISOString(),
       endedAt: aula.ended_at.toISOString(),
       notas: aula.notas,
+      aulaStatus: aula.encerrada
+        ? "FINALIZADA"
+        : normalizeAulaStatus(aula.status),
       status: aula.encerrada ? "Finalizada" : "Pendente",
     },
   }));
@@ -134,4 +137,17 @@ function minDate(first: Date, second: Date) {
 
 function pad(value: number) {
   return String(value).padStart(2, "0");
+};
+
+function normalizeAulaStatus(status: string) {
+  if (
+    status === "AGENDADA" ||
+    status === "EM_ANDAMENTO" ||
+    status === "PENDENTE_FINALIZACAO" ||
+    status === "FINALIZADA"
+  ) {
+    return status;
+  };
+
+  return "AGENDADA";
 };
