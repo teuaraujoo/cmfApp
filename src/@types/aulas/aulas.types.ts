@@ -10,7 +10,7 @@ export type CreateAulaPayload = {
 export type AulaStatus =
   | "AGENDADA"
   | "EM_ANDAMENTO"
-  | "PENDENTE_FINALIZACAO"
+  | "PENDENTE_FINALIZAÇÃO"
   | "FINALIZADA";
 
 export type Aula = {

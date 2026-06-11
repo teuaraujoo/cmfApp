@@ -190,7 +190,7 @@ export class AulasRepositories {
     static async getAulasNotFinished() {
         return prisma.aulas_individuais.findMany({
             where: {
-                status: "PENDENTE_FINALIZACAO"
+                status: "PENDENTE_FINALIZAÇÃO"
             },
             include: {
                 professores: {
@@ -270,7 +270,7 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findMany({
             where: {
                 professor_id: professorId,
-                status: "PENDENTE_FINALIZACAO"
+                status: "PENDENTE_FINALIZAÇÃO"
             },
             include: {
                 alunos: {
@@ -424,8 +424,8 @@ export class AulasRepositories {
     };
 
     static async finishAula(aulaId: number, data: Prisma.aulas_individuaisUncheckedUpdateInput) {
-        return prisma.aulas_individuais.update({
-            where: { id: aulaId },
+        return prisma.aulas_individuais.updateMany({
+            where: { id: aulaId, status: { not: "FINALIZADA" } },
             data,
         });
     };
@@ -441,7 +441,7 @@ export class AulasRepositories {
                 },
             },
             data: {
-                status: "PENDENTE_FINALIZACAO",
+                status: "PENDENTE_FINALIZAÇÃO",
                 updated_at: now,
             }
         });

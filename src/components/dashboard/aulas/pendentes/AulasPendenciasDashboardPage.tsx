@@ -17,6 +17,7 @@ import { getAulaStatusConfig } from "@/components/dashboard/aulas/aula-status";
 export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
   const [detailsAula, setDetailsAula] = useState<Aula | null>(null);
   const [finalizeAula, setFinalizeAula] = useState<Aula | null>(null);
   const [deletedAula, setDeleteAula] = useState<Aula | null>(null);
@@ -43,36 +44,50 @@ export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] 
   };
 
   async function handleFinalizeAula(aula: Aula) {
+    setLoading(true);
+
     if (!finalizeAula) {
       return;
     };
 
-    const result = await finalizarAula(aula.id, notes);
+    const result = await toast.promise(finalizarAula(aula.id, notes), {
+      loading: 'Carregando...',
+      success: (response) => response?.message,
+      error: (error) => error?.message || "Error ao conectar com o servidor!",
+    });
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false);
       return;
     };
 
-    toast.success(result.message ?? "Aula finalizada com sucesso!");
     refreshAulas();
+    setLoading(false);
     closeFinalizeDialog();
   };
 
   async function handleDeleteAula(aula: Aula) {
+    setLoading(true);
+
     if (!deletedAula) {
       return;
     };
 
-    const result = await deleteAula(aula.id);
+    const result = await toast.promise(deleteAula(aula.id), {
+      loading: 'Carregando...',
+      success: (response) => response?.message,
+      error: (error) => error?.message || "Error ao conectar com o servidor!",
+    });
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false);
       return;
     };
 
-    toast.success(result.message ?? "Aula excluída com sucesso!");
     refreshAulas();
+    setLoading(false);
     setDeleteAula(null);
   };
 
@@ -100,12 +115,14 @@ export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] 
       <FinalizarAulaDialog
         aula={finalizeAula}
         notes={notes}
+        loading={loading}
         onNotesChange={setNotes}
         onClose={closeFinalizeDialog}
         onFinalize={handleFinalizeAula}
       />
 
       <AulaDeleteDialog
+        loading={loading}
         aula={deletedAula}
         onClose={() => setDeleteAula(null)}
         onDelete={handleDeleteAula}

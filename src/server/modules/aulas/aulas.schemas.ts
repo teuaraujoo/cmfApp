@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const aulaStatusSchema = z.enum(["AGENDADA", "EM_ANDAMENTO", "PENDENTE_FINALIZACAO", "FINALIZADA"]);
+export const aulaStatusSchema = z.enum(["AGENDADA", "EM_ANDAMENTO", "PENDENTE_FINALIZAÇÃO", "FINALIZADA"]);
 
 export const createAulasSchema = z.object({
     aluno_id: z.number().int().positive(),

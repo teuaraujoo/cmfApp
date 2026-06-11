@@ -103,20 +103,6 @@ export async function getAllAulasByProfessorId(professorId: number) {
 
 };
 
-export async function createAula(body: CreateAulasBody) {
-    const data = createAulasSchema.parse(body);
-    await AulaValidation.validateAula(data);
-
-    try {
-        const aula = await AulasRepositories.createAula(AulasMapper.toPrismaCreate(data));
-
-        return aula;
-
-    } catch (err) {
-        throw err;
-    };
-};
-
 /* =================   ALUNOS     =================*/
 
 export async function getAulasByAlunoId(alunoId: number) {
@@ -141,6 +127,20 @@ export async function getAulasNotFinishedByAlunoId(alunoId: number) {
     if (!aulas) throw new AppError("Aulas não encontradas!");
 
     return aulas.map((aula) => AulasMapper.toResponseAulasAlunoGet(aula));
+};
+
+export async function createAula(body: CreateAulasBody) {
+    const data = createAulasSchema.parse(body);
+    await AulaValidation.validateAula(data);
+
+    try {
+        const aula = await AulasRepositories.createAula(AulasMapper.toPrismaCreate(data));
+
+        return aula;
+
+    } catch (err) {
+        throw err;
+    };
 };
 
 export async function deleteAula(aulaId: number) {
@@ -186,6 +186,10 @@ export async function startAula(aulaId: number, actor: Actor) {
 
 export async function finishAula(aulaId: number, body: unknown, actor: Actor) {
     try {
+        if (!aulaId || aulaId <= 0) {
+            throw new AppError("ID da aula inválido!", 400);
+        };
+
         const { notas } = finishAulaSchema.parse(body);
         const now = new Date();
 
@@ -199,11 +203,7 @@ export async function finishAula(aulaId: number, body: unknown, actor: Actor) {
 
         if (aula.status === "FINALIZADA") throw new AppError("Aula já finalizada!", 409);
 
-        if (now < aula.ended_at) throw new AppError("Aula ainda não pode ser finalizada!", 409);
-
-        if (aula.status !== "PENDENTE_FINALIZACAO") {
-            throw new AppError("A aula não está pendente de finalização!", 409);
-        };
+        if (now < aula.ended_at && aula.status !== "EM_ANDAMENTO") throw new AppError("Aula ainda não pode ser finalizada!", 409);
 
         const data = AulasMapper.toPrismaFinish(notas, now, actor);
 

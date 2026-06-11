@@ -247,6 +247,7 @@ export function NovaAulaDialog({
             <Button
               type="submit"
               className="cursor-pointer bg-[#1FA2E1] text-white hover:bg-[#178CC5]"
+              disabled={loading}
             >
               {loading ? "Criando aula..." : "Criar aula"}
             </Button>

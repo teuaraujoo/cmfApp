@@ -9,7 +9,6 @@ import { DIAS_SEMANAS, formatHorarioLocal } from "@/utils/date-utils";
 import { Aula } from "@/@types/aulas/aulas.types";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
-import Badge from "@/components/ui/Badge";
 import {
   canDeleteAula,
   canFinishAula,
@@ -19,6 +18,7 @@ import {
 type AulaDetailsDialogProps = {
   aula: Aula | null;
   onClose: () => void;
+  onStart?: (aula: Aula) => void;
   onFinalize?: (aula: Aula) => void;
   onDelete?: (aula: Aula) => void;
 };
@@ -26,6 +26,7 @@ type AulaDetailsDialogProps = {
 export function AulaDetailsDialog({
   aula,
   onClose,
+  onStart,
   onFinalize,
   onDelete,
 }: AulaDetailsDialogProps) {
@@ -61,9 +62,9 @@ export function AulaDetailsDialog({
               label="Status"
               value={
                 status ? (
-                  <Badge color={status.color} size="sm">
+                  <span className={`inline-flex items-center gap-1.5 text-xs font-semibold sm:text-sm ${status.className}`}>
                     {status.label}
-                  </Badge>
+                  </span>
                 ) : null
               }
             />
@@ -85,16 +86,28 @@ export function AulaDetailsDialog({
         {aula && (onFinalize || onDelete) ? (
           <DialogFooter className="gap-3 border-t border-gray-100 pt-4 dark:border-gray-800">
             {onDelete && canDeleteAula(aula.status) ? (
-              <Button
-                type="button"
-                variant="outline"
-                className="cursor-pointer border-red-200 text-red-700 hover:bg-red-50 dark:border-red-500/30 dark:text-red-300 dark:hover:bg-red-500/10"
-                onClick={() => onDelete(aula)}
-              >
-                Excluir aula
-              </Button>
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="cursor-pointer border-red-200 text-red-700 hover:bg-red-50 dark:border-red-500/30 dark:text-red-300 dark:hover:bg-red-500/10"
+                  onClick={() => onDelete(aula)}
+                >
+                  Excluir aula
+                </Button>
+                {aula.status === "AGENDADA" && onStart ?
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="cursor-pointer border-sky-200 text-sky-700 hover:bg-sky-50 dark:border-sky-500/30 dark:text-sky-300 dark:hover:bg-sky-500/10"
+                    onClick={() => onStart(aula)}
+                  >
+                    Iniciar aula
+                  </Button>
+                  : null}
+              </>
             ) : null}
-            {onFinalize && canFinishAula(aula.status) ? (
+            {onFinalize && canFinishAula(aula) ? (
               <Button
                 type="button"
                 className="cursor-pointer bg-red-700 text-white hover:bg-red-600"

@@ -24,6 +24,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   const [selectedAula, setSelectedAula] = useState<Aula | null>(null);
   const [deletedAula, setDeleteAula] = useState<Aula | null>(null);
   const [detailsAula, setDetailsAula] = useState<Aula | null>(null);
+  const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -83,7 +84,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   };
 
   function openFinalizeDialog(aula: Aula) {
-    if (!canFinishAula(aula.status)) {
+    if (!canFinishAula(aula)) {
       return;
     };
 
@@ -103,23 +104,33 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   };
 
   async function handleFinalizeAula(aula: Aula) {
+    setLoading(true);
+
     if (!selectedAula) {
+      setLoading(false);
       return;
     };
 
-    const result = await finalizarAula(aula.id, notes);
+    const result = await toast.promise(finalizarAula(aula.id, notes), {
+      loading: 'Carregando...',
+      success: (response) => response?.message,
+      error: (error) => error?.message || "Error ao conectar com o servidor!",
+    });
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false);
       return;
     };
 
-    toast.success(result.message ?? "Aula finalizada com sucesso!");
     refreshAulas();
+    setLoading(false);
     closeFinalizeDialog();
   };
 
   async function handleStartAula(aula: Aula) {
+    setLoading(true)
+
     const result = await toast.promise(iniciarAula(aula.id), {
       loading: 'Carregando...',
       success: (response) => response?.message,
@@ -128,14 +139,19 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false)
       return;
     };
 
+    setLoading(false);
     refreshAulas();
   };
 
   async function handleDeleteAula(aula: Aula) {
+    setLoading(true);
+
     if (!deletedAula) {
+      setLoading(false);
       return;
     };
 
@@ -147,10 +163,12 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false)
       return;
     };
 
     refreshAulas();
+    setLoading(false);
     setDeleteAula(null);
   };
 
@@ -168,6 +186,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
         <AulasSemanaTable
           aulas={filteredAulas}
           search={search}
+          loading={loading}
           onSearchChange={setSearch}
           onOpenDetails={setDetailsAula}
           onStart={handleStartAula}
@@ -184,6 +203,7 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
       <FinalizarAulaDialog
         aula={selectedAula}
         notes={notes}
+        loading={loading}
         onNotesChange={setNotes}
         onClose={closeFinalizeDialog}
         onFinalize={handleFinalizeAula}
@@ -191,11 +211,13 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
 
       <AulaDeleteDialog
         aula={deletedAula}
+        loading={loading}
         onClose={() => setDeleteAula(null)}
         onDelete={handleDeleteAula}
       />
 
       <NovaAulaDialog
+        key={createDialogOpen ? "aula-dialog-open" : "aula-dialog-closed"}
         error={createError}
         loading={createLoading}
         alunos={alunos}

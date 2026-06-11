@@ -13,12 +13,14 @@ import { Aula } from "@/@types/aulas/aulas.types";
 
 type AulaDeleteDialogProps = {
   aula: Aula | null;
+  loading: boolean;
   onClose: () => void;
   onDelete: (aula: Aula) => Promise<void>;
 };
 
 export function AulaDeleteDialog({
   aula,
+  loading,
   onClose,
   onDelete,
 }: AulaDeleteDialogProps) {
@@ -65,9 +67,9 @@ export function AulaDeleteDialog({
             type="button"
             className="cursor-pointer bg-red-700 text-white hover:bg-red-600"
             onClick={() => void onDelete(aula!)}
-            disabled={!aula}
+            disabled={!aula || loading}
           >
-            Deletar aula
+            {loading ? "Excluindo..." : "Excluir aula"}
           </Button>
         </DialogFooter>
       </DialogContent>

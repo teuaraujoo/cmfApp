@@ -23,7 +23,7 @@ import {
 } from "@/components/dashboard/calendar/TurmaCalendarDetailsDialog";
 import { useCreateAulaForm } from "@/hooks/aulas/useCreateAulaForm";
 import { useCalendarEvents } from "@/hooks/calendar/useCalendarEvents";
-import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";
+import { deleteAula, finalizarAula, iniciarAula } from "@/services/aulas/aulas.client";
 
 type CalendarProps = {
   alunos: Aluno[];
@@ -36,6 +36,7 @@ export default function Calendar({
   professores,
   modalidades,
 }: CalendarProps) {
+  const [loading, setLoading] = useState(false);
   const calendarRef = useRef<FullCalendar>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [initialDate, setInitialDate] = useState<string>();
@@ -97,7 +98,30 @@ export default function Calendar({
     setNotes("");
   };
 
+  async function handleStartAula(aula: Aula) {
+    const result = await toast.promise(iniciarAula(aula.id), {
+      loading: 'Carregando...',
+      success: (response) => response?.message,
+      error: (error) => error?.message || "Error ao conectar com o servidor!",
+    });
+
+    if (result?.err) {
+      toast.error(result.err);
+      return;
+    };
+
+    setDetailsAula(null);
+    refetchCalendarEvents();
+  };
+
+
   async function handleFinalizeAula(aula: Aula) {
+    if (!finalizeAula || loading) {
+      return;
+    };
+
+    setLoading(true);
+
     const result = await toast.promise(finalizarAula(aula.id, notes), {
       loading: "Finalizando aula...",
       success: (response) => response?.message ?? "Aula finalizada!",
@@ -106,14 +130,18 @@ export default function Calendar({
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false);
       return;
     };
 
     closeFinalizeDialog();
+    setLoading(false);
     refetchCalendarEvents();
-  }
+  };
 
   async function handleDeleteAula(aula: Aula) {
+    setLoading(true);
+
     const result = await toast.promise(deleteAula(aula.id), {
       loading: "Excluindo aula...",
       success: (response) => response?.message ?? "Aula excluida!",
@@ -122,19 +150,23 @@ export default function Calendar({
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false);
       return;
     };
 
     setDeletedAula(null);
+    setLoading(false);
     refetchCalendarEvents();
   }
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm shadow-gray-200/50 dark:border-gray-800 dark:bg-white/[0.03] dark:shadow-black/20">
       <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 px-4 py-3 text-xs font-medium text-gray-600 dark:border-gray-800 dark:text-gray-300 sm:px-6">
-        <CalendarLegend colorClass="bg-sky-500" label="Turma" />
-        <CalendarLegend colorClass="bg-amber-500" label="Aula pendente" />
-        <CalendarLegend colorClass="bg-emerald-500" label="Aula concluida" />
+        <CalendarLegend colorClass="bg-blue-500" label="Turma" />
+        <CalendarLegend colorClass="bg-sky-500" label="Aula agendada" />
+        <CalendarLegend colorClass="bg-violet-500" label="Aula em andamento" />
+        <CalendarLegend colorClass="bg-amber-500" label="Pendente de finalização" />
+        <CalendarLegend colorClass="bg-emerald-500" label="Aula finalizada" />
       </div>
       <div className="custom-calendar p-3 sm:p-5 lg:p-6">
         <FullCalendar
@@ -191,6 +223,7 @@ export default function Calendar({
       <AulaDetailsDialog
         aula={detailsAula}
         onClose={() => setDetailsAula(null)}
+        onStart={handleStartAula}
         onFinalize={openFinalizeDialog}
         onDelete={(aula) => {
           setDetailsAula(null);
@@ -201,6 +234,7 @@ export default function Calendar({
       <FinalizarAulaDialog
         aula={finalizeAula}
         notes={notes}
+        loading={loading}
         onNotesChange={setNotes}
         onClose={closeFinalizeDialog}
         onFinalize={handleFinalizeAula}
@@ -208,6 +242,7 @@ export default function Calendar({
 
       <AulaDeleteDialog
         aula={deletedAula}
+        loading={loading}
         onClose={() => setDeletedAula(null)}
         onDelete={handleDeleteAula}
       />

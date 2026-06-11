@@ -144,7 +144,7 @@ function normalizeAulaStatus(status: string, encerrada: boolean): AulaStatus {
     if (
         status === "AGENDADA" ||
         status === "EM_ANDAMENTO" ||
-        status === "PENDENTE_FINALIZACAO" ||
+        status === "PENDENTE_FINALIZAÇÃO" ||
         status === "FINALIZADA"
     ) {
         return status;
