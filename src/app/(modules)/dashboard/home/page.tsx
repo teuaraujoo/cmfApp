@@ -20,9 +20,9 @@ export default function Home() {
           <StatisticsChart />
           <PendingAulasCard />
         </div>
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-          <RecentStudentsGrid />
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
           <RecentClasses />
+          <RecentStudentsGrid />
         </div>
 
       </div>

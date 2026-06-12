@@ -5,7 +5,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Badge from "@/components/ui/Badge";
+import { getAulaStatusConfig } from "../aulas/aula-status";
 import { getAulasForAdmin } from "@/server/modules/aulas/aulas.queries";
 import Link from "next/link";
 
@@ -124,35 +124,39 @@ export default async function RecentClasses() {
                 </td>
               </TableRow>
               :
-              aulas.map((aula) => (
-                <TableRow key={aula.id} className="">
-                  <TableCell className="py-3">
-                    <div className="flex items-center gap-3">
-                      <div>
-                        <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {aula.modalidade}
-                        </p>
+              aulas.map((aula) => {
+                const status = getAulaStatusConfig(aula.status);
+                return (
+
+                  <TableRow key={aula.id} className="">
+                    <TableCell className="py-3">
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                            {aula.modalidade}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {aula.aluno.nome}
-                  </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {aula.professor.nome}
-                  </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    <Badge
-                      size="sm"
-                      color={
-                        aula.encerrada ? "success" : "warning"
-                      }
-                    >
-                      {aula.encerrada ? 'ENCERRADA' : 'AGENDADA'}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                      {aula.aluno.nome}
+                    </TableCell>
+                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                      {aula.professor.nome}
+                    </TableCell>
+                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                      <span
+                        className={`inline-flex items-center gap-1.5 text-xs font-semibold sm:text-sm ${status.className}`}
+                      >
+                        <status.icon className="size-4 shrink-0" />
+
+                        <span className="sm:hidden">{status.shortLabel}</span>
+                        <span className="hidden sm:inline">{status.label}</span>
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
           </TableBody>
         </Table>
       </div>

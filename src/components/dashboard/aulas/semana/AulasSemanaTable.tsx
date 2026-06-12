@@ -87,7 +87,7 @@ export function AulasSemanaTable({
                   Detalhes
                 </TableCell>
                 <TableCell isHeader className="py-3 pr-2 text-start text-[10px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-xs">
-                  Ação
+                  Ações
                 </TableCell>
                 <TableCell isHeader className="py-3 text-start text-[10px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-xs">
                   <span className="sm:hidden">Del</span>
@@ -138,7 +138,7 @@ export function AulasSemanaTable({
                         <span className="hidden sm:inline">Detalhes</span>
                       </button>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap py-3 pr-2 sm:py-4 sm:pr-4">
+                    <TableCell className="inline-flex gap-2 whitespace-nowrap py-3 pr-2 sm:py-4 sm:pr-4">
                       {canStartAula(aula.status) ? (
                         <button
                           type="button"
@@ -151,12 +151,6 @@ export function AulasSemanaTable({
                           <span className="hidden sm:inline">{loading ? "Iniciando..." : "Iniciar"}</span>
                         </button>
                       ) : null}
-                      {/* {aula.status === "EM_ANDAMENTO" ? (
-                        <span className="inline-flex items-center gap-2 text-xs font-medium text-sky-700 dark:text-sky-300 sm:text-sm">
-                          <Clock3 className="size-4" />
-                          <span className="hidden sm:inline">Em andamento</span>
-                        </span>
-                      ) : null} */}
                       {canFinishAula(aula) ? (
                         <button
                           type="button"
@@ -168,12 +162,6 @@ export function AulasSemanaTable({
                           <span className="hidden sm:inline">Finalizar</span>
                         </button>
                       ) : null}
-                      {/* {aula.status === "FINALIZADA" ? (
-                        <span className="inline-flex items-center gap-2 text-xs font-medium text-emerald-700 dark:text-emerald-300 sm:text-sm">
-                          <CheckCircle2 className="size-4" />
-                          <span className="hidden sm:inline">Concluída</span>
-                        </span>
-                      ) : null} */}
                     </TableCell>
                     <TableCell className="whitespace-nowrap py-3 sm:py-4">
                       {canDeleteAula(aula.status) ? (
