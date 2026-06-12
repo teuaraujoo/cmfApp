@@ -145,8 +145,9 @@ export async function createAula(body: CreateAulasBody) {
 
 export async function deleteAula(aulaId: number) {
     try {
-
         const aula = await AulasRepositories.getAulaById(aulaId);
+
+        if (aula?.status !== "AGENDADA") throw new AppError("Aula já iniciadas não podems ser excluídas!");
 
         if (!aula) throw new AppError("Aula não encontrada!");
 
@@ -168,12 +169,11 @@ export async function startAula(aulaId: number, actor: Actor) {
             throw new AppError("O professor não pode iniciar uma aula atribuída a outro professor!", 403)
         };
 
-        if (now < aula?.started_at) throw new AppError("A aula ainda não pode ser iniciada!", 409);
+        if (now < aula?.started_at) throw new AppError("A aula ainda não pode ser iniciada.", 409);
 
-        if (now >= aula.ended_at) throw new AppError("A aula já  terminou!", 409);
+        if (now >= aula.ended_at) throw new AppError("Esta aula já ultrapassou seu horário de término.", 409);
 
-        if (aula.status !== "AGENDADA") throw new AppError("A aula não está disponível para início!", 409);
-
+        if (aula.status !== "AGENDADA") throw new AppError("A aula não está disponível para início.", 409);
 
         const startAula = await AulasRepositories.startAula(aulaId);
 

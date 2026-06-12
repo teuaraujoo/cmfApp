@@ -224,7 +224,7 @@ export class AulasRepositories {
                 },
             }
         })
-    }
+    };
 
     static async getAulasWeekByProfessorId(professorId: number) {
         const { start, end } = DateUtils.getCurrentWeekRangeUTC();
@@ -236,7 +236,6 @@ export class AulasRepositories {
                     gte: start,
                     lt: end,
                 },
-                encerrada: false
             },
             include: {
                 modalidades: true,
@@ -293,7 +292,6 @@ export class AulasRepositories {
                     gte: start,
                     lt: end,
                 },
-                encerrada: false
             },
             include: {
                 modalidades: true,
@@ -326,7 +324,7 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findMany({
             where: {
                 aluno_id: alunoId,
-                encerrada: false,
+                status: "PENDENTE_FINALIZAÇÃO"
             },
             include: {
                 professores: {
@@ -348,7 +346,7 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findMany({
             where: {
                 professor_id: professorId,
-                encerrada: false,
+                status: { not: "FINALIZADA" },
                 started_at: {
                     lt: endedAt
                 },
@@ -363,7 +361,7 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findMany({
             where: {
                 aluno_id: alunoId,
-                encerrada: false,
+                status: { not: "FINALIZADA" },
                 started_at: {
                     lt: endedAt
                 },
@@ -380,7 +378,7 @@ export class AulasRepositories {
                 aluno_id: {
                     in: alunosIds
                 },
-                encerrada: false,
+                status: { not: "FINALIZADA" },
                 started_at: {
                     lte: vigenciaFim
                 },
@@ -397,7 +395,7 @@ export class AulasRepositories {
                 professor_id: {
                     in: professoresIds
                 },
-                encerrada: false,
+                status: { not: "FINALIZADA" },
                 started_at: {
                     lte: vigenciaFim
                 },
