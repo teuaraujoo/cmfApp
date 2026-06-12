@@ -7,7 +7,7 @@ import RecentStudentsGrid from "@/components/dashboard/home/RecentStudentsGrid";
 export default function Home() {
 
   return (
-    <main className="p-6">
+    <main className="p-3 sm:p-5 lg:p-6">
       <div className="space-y-6">
 
         {/* CARDS */}

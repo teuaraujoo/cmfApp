@@ -32,7 +32,7 @@ export function AulasHistoricoTable({
   isPending,
 }: AulasHistoricoTableProps) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-2 pb-4 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-5 lg:px-6">
+    <section className="min-w-0 overflow-hidden rounded-2xl border border-gray-200 bg-white px-3 pb-4 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-5 lg:px-6">
       <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">
@@ -67,7 +67,62 @@ export function AulasHistoricoTable({
         />
       ) : (
         <>
-          <div className={`max-w-full overflow-x-auto rounded-xl transition-opacity ${isPending ? "opacity-60" : "opacity-100"}`}>
+          <div className={`space-y-3 transition-opacity md:hidden ${isPending ? "opacity-60" : "opacity-100"}`}>
+            {aulas.map((aula) => {
+              const status = getAulaStatusConfig(aula.status);
+
+              return (
+                <article
+                  key={aula.id}
+                  className="rounded-xl border border-gray-100 bg-gray-50/70 p-3.5 dark:border-gray-800 dark:bg-gray-900/40"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-gray-400 dark:text-gray-500">
+                        Aula #{aula.id}
+                      </p>
+                      <p className="mt-1 truncate text-sm font-semibold text-gray-800 dark:text-white/90">
+                        {aula.aluno.nome}
+                      </p>
+                      <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                        {aula.aluno.serie ?? "Sem serie"}
+                      </p>
+                    </div>
+                    <span className={`shrink-0 text-xs font-semibold ${status.className}`}>
+                      {status.shortLabel}
+                    </span>
+                  </div>
+
+                  <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-gray-100 pt-3 text-xs dark:border-gray-800">
+                    <div className="min-w-0">
+                      <dt className="text-gray-400 dark:text-gray-500">Professor</dt>
+                      <dd className="truncate font-medium text-gray-700 dark:text-gray-300">
+                        {aula.professor.nome}
+                      </dd>
+                    </div>
+                    <div className="min-w-0">
+                      <dt className="text-gray-400 dark:text-gray-500">Data e horario</dt>
+                      <dd className="font-medium text-gray-700 dark:text-gray-300">
+                        {aula.inicio.toLocaleDateString("pt-BR")} - {formatHorarioLocal(aula.inicio)}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <button
+                    type="button"
+                    onClick={() => onOpenDetails(aula)}
+                    className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg bg-sky-50 px-3 text-xs font-medium text-sky-700 transition-colors hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/20"
+                    aria-label={`Ver detalhes da aula ${aula.id}`}
+                  >
+                    <Info className="size-4" />
+                    Ver detalhes
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+
+          <div className={`hidden max-w-full overflow-x-auto rounded-xl transition-opacity md:block ${isPending ? "opacity-60" : "opacity-100"}`}>
             <Table className="w-full min-w-[720px] lg:min-w-full">
               <TableHeader className="border-y border-gray-100 dark:border-gray-800">
                 <TableRow>
@@ -156,12 +211,12 @@ export function AulasHistoricoTable({
               <strong className="font-semibold text-gray-700 dark:text-gray-200">{pagination.totalPages}</strong>
             </p>
 
-            <div className="flex items-center gap-2">
+            <div className="flex w-full items-center gap-2 sm:w-auto">
               <button
                 type="button"
                 disabled={!pagination.hasPreviousPage || isPending}
                 onClick={() => onPageChange(pagination.page - 1)}
-                className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-colors hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10 dark:hover:text-sky-300"
+                className="inline-flex h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-colors hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10 dark:hover:text-sky-300 sm:flex-none"
               >
                 <ChevronLeft className="size-4" />
                 Anterior
@@ -171,7 +226,7 @@ export function AulasHistoricoTable({
                 type="button"
                 disabled={!pagination.hasNextPage || isPending}
                 onClick={() => onPageChange(pagination.page + 1)}
-                className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-colors hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10 dark:hover:text-sky-300"
+                className="inline-flex h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-colors hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10 dark:hover:text-sky-300 sm:flex-none"
               >
                 Próxima
                 <ChevronRight className="size-4" />
