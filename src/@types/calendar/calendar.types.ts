@@ -1,9 +1,13 @@
+import type { AulaStatus } from "@/@types/aulas/aulas.types";
+
 export type CalendarEntityType = "aula" | "turma";
 
 export type CalendarEventCategory =
-  | "Success"
-  | "Primary"
-  | "Warning";
+  | "Turma"
+  | "Agendada"
+  | "EmAndamento"
+  | "Pendente"
+  | "Finalizada";
 
 export type CalendarEvent = {
   id: string;
@@ -27,6 +31,7 @@ export type CalendarEvent = {
     vigenciaInicio?: string;
     vigenciaFim?: string;
     notas?: string | null;
+    aulaStatus?: AulaStatus;
     status: string;
   };
 };

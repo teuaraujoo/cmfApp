@@ -32,66 +32,73 @@ export class AulasRepositories {
                         users: true
                     }
                 },
-                modalidades: true
+                modalidades: true,
+                users: true
             }
         })
     };
 
     static async getAulasHistoricoPaginated(page: number, pageSize: number, search?: string) {
         const searchId = search && /^\d+$/.test(search) ? Number(search) : undefined;
+        const searchFilters: Prisma.aulas_individuaisWhereInput[] = search
+            ? [
+                ...(searchId ? [{ id: searchId }] : []),
+                {
+                    alunos: {
+                        users: {
+                            nome: {
+                                contains: search,
+                                mode: "insensitive",
+                            },
+                        },
+                    },
+                },
+                {
+                    alunos: {
+                        serie: {
+                            contains: search,
+                            mode: "insensitive",
+                        },
+                    },
+                },
+                {
+                    professores: {
+                        users: {
+                            nome: {
+                                contains: search,
+                                mode: "insensitive",
+                            },
+                        },
+                    },
+                },
+                {
+                    professores: {
+                        materia: {
+                            contains: search,
+                            mode: "insensitive",
+                        },
+                    },
+                },
+                {
+                    modalidades: {
+                        tipo: {
+                            contains: search,
+                            mode: "insensitive",
+                        },
+                    },
+                },
+            ]
+            : [];
         const where: Prisma.aulas_individuaisWhereInput = {
-            encerrada: true,
-            ...(search
-                ? {
+            AND: [
+                {
                     OR: [
-                        ...(searchId ? [{ id: searchId }] : []),
-                        {
-                            alunos: {
-                                users: {
-                                    nome: {
-                                        contains: search,
-                                        mode: "insensitive",
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            alunos: {
-                                serie: {
-                                    contains: search,
-                                    mode: "insensitive",
-                                },
-                            },
-                        },
-                        {
-                            professores: {
-                                users: {
-                                    nome: {
-                                        contains: search,
-                                        mode: "insensitive",
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            professores: {
-                                materia: {
-                                    contains: search,
-                                    mode: "insensitive",
-                                },
-                            },
-                        },
-                        {
-                            modalidades: {
-                                tipo: {
-                                    contains: search,
-                                    mode: "insensitive",
-                                },
-                            },
-                        },
+                        { status: "FINALIZADA" },
+                        { encerrada: true },
                     ],
-                }
-                : {}),
+                },
+                ...(searchFilters.length ? [{ OR: searchFilters }] : []),
+            ],
         };
 
         const [aulas, totalItems] = await prisma.$transaction([
@@ -115,6 +122,7 @@ export class AulasRepositories {
                         },
                     },
                     modalidades: true,
+                    users: true,
                 },
             }),
             prisma.aulas_individuais.count({ where }),
@@ -141,6 +149,7 @@ export class AulasRepositories {
                     },
                 },
                 modalidades: true,
+                users: true,
             },
             orderBy: {
                 started_at: "asc",
@@ -169,7 +178,8 @@ export class AulasRepositories {
                         users: true
                     }
                 },
-                modalidades: true
+                modalidades: true,
+                users: true
             },
             orderBy: {
                 created_at: "desc"
@@ -180,7 +190,7 @@ export class AulasRepositories {
     static async getAulasNotFinished() {
         return prisma.aulas_individuais.findMany({
             where: {
-                encerrada: false
+                status: "PENDENTE_FINALIZAÇÃO"
             },
             include: {
                 professores: {
@@ -193,7 +203,8 @@ export class AulasRepositories {
                         users: true
                     }
                 },
-                modalidades: true
+                modalidades: true,
+                users: true
             },
         });
     };
@@ -213,7 +224,7 @@ export class AulasRepositories {
                 },
             }
         })
-    }
+    };
 
     static async getAulasWeekByProfessorId(professorId: number) {
         const { start, end } = DateUtils.getCurrentWeekRangeUTC();
@@ -225,7 +236,6 @@ export class AulasRepositories {
                     gte: start,
                     lt: end,
                 },
-                encerrada: false
             },
             include: {
                 modalidades: true,
@@ -249,7 +259,8 @@ export class AulasRepositories {
                         users: true
                     }
                 },
-                modalidades: true
+                modalidades: true,
+                users: true
             }
         })
     };
@@ -258,7 +269,7 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findMany({
             where: {
                 professor_id: professorId,
-                encerrada: false,
+                status: "PENDENTE_FINALIZAÇÃO"
             },
             include: {
                 alunos: {
@@ -281,7 +292,6 @@ export class AulasRepositories {
                     gte: start,
                     lt: end,
                 },
-                encerrada: false
             },
             include: {
                 modalidades: true,
@@ -314,7 +324,7 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findMany({
             where: {
                 aluno_id: alunoId,
-                encerrada: false,
+                status: "PENDENTE_FINALIZAÇÃO"
             },
             include: {
                 professores: {
@@ -336,7 +346,7 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findMany({
             where: {
                 professor_id: professorId,
-                encerrada: false,
+                status: { not: "FINALIZADA" },
                 started_at: {
                     lt: endedAt
                 },
@@ -351,7 +361,7 @@ export class AulasRepositories {
         return prisma.aulas_individuais.findMany({
             where: {
                 aluno_id: alunoId,
-                encerrada: false,
+                status: { not: "FINALIZADA" },
                 started_at: {
                     lt: endedAt
                 },
@@ -368,7 +378,7 @@ export class AulasRepositories {
                 aluno_id: {
                     in: alunosIds
                 },
-                encerrada: false,
+                status: { not: "FINALIZADA" },
                 started_at: {
                     lte: vigenciaFim
                 },
@@ -385,7 +395,7 @@ export class AulasRepositories {
                 professor_id: {
                     in: professoresIds
                 },
-                encerrada: false,
+                status: { not: "FINALIZADA" },
                 started_at: {
                     lte: vigenciaFim
                 },
@@ -404,10 +414,34 @@ export class AulasRepositories {
         return prisma.aulas_individuais.delete({ where: { id: aulaId } })
     };
 
-    static async concludeAula(aulaId: number, notas: string) {
+    static async startAula(aulaId: number) {
         return prisma.aulas_individuais.update({
             where: { id: aulaId },
-            data: { notas, encerrada: true }
+            data: { status: "EM_ANDAMENTO" }
+        });
+    };
+
+    static async finishAula(aulaId: number, data: Prisma.aulas_individuaisUncheckedUpdateInput) {
+        return prisma.aulas_individuais.updateMany({
+            where: { id: aulaId, status: { not: "FINALIZADA" } },
+            data,
+        });
+    };
+
+    static async markOverdueAulasAsPending(now: Date) {
+        return prisma.aulas_individuais.updateMany({
+            where: {
+                ended_at: {
+                    lte: now
+                },
+                status: {
+                    in: ["AGENDADA", "EM_ANDAMENTO"]
+                },
+            },
+            data: {
+                status: "PENDENTE_FINALIZAÇÃO",
+                updated_at: now,
+            }
         });
     };
 };

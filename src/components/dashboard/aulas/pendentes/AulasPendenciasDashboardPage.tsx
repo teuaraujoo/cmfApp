@@ -12,10 +12,12 @@ import { useRouter } from "next/navigation";
 import { startTransition } from "react";
 import { deleteAula, finalizarAula } from "@/services/aulas/aulas.client";
 import toast from "react-hot-toast";
+import { getAulaStatusConfig } from "@/components/dashboard/aulas/aula-status";
 
 export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
   const [detailsAula, setDetailsAula] = useState<Aula | null>(null);
   const [finalizeAula, setFinalizeAula] = useState<Aula | null>(null);
   const [deletedAula, setDeleteAula] = useState<Aula | null>(null);
@@ -42,6 +44,8 @@ export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] 
   };
 
   async function handleFinalizeAula(aula: Aula) {
+    setLoading(true);
+
     if (!finalizeAula) {
       return;
     };
@@ -54,14 +58,18 @@ export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] 
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false);
       return;
     };
 
     refreshAulas();
+    setLoading(false);
     closeFinalizeDialog();
   };
 
   async function handleDeleteAula(aula: Aula) {
+    setLoading(true);
+
     if (!deletedAula) {
       return;
     };
@@ -74,10 +82,12 @@ export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] 
 
     if (result?.err) {
       toast.error(result.err);
+      setLoading(false);
       return;
     };
 
     refreshAulas();
+    setLoading(false);
     setDeleteAula(null);
   };
 
@@ -105,12 +115,14 @@ export default function AulasPendenciasDashboardPage({ aulas }: { aulas: Aula[] 
       <FinalizarAulaDialog
         aula={finalizeAula}
         notes={notes}
+        loading={loading}
         onNotesChange={setNotes}
         onClose={closeFinalizeDialog}
         onFinalize={handleFinalizeAula}
       />
 
       <AulaDeleteDialog
+        loading={loading}
         aula={deletedAula}
         onClose={() => setDeleteAula(null)}
         onDelete={handleDeleteAula}
@@ -135,7 +147,8 @@ function filterAulas(aulas: Aula[], search: string) {
         aula.professor.nome,
         aula.professor.materia,
         aula.modalidade,
-        aula.encerrada ? "finalizada" : "pendente",
+        aula.status,
+        getAulaStatusConfig(aula.status).label,
       ].join(" "),
     );
 

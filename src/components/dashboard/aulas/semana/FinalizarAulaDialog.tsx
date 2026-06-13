@@ -15,6 +15,7 @@ import { formatHorarioLocal } from "@/utils/date-utils";
 type FinalizarAulaDialogProps = {
   aula: Aula | null;
   notes: string;
+  loading: boolean;
   onNotesChange: (notes: string) => void;
   onClose: () => void;
   onFinalize: (aulas: Aula) => Promise<void>;
@@ -23,6 +24,7 @@ type FinalizarAulaDialogProps = {
 export function FinalizarAulaDialog({
   aula,
   notes,
+  loading,
   onNotesChange,
   onClose,
   onFinalize,
@@ -95,8 +97,9 @@ export function FinalizarAulaDialog({
             type="button"
             onClick={() => void onFinalize(aula!)}
             className="cursor-pointer bg-red-700 text-white hover:bg-red-600"
+            disabled={loading}
           >
-            Finalizar aula
+            {loading ? "Finalizando..." : "Finalizar aula"}
           </Button>
         </DialogFooter>
       </DialogContent>

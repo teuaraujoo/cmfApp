@@ -46,7 +46,7 @@ export async function deleteAula(aulaId: number) {
 
 export async function finalizarAula(aulaId: number, notas: string) {
     try {
-        const response = await fetch(`${apiRoutes.aulas}/${aulaId}`, {
+        const response = await fetch(`${apiRoutes.aulas}/${aulaId}/finalizacao`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
@@ -58,6 +58,27 @@ export async function finalizarAula(aulaId: number, notas: string) {
         const result = await response.json();
 
         if (!response.ok) return { err: result.message ?? "Não foi possível finalziar aula." };
+
+        return result;
+
+    } catch {
+        return { err: "Nao foi possivel conectar ao servidor." };
+    };
+};
+
+export async function iniciarAula(aulaId: number) {
+    try {
+        const response = await fetch(`${apiRoutes.aulas}/${aulaId}/inicio`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) return { err: result.message ?? "Não foi possível iniciar aula." };
 
         return result;
 

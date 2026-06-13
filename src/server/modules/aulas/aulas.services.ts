@@ -2,8 +2,8 @@ import "server-only";
 
 import { AppError } from "@/server/error/app-errors";
 import { AulasRepositories } from "./aulas.repositories";
-import { AulasMapper } from "./aulas.mapper";
-import { CreateAulasBody, createAulasSchema, updateAulaSchema } from "./aulas.schemas";
+import { AulasMapper, Actor } from "./aulas.mapper";
+import { CreateAulasBody, createAulasSchema, finishAulaSchema } from "./aulas.schemas";
 import { AulaValidation } from "./aulas.validation";
 import { ModalidadeRepositories } from "../modalidades/modalidades.repositories";
 
@@ -103,20 +103,6 @@ export async function getAllAulasByProfessorId(professorId: number) {
 
 };
 
-export async function createAula(body: CreateAulasBody) {
-    const data = createAulasSchema.parse(body);
-    await AulaValidation.validateAula(data);
-
-    try {
-        const aula = await AulasRepositories.createAula(data);
-
-        return aula;
-
-    } catch (err) {
-        throw err;
-    };
-};
-
 /* =================   ALUNOS     =================*/
 
 export async function getAulasByAlunoId(alunoId: number) {
@@ -143,10 +129,25 @@ export async function getAulasNotFinishedByAlunoId(alunoId: number) {
     return aulas.map((aula) => AulasMapper.toResponseAulasAlunoGet(aula));
 };
 
+export async function createAula(body: CreateAulasBody) {
+    const data = createAulasSchema.parse(body);
+    await AulaValidation.validateAula(data);
+
+    try {
+        const aula = await AulasRepositories.createAula(AulasMapper.toPrismaCreate(data));
+
+        return aula;
+
+    } catch (err) {
+        throw err;
+    };
+};
+
 export async function deleteAula(aulaId: number) {
     try {
-
         const aula = await AulasRepositories.getAulaById(aulaId);
+
+        if (aula?.status !== "AGENDADA") throw new AppError("Aula já iniciadas não podems ser excluídas!");
 
         if (!aula) throw new AppError("Aula não encontrada!");
 
@@ -156,15 +157,71 @@ export async function deleteAula(aulaId: number) {
     };
 };
 
-export async function concludeAula(aulaId: number, body: string) {
+export async function startAula(aulaId: number, actor: Actor) {
     try {
-        const data = updateAulaSchema.parse(body);
+        const now = new Date();
 
-        const aula = AulasRepositories.concludeAula(aulaId, data.notas!);
+        const aula = await AulasRepositories.getAulaById(aulaId);
 
-        return aula;
+        if (!aula) throw new AppError("Aula não encontrada!", 404);
+
+        if (actor.role === "PROFESSOR" && actor.professorId !== aula.professor_id) {
+            throw new AppError("O professor não pode iniciar uma aula atribuída a outro professor!", 403)
+        };
+
+        if (now < aula?.started_at) throw new AppError("A aula ainda não pode ser iniciada.", 409);
+
+        if (now >= aula.ended_at) throw new AppError("Esta aula já ultrapassou seu horário de término.", 409);
+
+        if (aula.status !== "AGENDADA") throw new AppError("A aula não está disponível para início.", 409);
+
+        const startAula = await AulasRepositories.startAula(aulaId);
+
+        return startAula;
 
     } catch (err) {
         throw err;
+    };
+};
+
+export async function finishAula(aulaId: number, body: unknown, actor: Actor) {
+    try {
+        if (!aulaId || aulaId <= 0) {
+            throw new AppError("ID da aula inválido!", 400);
+        };
+
+        const { notas } = finishAulaSchema.parse(body);
+        const now = new Date();
+
+        const aula = await AulasRepositories.getAulaById(aulaId);
+
+        if (!aula) throw new AppError("Aula não encontrada!", 404);
+
+        if (actor.role === "PROFESSOR" && actor.professorId !== aula.professor_id) {
+            throw new AppError("O professor não pode finalizar uma aula atribuída a outro professor!", 403)
+        };
+
+        if (aula.status === "FINALIZADA") throw new AppError("Aula já finalizada!", 409);
+
+        if (now < aula.ended_at && aula.status !== "EM_ANDAMENTO") throw new AppError("Aula ainda não pode ser finalizada!", 409);
+
+        const data = AulasMapper.toPrismaFinish(notas, now, actor);
+
+        const finishAula = await AulasRepositories.finishAula(aulaId, data);
+
+        return finishAula;
+
+    } catch (err) {
+        throw err;
+    };
+};
+
+export async function markOverdueAulasAsPending() {
+    const checkedAt = new Date();
+    const result = await AulasRepositories.markOverdueAulasAsPending(checkedAt);
+
+    return {
+        updatedCount: result.count,
+        checkedAt,
     };
 };

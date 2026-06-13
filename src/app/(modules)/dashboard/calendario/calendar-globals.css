@@ -272,21 +272,39 @@
   font-size: 0.6875rem;
 }
 
-.calendar-page .fc-bg-primary {
+.calendar-page .fc-bg-turma {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.calendar-page .fc-bg-turma .fc-daygrid-event-dot {
+  background: #3b82f6;
+}
+
+.calendar-page .fc-bg-agendada {
   border-color: #bae6fd;
   background: #f0f9ff;
 }
 
-.calendar-page .fc-bg-primary .fc-daygrid-event-dot {
-  background: #1fa2e1;
+.calendar-page .fc-bg-agendada .fc-daygrid-event-dot {
+  background: #0ea5e9;
 }
 
-.calendar-page .fc-bg-success {
+.calendar-page .fc-bg-emandamento {
+  border-color: #ddd6fe;
+  background: #f5f3ff;
+}
+
+.calendar-page .fc-bg-emandamento .fc-daygrid-event-dot {
+  background: #8b5cf6;
+}
+
+.calendar-page .fc-bg-finalizada {
   border-color: #a7f3d0;
   background: #ecfdf5;
 }
 
-.calendar-page .fc-bg-success .fc-daygrid-event-dot {
+.calendar-page .fc-bg-finalizada .fc-daygrid-event-dot {
   background: #22c55e;
 }
 
@@ -299,12 +317,12 @@
   background: #ef4444;
 }
 
-.calendar-page .fc-bg-warning {
+.calendar-page .fc-bg-pendente {
   border-color: #fde68a;
   background: #fffbeb;
 }
 
-.calendar-page .fc-bg-warning .fc-daygrid-event-dot {
+.calendar-page .fc-bg-pendente .fc-daygrid-event-dot {
   background: #f59e0b;
 }
 
@@ -316,12 +334,22 @@
   color: #9ca3af;
 }
 
-.dark .calendar-page .fc-bg-primary {
-  border-color: rgba(31, 162, 225, 0.3);
-  background: rgba(31, 162, 225, 0.12);
+.dark .calendar-page .fc-bg-turma {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.12);
 }
 
-.dark .calendar-page .fc-bg-success {
+.dark .calendar-page .fc-bg-agendada {
+  border-color: rgba(14, 165, 233, 0.3);
+  background: rgba(14, 165, 233, 0.12);
+}
+
+.dark .calendar-page .fc-bg-emandamento {
+  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.dark .calendar-page .fc-bg-finalizada {
   border-color: rgba(34, 197, 94, 0.28);
   background: rgba(34, 197, 94, 0.1);
 }
@@ -331,7 +359,7 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
-.dark .calendar-page .fc-bg-warning {
+.dark .calendar-page .fc-bg-pendente {
   border-color: rgba(245, 158, 11, 0.28);
   background: rgba(245, 158, 11, 0.1);
 }

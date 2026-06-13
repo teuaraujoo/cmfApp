@@ -16,27 +16,34 @@ const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 export function mapAulasToCalendarEvents(
   aulas: AulaCalendarRecord[],
 ): CalendarEvent[] {
-  return aulas.map((aula) => ({
-    id: `aula-${aula.id}`,
-    title: `Aula - ${aula.alunos.users.nome}`,
-    start: formatInstantForCalendar(aula.started_at),
-    end: formatInstantForCalendar(aula.ended_at),
-    allDay: false,
-    extendedProps: {
-      calendar: aula.encerrada ? "Success" : "Warning",
-      entityType: "aula",
-      entityId: aula.id,
-      modalidade: aula.modalidades.tipo,
-      aluno: aula.alunos.users.nome,
-      alunoSerie: aula.alunos.serie,
-      professor: aula.professores.users.nome,
-      professorMateria: aula.professores.materia,
-      startedAt: aula.started_at.toISOString(),
-      endedAt: aula.ended_at.toISOString(),
-      notas: aula.notas,
-      status: aula.encerrada ? "Finalizada" : "Pendente",
-    },
-  }));
+  return aulas.map((aula) => {
+    const status = aula.encerrada
+      ? "FINALIZADA"
+      : normalizeAulaStatus(aula.status);
+
+    return {
+      id: `aula-${aula.id}`,
+      title: `Aula - ${aula.alunos.users.nome}`,
+      start: formatInstantForCalendar(aula.started_at),
+      end: formatInstantForCalendar(aula.ended_at),
+      allDay: false,
+      extendedProps: {
+        calendar: getAulaCalendarCategory(status),
+        entityType: "aula",
+        entityId: aula.id,
+        modalidade: aula.modalidades.tipo,
+        aluno: aula.alunos.users.nome,
+        alunoSerie: aula.alunos.serie,
+        professor: aula.professores.users.nome,
+        professorMateria: aula.professores.materia,
+        startedAt: aula.started_at.toISOString(),
+        endedAt: aula.ended_at.toISOString(),
+        notas: aula.notas,
+        aulaStatus: status,
+        status: getAulaStatusLabel(status),
+      },
+    };
+  });
 };
 
 export function mapTurmasToCalendarEvents(
@@ -81,7 +88,7 @@ export function mapTurmasToCalendarEvents(
           end: `${dateKey}T${endTime}:00Z`,
           allDay: false,
           extendedProps: {
-            calendar: "Primary",
+            calendar: "Turma",
             entityType: "turma",
             entityId: turma.id,
             modalidade: turma.modalidades?.tipo ?? "Sem modalidade",
@@ -134,4 +141,43 @@ function minDate(first: Date, second: Date) {
 
 function pad(value: number) {
   return String(value).padStart(2, "0");
+};
+
+function normalizeAulaStatus(status: string) {
+  if (
+    status === "AGENDADA" ||
+    status === "EM_ANDAMENTO" ||
+    status === "PENDENTE_FINALIZAÇÃO" ||
+    status === "FINALIZADA"
+  ) {
+    return status;
+  };
+
+  return "AGENDADA";
+};
+
+function getAulaCalendarCategory(status: CalendarEvent["extendedProps"]["aulaStatus"]) {
+  switch (status) {
+    case "EM_ANDAMENTO":
+      return "EmAndamento";
+    case "PENDENTE_FINALIZAÇÃO":
+      return "Pendente";
+    case "FINALIZADA":
+      return "Finalizada";
+    default:
+      return "Agendada";
+  };
+};
+
+function getAulaStatusLabel(status: CalendarEvent["extendedProps"]["aulaStatus"]) {
+  switch (status) {
+    case "EM_ANDAMENTO":
+      return "Em andamento";
+    case "PENDENTE_FINALIZAÇÃO":
+      return "Pendente de finalização";
+    case "FINALIZADA":
+      return "Finalizada";
+    default:
+      return "Agendada";
+  };
 };
