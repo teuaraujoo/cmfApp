@@ -101,32 +101,31 @@ export class AulasRepositories {
             ],
         };
 
-        const [aulas, totalItems] = await prisma.$transaction([
-            prisma.aulas_individuais.findMany({
-                where,
-                skip: (page - 1) * pageSize,
-                take: pageSize,
-                orderBy: [
-                    { started_at: "desc" },
-                    { id: "desc" },
-                ],
-                include: {
-                    professores: {
-                        include: {
-                            users: true,
-                        },
+        const aulas = await prisma.aulas_individuais.findMany({
+            where,
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+            orderBy: [
+                { started_at: "desc" },
+                { id: "desc" },
+            ],
+            include: {
+                professores: {
+                    include: {
+                        users: true,
                     },
-                    alunos: {
-                        include: {
-                            users: true,
-                        },
-                    },
-                    modalidades: true,
-                    users: true,
                 },
-            }),
-            prisma.aulas_individuais.count({ where }),
-        ]);
+                alunos: {
+                    include: {
+                        users: true,
+                    },
+                },
+                modalidades: true,
+                users: true,
+            }
+        });
+
+        const totalItems = await prisma.aulas_individuais.count({ where });
 
         return { aulas, totalItems };
     };
