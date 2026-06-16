@@ -100,8 +100,8 @@ const AppHeader: React.FC<{ userInfo: HeaderUserInfo }> = ({ userInfo }) => {
             />
             <Image
               width={154}
-              height={32}
-              className="hidden dark:block"
+              height={37}
+              className="hidden h-auto dark:block"
               src="/images/logotipo-branca.png"
               alt="Logo"
             />
@@ -155,7 +155,7 @@ const AppHeader: React.FC<{ userInfo: HeaderUserInfo }> = ({ userInfo }) => {
                 />
 
                 <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[10px] py-[6.5px] text-xs -tracking-[0.2px] text-gray-500 hover:bg-gray-200 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400 dark:hover:bg-white/800 cursor-pointer">
-                  <span  className="inline-flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1">
                     <SearchCheck className="size-4" />
                     Procurar
                   </span>

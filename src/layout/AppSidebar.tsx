@@ -313,10 +313,10 @@ const AppSidebar: React.FC = () => {
               />
               <Image
                 src="/images/logotipo-branca.png"
-                className="hidden dark:block"
+                className="hidden h-auto dark:block"
                 alt="Logo"
                 width={150}
-                height={40}
+                height={36}
               />
             </>
           ) : (

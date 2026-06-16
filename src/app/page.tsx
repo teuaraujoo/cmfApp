@@ -16,7 +16,7 @@ export default function HomePage() {
             <Card className="w-full max-w-xl border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/30">
                 <CardHeader className="space-y-6 text-center">
                     <div className="flex items-center justify-center">
-                        <Image src="/images/logotipo-branca.png" width={200} height={200} alt="CMF logotipo" />
+                        <Image src="/images/logotipo-branca.png" width={200} height={47} alt="CMF logotipo" className="h-auto" />
                     </div>
 
                     <div className="space-y-3">
