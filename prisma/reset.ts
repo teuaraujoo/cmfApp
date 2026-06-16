@@ -26,9 +26,9 @@ const seededAuthUserIds = [
 ];
 
 async function resetAppTables() {
-  await prisma.aulas_individuais.deleteMany();
   await prisma.frequencia_aluno.deleteMany();
   await prisma.frequencia_professor.deleteMany();
+  await prisma.aulas_individuais.deleteMany();
 
   await prisma.turma_alunos.deleteMany();
   await prisma.turma_professores.deleteMany();

@@ -40,7 +40,7 @@ const usersSeed = [
       resp_tel: "11977770001",
       resp_nome: "Mariana Souza",
       tempo_aula: 72,
-      horas_mensais: "6.00",
+      horas_mensais: 6,
     },
   },
   {
@@ -57,7 +57,7 @@ const usersSeed = [
       resp_tel: "11977770002",
       resp_nome: "Carlos Oliveira",
       tempo_aula: 96,
-      horas_mensais: "8.00",
+      horas_mensais: 8,
     },
   },
   {
@@ -74,7 +74,7 @@ const usersSeed = [
       resp_tel: "11977770003",
       resp_nome: "Roberto Pereira",
       tempo_aula: 72,
-      horas_mensais: "6.00",
+      horas_mensais: 6,
     },
   },
   {
@@ -358,6 +358,10 @@ async function seedAulasIndividuais() {
     await prisma.modalidades.findUnique({ where: { tipo: "Online" } }),
     "Modalidade Online nao encontrada.",
   );
+  const adminUser = requireItem(
+    await prisma.public_users.findUnique({ where: { email: "admin.seed@cmf.com" } }),
+    "Usuario admin do seed nao encontrado para finalizar aula.",
+  );
   const alunos = await prisma.alunos.findMany({
     orderBy: { id: "asc" },
     take: 3,
@@ -382,8 +386,12 @@ async function seedAulasIndividuais() {
       modalidade_id: modalidadeOnline.id,
       started_at: addDays(today, 1, 10),
       ended_at: addDays(today, 1, 11),
+      status: "AGENDADA",
       encerrada: false,
       notas: null,
+      finished_at: null,
+      finished_by: null,
+      finished_role: null,
     },
     {
       aluno_id: segundoAluno.id,
@@ -391,8 +399,25 @@ async function seedAulasIndividuais() {
       modalidade_id: modalidadeOnline.id,
       started_at: addDays(today, 2, 15),
       ended_at: addDays(today, 2, 16),
+      status: "AGENDADA",
       encerrada: false,
       notas: null,
+      finished_at: null,
+      finished_by: null,
+      finished_role: null,
+    },
+    {
+      aluno_id: segundoAluno.id,
+      professor_id: primeiroProfessor.id,
+      modalidade_id: modalidadeOnline.id,
+      started_at: addDays(today, -1, 14),
+      ended_at: addDays(today, -1, 15),
+      status: "PENDENTE_FINALIZAÇÃO",
+      encerrada: false,
+      notas: null,
+      finished_at: null,
+      finished_by: null,
+      finished_role: null,
     },
     {
       aluno_id: primeiroAluno.id,
@@ -400,8 +425,12 @@ async function seedAulasIndividuais() {
       modalidade_id: modalidadeOnline.id,
       started_at: addDays(today, -2, 9),
       ended_at: addDays(today, -2, 10),
+      status: "FINALIZADA",
       encerrada: true,
       notas: "Aula concluida com revisao de equacoes.",
+      finished_at: addDays(today, -2, 10, 5),
+      finished_by: adminUser.id,
+      finished_role: "ADMIN",
     },
   ];
 
@@ -415,8 +444,15 @@ async function seedAulasIndividuais() {
       },
     });
 
-    if (!existingAula) {
-      await prisma.aulas_individuais.create({ data: aula });
+    if (existingAula) {
+      await prisma.aulas_individuais.update({
+        where: { id: existingAula.id },
+        data: aula,
+      });
+    } else {
+      await prisma.aulas_individuais.create({
+        data: aula,
+      });
     }
   }
 
