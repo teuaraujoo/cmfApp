@@ -2,34 +2,41 @@ import "server-only";
 
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getAllAulas, getAulas, getAulasCountByModalidade, getAulasHistoricoPaginated, getAulasNotFinished, getTotalAulas } from "./aulas.services";
-
+import { generalQueriesRateLimit } from "@/server/libs/ratelimit";
+import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 
 export async function getAulasForAdmin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`aulas:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAulas();
 };
 
 export async function getAllAulasForAdmin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`aulas:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAllAulas();
 };
 
 export async function getAulasNotFinishedForAdmin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`aulas:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAulasNotFinished();
 };
 
 export async function getTotalAulasForAdmin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`aulas:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getTotalAulas();
 };
 
 export async function getAulasHistoricoPaginatedForAdmin(page: number, pageSize: number, search?: string) {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`aulas:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAulasHistoricoPaginated(page, pageSize, search);
 };
 
 export async function getAulasCountByModalidadeForAdmin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`aulas:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAulasCountByModalidade();
 };

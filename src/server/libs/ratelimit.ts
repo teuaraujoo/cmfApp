@@ -30,7 +30,7 @@ export const generalRateLimit = new Ratelimit({
 
 // Limite principal de login por email
 export const loginRateLimitByEmail = new Ratelimit({
-  redis, 
+  redis,
   limiter: Ratelimit.slidingWindow(5, "1 m"),
   prefix: "ratelimit:login:email",
 });
@@ -47,4 +47,10 @@ export const adminMutationRateLimit = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(30, "1 h"),
   prefix: "ratelimit:admin",
+});
+
+export const generalQueriesRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(100, "1 m"),
+  prefix: "ratelimit:queries",
 });

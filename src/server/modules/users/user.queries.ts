@@ -2,32 +2,39 @@ import "server-only";
 
 import { requireAdminUser } from "../auth/auth.services";
 import { getAllAlunos, getAllProfessores, getTotalAlunos, getTotalProfessores, getTotalAlunosWithAulaIndividual } from "./users.services";
+import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
+import { generalQueriesRateLimit } from "@/server/libs/ratelimit";
 
 // ALUNOS
 
 export async function getTotalAlunosForAdimin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`alunos:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getTotalAlunos();
 };
 
 export async function getAllAlunosForAdmin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`alunos:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAllAlunos();
 };
 
 export async function getAlunosWithAulaIndividual() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`alunos:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getTotalAlunosWithAulaIndividual();
 }; 
 
 // PROFESSORES
 
 export async function getTotalProfessoresForAdmin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`professores:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getTotalProfessores();
 };
 
 export async function getAllProfessoresForAdmin() {
-    await requireAdminUser();
+    const session = await requireAdminUser();
+    await rateLimitByIdentifier(`professores:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAllProfessores();
 };
