@@ -39,7 +39,7 @@ export default function HeaderAlunosPage({
               type="text"
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
-              placeholder="Pesquisar por nome, serie ou modalidade"
+              placeholder="Pesquisar por nome, série ou modalidade"
               className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 text-sm text-gray-800 outline-none transition-colors placeholder:text-gray-400 focus:border-sky-300 focus:bg-white dark:border-gray-800 dark:bg-gray-900/70 dark:text-white/90 dark:placeholder:text-gray-500 dark:focus:border-sky-700"
             />
           </div>

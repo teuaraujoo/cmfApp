@@ -163,7 +163,7 @@ export default function ProfessorDashboardPage({
                   Nenhum professor encontrado
                 </h3>
                 <p className="mt-2 max-w-md text-sm text-gray-500 dark:text-gray-400">
-                  Ajuste a busca ou selecione outra materia para atualizar os
+                  Ajuste a busca ou selecione outra matéria para atualizar os
                   resultados.
                 </p>
               </div>

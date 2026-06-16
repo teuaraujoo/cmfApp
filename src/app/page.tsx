@@ -25,7 +25,7 @@ export default function HomePage() {
                         </CardTitle>
 
                         <CardDescription className="text-base leading-relaxed text-zinc-400">
-                            Acompanhe suas aulas individuais e em turma, marque sua prença e aprenda matemática de um jeito mais fácil, aproveite essa experiência!
+                            Acompanhe suas aulas individuais e em turma, marque sua presença e aprenda matemática de um jeito mais fácil, aproveite essa experiência!
                         </CardDescription>
                     </div>
                 </CardHeader>

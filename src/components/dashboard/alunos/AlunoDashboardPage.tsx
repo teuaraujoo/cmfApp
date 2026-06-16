@@ -181,8 +181,8 @@ export default function StudentsDashboardPage({
                 Nenhum aluno encontrado
               </h3>
               <p className="mt-2 max-w-md text-sm text-gray-500 dark:text-gray-400">
-                Tente ajustar a busca para encontrar um aluno pelo nome, serie,
-                modalidade ou responsavel.
+                Tente ajustar a busca para encontrar um aluno pelo nome, série,
+                modalidade ou responsável.
               </p>
             </div>
           ) : (

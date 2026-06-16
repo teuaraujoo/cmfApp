@@ -41,7 +41,7 @@ export default function ProfessoresOverview({
         <div className="mb-4 flex items-center gap-2">
           <BookOpen className="size-4 text-gray-400 dark:text-gray-500" />
           <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
-            Professores por materia
+            Professores por matéria
           </p>
         </div>
 
