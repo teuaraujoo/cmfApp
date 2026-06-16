@@ -10,6 +10,8 @@ export async function validateRequestOrigin(request: Request) {
     const origin = request.headers.get("origin");
     const appOrigin = process.env.APP_ORIGIN;
 
+    console.log({ origin, appOrigin });
+
     if (!appOrigin) {
         throw new AppError("Origem da aplicação não configurada.", 500);
     };
