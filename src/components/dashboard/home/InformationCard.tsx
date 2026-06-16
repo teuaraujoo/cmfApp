@@ -11,41 +11,42 @@ type cardInfo = {
   path: string;
   content: number
 };
-const [alunos, professores, aulas, turmas] = await Promise.all([
-  getTotalAlunosForAdimin(),
-  getTotalProfessoresForAdmin(),
-  getTotalAulasForAdmin(),
-  getTotalTurmasForAdmin()
-]);
-
-const cardsInfo: cardInfo[] = [
-  {
-    name: "Alunos",
-    icon: <CircleUserRound />,
-    path: "/dashboard/alunos",
-    content: alunos
-  },
-  {
-    name: "Professores",
-    icon: <GraduationCap />,
-    path: "/dashboard/professores",
-    content: professores
-  },
-  {
-    name: "Turmas",
-    icon: <ComponentIcon />,
-    path: "/dashboard/turmas",
-    content: turmas
-  },
-  {
-    name: "Aulas",
-    icon: <BookOpenText />,
-    path: "/dashboard/aulas/semana",
-    content: aulas
-  },
-]
 
 export default async function InformationCard() {
+
+  const [alunos, professores, aulas, turmas] = await Promise.all([
+    getTotalAlunosForAdimin(),
+    getTotalProfessoresForAdmin(),
+    getTotalAulasForAdmin(),
+    getTotalTurmasForAdmin()
+  ]);
+
+  const cardsInfo: cardInfo[] = [
+    {
+      name: "Alunos",
+      icon: <CircleUserRound />,
+      path: "/dashboard/alunos",
+      content: alunos
+    },
+    {
+      name: "Professores",
+      icon: <GraduationCap />,
+      path: "/dashboard/professores",
+      content: professores
+    },
+    {
+      name: "Turmas",
+      icon: <ComponentIcon />,
+      path: "/dashboard/turmas",
+      content: turmas
+    },
+    {
+      name: "Aulas",
+      icon: <BookOpenText />,
+      path: "/dashboard/aulas/semana",
+      content: aulas
+    },
+  ];
 
   const cardClassName =
     "group rounded-2xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg dark:border-gray-800 dark:bg-white/[0.03] dark:hover:border-sky-900/60 dark:hover:bg-white/[0.05] md:p-6";
