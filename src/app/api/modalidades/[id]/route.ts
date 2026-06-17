@@ -1,4 +1,4 @@
-import { AppError } from "@/server/error/app-errors";
+import { handleApiError } from "@/server/error/handle-api-error";
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getModalidadeById, updateModalidade, deleteModalidade } from "@/server/modules/modalidades/modalidades.services";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
@@ -23,20 +23,7 @@ export async function GET(
       { status: 200 },
     );
   } catch (err) {
-    if (err instanceof AppError) {
-      return Response.json(
-        { message: err.message },
-        { status: err.statusCode },
-      );
-    }
-
-    return Response.json(
-      {
-        message: "Erro ao acessar o banco de dados.",
-        detail: err instanceof Error ? err.message : String(err),
-      },
-      { status: 500 },
-    );
+    return handleApiError(err, "Erro ao acessar o banco de dados.");
   }
 }
 
@@ -62,20 +49,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     );
 
   } catch (err) {
-    if (err instanceof AppError) {
-      return Response.json(
-        { message: err.message },
-        { status: err.statusCode },
-      );
-    }
-
-    return Response.json(
-      {
-        message: "Erro ao acessar o banco de dados.",
-        detail: err instanceof Error ? err.message : String(err),
-      },
-      { status: 500 },
-    );
+    return handleApiError(err, "Erro ao acessar o banco de dados.");
   }
 }
 
@@ -100,19 +74,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     );
 
   } catch (err) {
-    if (err instanceof AppError) {
-      return Response.json(
-        { message: err.message },
-        { status: err.statusCode },
-      );
-    }
-
-    return Response.json(
-      {
-        message: "Erro ao acessar o banco de dados.",
-        detail: err instanceof Error ? err.message : String(err),
-      },
-      { status: 500 },
-    );
+    return handleApiError(err, "Erro ao acessar o banco de dados.");
   }
 }

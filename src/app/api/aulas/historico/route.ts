@@ -1,4 +1,4 @@
-import { AppError } from "@/server/error/app-errors";
+import { handleApiError } from "@/server/error/handle-api-error";
 import { getAulasHistoricoPaginatedForAdmin } from "@/server/modules/aulas/aulas.queries";
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -26,19 +26,6 @@ export async function GET(request: Request) {
             { status: 200 },
         );
     } catch (err) {
-        if (err instanceof AppError) {
-            return Response.json(
-                { message: err.message },
-                { status: err.statusCode },
-            );
-        };
-
-        return Response.json(
-            {
-                message: "Erro ao acessar o banco de dados.",
-                detail: err instanceof Error ? err.message : String(err),
-            },
-            { status: 500 },
-        );
+        return handleApiError(err, "Erro ao acessar o banco de dados.");
     };
 };
