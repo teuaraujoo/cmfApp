@@ -274,6 +274,10 @@ async function validateUpdateUser(data: UpdateUserBody, id: number) {
   const findEmail = await UsersRepositories.getByEmail(data.email);
   const findUser = await UsersRepositories.getById(id);
 
+  if (findUser?.status !== "ATIVO") {
+    throw new AppError("Usuário inativo não pode ser editado!", 400);
+  };
+
   if (!findUser) {
     throw new AppError("Usuário não encontrado!", 404);
   };
