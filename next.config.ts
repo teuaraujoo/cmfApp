@@ -13,6 +13,7 @@ const cspDirectives = [
   `style-src 'self' 'unsafe-inline'`,
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""}`,
+  "upgrade-insecure-request"
 ];
 
 const contentSecurityPolicy = cspDirectives.join("; ");
@@ -39,7 +40,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
           },
           {
             key: "Cross-Origin-Opener-Policy",
@@ -66,13 +67,13 @@ const nextConfig: NextConfig = {
             value: "0",
           },
           {
-            key: "Content-Security-Policy-Report-Only",
+            key: "Content-Security-Policy",
             value: contentSecurityPolicy,
           },
-          // {
-          //   key: "Strict-Transport-Security",
-          //   value: "max-age=63072000; includeSubDomains; preload",
-          // },
+          ...(isDev ? [] : [{
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          }]),
         ],
       },
       {

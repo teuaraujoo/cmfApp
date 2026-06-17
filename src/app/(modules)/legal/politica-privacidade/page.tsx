@@ -1,4 +1,25 @@
 import LegalDocument from "@/components/legal/LegalDocuments";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Política de Privacidade",
+  description:
+    "Entenda como a plataforma CMF trata dados pessoais, finalidades de uso, segurança e direitos dos usuários conforme a LGPD.",
+  alternates: {
+    canonical: "/legal/politica-privacidade",
+  },
+  openGraph: {
+    title: "Política de Privacidade | CMF",
+    description:
+      "Entenda como a plataforma CMF trata dados pessoais, finalidades de uso, segurança e direitos dos usuários conforme a LGPD.",
+    url: "/legal/politica-privacidade",
+  },
+  twitter: {
+    title: "Política de Privacidade | CMF",
+    description:
+      "Entenda como a plataforma CMF trata dados pessoais, finalidades de uso, segurança e direitos dos usuários conforme a LGPD.",
+  },
+};
 
 const sections = [
   {

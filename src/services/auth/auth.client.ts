@@ -76,5 +76,7 @@ export async function logoutUser() {
 
     const result = await response.json();
 
-    if (!response.ok) return { err: result.message ?? "Error ao fazer logout." }
+    if (!response.ok) return { err: result.message ?? "Error ao fazer logout." };
+
+    return result;
 };

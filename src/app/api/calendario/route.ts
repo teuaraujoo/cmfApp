@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { AppError } from "@/server/error/app-errors";
+import { handleApiError } from "@/server/error/handle-api-error";
 import { getCalendarEventsForAdmin } from "@/server/modules/calendar/calendar.queries";
 
 const calendarRangeSchema = z
@@ -28,26 +28,6 @@ export async function GET(request: Request) {
     });
     
   } catch (error) {
-    if (error instanceof AppError) {
-      return Response.json(
-        { message: error.message },
-        { status: error.statusCode },
-      );
-    };
-
-    if (error instanceof z.ZodError) {
-      return Response.json(
-        { message: error.issues[0]?.message ?? "Intervalo invalido." },
-        { status: 400 },
-      );
-    };
-
-    return Response.json(
-      {
-        message: "Erro ao carregar eventos do calendario.",
-        detail: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 },
-    );
+    return handleApiError(error, "Erro ao carregar eventos do calendario.");
   };
 };

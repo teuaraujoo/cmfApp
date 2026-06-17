@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import ButtonShineHoverDemo from "@/components/ui/button-03";
 import {
@@ -9,6 +10,15 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+    title: "CMF | Gestão educacional em um só painel",
+    description:
+        "Organize alunos, professores, turmas, aulas, agenda e modalidades em uma plataforma administrativa simples, segura e centralizada. Acompanhe suas aulas e registre sua presença.",
+    alternates: {
+        canonical: "/",
+    },
+};
 
 export default function HomePage() {
     return (

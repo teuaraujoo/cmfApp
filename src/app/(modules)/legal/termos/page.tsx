@@ -1,4 +1,25 @@
 import LegalDocument from "@/components/legal/LegalDocuments";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Termos de Uso",
+  description:
+    "Consulte as regras de uso da plataforma CMF, responsabilidades dos usuários e condições de acesso ao sistema.",
+  alternates: {
+    canonical: "/legal/termos",
+  },
+  openGraph: {
+    title: "Termos de Uso | CMF",
+    description:
+      "Consulte as regras de uso da plataforma CMF, responsabilidades dos usuários e condições de acesso ao sistema.",
+    url: "/legal/termos",
+  },
+  twitter: {
+    title: "Termos de Uso | CMF",
+    description:
+      "Consulte as regras de uso da plataforma CMF, responsabilidades dos usuários e condições de acesso ao sistema.",
+  },
+};
 
 const sections = [
   {

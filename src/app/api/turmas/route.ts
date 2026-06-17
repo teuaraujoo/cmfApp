@@ -1,5 +1,5 @@
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
-import { AppError } from "@/server/error/app-errors";
+import { handleApiError } from "@/server/error/handle-api-error";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
@@ -19,20 +19,7 @@ export async function GET() {
       { status: 200 },
     );
   } catch (err) {
-    if (err instanceof AppError) {
-      return Response.json(
-        { message: err.message },
-        { status: err.statusCode },
-      );
-    };
-
-    return Response.json(
-      {
-        message: "Erro ao acessar o banco de dados.",
-        detail: err instanceof Error ? err.message : String(err),
-      },
-      { status: 500 },
-    );
+    return handleApiError(err, "Erro ao acessar o banco de dados.");
   };
 };
 
@@ -57,19 +44,6 @@ export async function POST(request: Request) {
     );
 
   } catch (err) {
-    if (err instanceof AppError) {
-      return Response.json(
-        { message: err.message },
-        { status: err.statusCode },
-      );
-    }
-
-    return Response.json(
-      {
-        message: "Erro ao acessar o banco de dados.",
-        detail: err instanceof Error ? err.message : String(err),
-      },
-      { status: 500 },
-    );
+    return handleApiError(err, "Erro ao acessar o banco de dados.");
   };
 };
