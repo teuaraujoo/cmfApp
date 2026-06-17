@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     process.env.APP_ORIGIN ?? "http://localhost:3000",
   ),
   title: {
-    default: "CMF| Gestão Educacional em um só painel",
+    default: "CMF | Gestão Educacional em um só painel",
     template: "%s | CMF",
   },
   description:

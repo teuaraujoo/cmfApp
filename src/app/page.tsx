@@ -12,9 +12,9 @@ import {
 import Image from "next/image";
 
 export const metadata: Metadata = {
-    title: "CMF | Acesse sua área",
+    title: "CMF | Gestão educacional em um só painel",
     description:
-        "Acesse o sistema CMF para acompanhar sua agenda e informações acadêmica.",
+        "Organize alunos, professores, turmas, aulas, agenda e modalidades em uma plataforma administrativa simples, segura e centralizada. Acompanhe suas aulas e registre sua presença.",
     alternates: {
         canonical: "/",
     },
