@@ -110,19 +110,14 @@ export default function ProfessorForm({
             </FieldLabel>
             <Select
               name="materia"
+              defaultValue={professor?.materia ?? ""}
               required
             >
               <SelectTrigger
                 id="materia"
                 className="h-14 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
               >
-                <SelectValue placeholder="Selecione a matéria">
-                  {(value) =>
-                    materias.find(
-                      (materia) => String(materia.tipo) === String(value),
-                    )?.tipo ?? "Selecione uma matéria"
-                  }
-                </SelectValue>
+                <SelectValue placeholder="Selecione a matéria" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>

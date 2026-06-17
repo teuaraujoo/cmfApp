@@ -89,24 +89,39 @@ export default function ProfessoresGrid({
                 <EllipsisVertical className="size-5" />
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => onEditProfessor(professor)}
-                  className="cursor-pointer dark:hover:bg-gray-700"
-                >
-                  <Pencil className="size-4" />
-                  Editar
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    void toggleProfessorStatus(professor);
-                  }}
-                  className={`${professor.status === "ATIVO" ? "text-red-500" : "text-green-500"} cursor-pointer dark:hover:bg-gray-700`}
-                >
-                  {professor.status === "ATIVO" ? <ShieldOff /> : <ShieldCheck />}
-                  {professor.status === "ATIVO" ? "Desativar" : "Ativar"}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
+              {
+                professor.status === "ATIVO" ?
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={() => onEditProfessor(professor)}
+                      className="cursor-pointer dark:hover:bg-gray-700"
+                    >
+                      <Pencil className="size-4" />
+                      Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        void toggleProfessorStatus(professor);
+                      }}
+                      className={`${professor.status === "ATIVO" ? "text-red-500" : "text-green-500"} cursor-pointer dark:hover:bg-gray-700`}
+                    >
+                      {professor.status === "ATIVO" ? <ShieldOff /> : <ShieldCheck />}
+                      {professor.status === "ATIVO" ? "Desativar" : "Ativar"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                  :
+                  <DropdownMenuContent >
+                    <DropdownMenuItem
+                      onClick={() => {
+                        void toggleProfessorStatus(professor);
+                      }}
+                      className={`${professor.status === "ATIVO" ? "text-red-500" : "text-green-500"} cursor-pointer dark:hover:bg-gray-700`}
+                    >
+                      {professor.status === "ATIVO" ? <ShieldOff /> : <ShieldCheck />}
+                      {professor.status === "ATIVO" ? "Desativar" : "Ativar"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+              }
             </DropdownMenu>
           </div>
         </article>
