@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import ButtonShineHoverDemo from "@/components/ui/button-03";
 import {
@@ -9,6 +10,15 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+    title: "CMF | Acesse sua área",
+    description:
+        "Acesse o sistema CMF para acompanhar sua agenda e informações acadêmica.",
+    alternates: {
+        canonical: "/",
+    },
+};
 
 export default function HomePage() {
     return (
