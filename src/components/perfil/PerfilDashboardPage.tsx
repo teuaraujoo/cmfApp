@@ -117,7 +117,7 @@ export default function PerfilDashboardPage({
     };
 
     router.replace("/dashboard/login");
-    toast.success("Logout realizado com sucesso!");
+    toast.success(result?.message);
   };
 
   return (
