@@ -3,10 +3,10 @@ import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL_TEST;
 
 if (!databaseUrl) {
-  throw new Error("DATABASE_URL nao encontrada. Configure o .env antes de rodar o reset.");
+  throw new Error("DATABASE_URL_TEST nao encontrada. Configure o .env antes de rodar o reset.");
 };
 
 if (process.env.NODE_ENV === "production") {
