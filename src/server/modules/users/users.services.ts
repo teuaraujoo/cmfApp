@@ -248,21 +248,23 @@ export async function getProfessorByUserId(id: number) {
 
 async function validateUser(data: CreateUserBody) {
   const findEmail = await UsersRepositories.getByEmail(data.email);
+  validaUserTelefone(data.tel, "usuário");
 
+  // Validacao email
   if (findEmail) {
     throw new AppError("Email já cadastrado!", 409);
   };
 
+  // Validacao dados de aluno (existencia)
   if (data.role === "ALUNO" && !data.aluno) {
     throw new AppError("Dados do aluno são obrigatórios!", 400);
   };
 
   if (data.role === "ALUNO") {
-    if (data.aluno!.resp_tel.length > 11) {
-      throw new AppError("Número do responsável inválido", 400);
-    };
-  };
+    validaUserTelefone(data.aluno?.resp_tel, "responsável");
+  }
 
+  // Validacao dados de professor (existencia)
   if (data.role === "PROFESSOR" && !data.professor) {
     throw new AppError("Dados do professor são obrigatórios!", 400);
   };
@@ -293,4 +295,24 @@ async function validateUpdateUser(data: UpdateUserBody, id: number) {
   };
 
   return findUser.auth_user_id;
+};
+
+function validaUserTelefone(tel: string | undefined, type: string) {
+  if (!tel) {
+    return;
+  };
+
+  const validDDDs = ["11", "12", "13", "14", "15", "16", "17", "18", "19", "21", "22", "24", "27", "28", "31", "32", "33", "34", "35", "37", "38", "41", "42", "43", "44", "45", "46", "47", "48", "49", "51", "53", "54", "55", "61", "62", "64", "63", "65", "66", "67", "68", "69", "71", "73", "74", "75", "77", "79", "81", "87", "82", "83", "84", "85", "88", "86", "89", "91", "93", "94", "92", "97", "95", "96", "98", "99"];
+  const ddd = tel.slice(0, 2);
+  const phone = tel.slice(2);
+
+  // Validacao telefone (repeticao)
+  if (/^(\d)\1+$/.test(phone)) {
+    throw new AppError(`Telefone do ${type} inválido`, 400);
+  };
+
+  // Validacao de ddd
+  if (!validDDDs.includes(ddd)) {
+    throw new AppError(`DDD do ${type} inválido!`, 400);
+  };
 };

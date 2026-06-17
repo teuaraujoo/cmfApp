@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Professor } from "@/@types//professor/professor.types";
+import { MaskedPhoneInput } from "@/components/ui/forms/MaskedPhoneInput";
 
 const materias = [
   { id: 1, tipo: "Matemática" },
@@ -90,19 +91,13 @@ export default function ProfessorForm({
         </Field>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field className="space-y-2">
-            <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Telefone
-            </FieldLabel>
-            <Input
-              id="telefone"
-              type="tel"
-              name="telefone"
-              defaultValue={professor?.tel ?? ""}
-              required
-              className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition-colors focus:border-sky-300 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:focus:border-sky-700"
-            />
-          </Field>
+          <MaskedPhoneInput
+            id="telefone"
+            name="telefone"
+            label="Telefone"
+            defaultValue={professor?.tel}
+            required
+          />
 
           <Field className="space-y-2">
             <FieldLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">

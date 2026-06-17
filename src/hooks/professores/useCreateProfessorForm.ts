@@ -35,7 +35,7 @@ export function useCreateProfessorForm({ onSuccess, }: UseCreateProfessorFormPar
                 email: getRequiredFormString(formData, "email", "Email"),
                 temporary_password: TEMP_PASSWORD,
                 role: "PROFESSOR" as const,
-                tel: getRequiredFormString(formData, "telefone", "Telefone"),
+                tel: getRequiredFormString(formData, "telefone", "Telefone").replace(/\D/g, ""),
                 professor: {
                     materia: getRequiredFormString(formData, "materia", "Materia"),
                 }
@@ -63,5 +63,5 @@ export function useCreateProfessorForm({ onSuccess, }: UseCreateProfessorFormPar
         tempPassword: TEMP_PASSWORD,
         handleCreateProfessor,
         resetForm
-    }
-}
+    };
+};
