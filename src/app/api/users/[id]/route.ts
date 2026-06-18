@@ -4,6 +4,7 @@ import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { getUserById, inactiveUser, activeUser, updateUser } from "@/server/modules/users/users.services";
+import { validateCsrfToken } from "@/server/security/csrf.helper";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -27,6 +28,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     try {
 
         await validateRequestOrigin(request);
+        await validateCsrfToken(request);
 
         const session = await requireAdminUser();
         await rateLimitByIdentifier(`users:delete:admin:${session.appUser.id}`, adminMutationRateLimit);
@@ -43,15 +45,15 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-
         await validateRequestOrigin(request);
+        await validateCsrfToken(request);
         
         const session = await requireAdminUser();
         await rateLimitByIdentifier(`users:update:admin:${session.appUser.id}`, adminMutationRateLimit);
-
+        
         const body = await request.json();
         const { id } = await params;
-
+        
         const user = await updateUser(body, Number(id));
 
         return Response.json({

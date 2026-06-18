@@ -1,4 +1,5 @@
 import apiRoutes from "@/lib/api";
+import { apiFetch } from "@/services/csrf/csrf.client";
 
 type TurmaProfessor = {
     professor_id: number
@@ -25,67 +26,46 @@ type CreateTurmaPayload = {
     turma_professores: TurmaProfessor[]
 };
 
-export async function createTurma(turma: CreateTurmaPayload) {
+async function turmasRequest(
+    url: string,
+    method: "POST" | "DELETE" | "PUT",
+    errMessage: string,
+    body?: CreateTurmaPayload,
+) {
+
     try {
-        const response = await fetch(`${apiRoutes.turmas}`, {
-            method: "POST",
+        const response = await apiFetch(url, {
+            method,
             headers: {
                 "Content-Type": "application/json"
             },
             credentials: "same-origin",
-            body: JSON.stringify(turma),
+            body: method === "DELETE" ? undefined : JSON.stringify(body)
         });
+
+        if (!response) {
+            return;
+        };
 
         const result = await response.json();
 
-        if (!response.ok) return { err: result.message ?? "Não foi possível criar turma." };
+        if (!response.ok) return { err: result.message ?? errMessage };
 
         return result;
 
     } catch {
         return { err: "Nao foi possivel conectar ao servidor." };
     };
+};
+
+export async function createTurma(turma: CreateTurmaPayload) {
+    return turmasRequest(`${apiRoutes.turmas}`, "POST", "Não foi possível criar turma.", turma);
 };
 
 export async function updateTurma(turma: CreateTurmaPayload, turmaId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.turmas}/${turmaId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-            body: JSON.stringify(turma),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Não foi possível atualizar turma." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return turmasRequest(`${apiRoutes.turmas}/${turmaId}`, "PUT", "Não foi possível atualizar turma.", turma);
 };
 
 export async function deleteTurma(turmaId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.turmas}/${turmaId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Nao foi possivel inativar aluno." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return turmasRequest(`${apiRoutes.turmas}/${turmaId}`, "DELETE", "Não foi possível deletar turma.");
 };

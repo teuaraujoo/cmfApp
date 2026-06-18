@@ -1,88 +1,51 @@
 import apiRoutes from "@/lib/api";
 import { CreateAulaPayload } from "@/@types/aulas/aulas.types";
+import { apiFetch } from "@/services/csrf/csrf.client";
 
-export async function createAula(aula: CreateAulaPayload) {
+async function aulasRequest(
+    url: string,
+    method: "POST" | "PATCH" | "DELETE",
+    errMessage: string,
+    body?: CreateAulaPayload | string,
+) {
+
     try {
-        const response = await fetch(`${apiRoutes.aulas}`, {
-            method: "POST",
+
+        const response = await apiFetch(url, {
+            method,
             headers: {
                 "Content-Type": "application/json"
             },
             credentials: "same-origin",
-            body: JSON.stringify(aula),
+            body: method === "DELETE" ? undefined : typeof body === "string" ? JSON.stringify({ body }) : JSON.stringify(body)
         });
+
+        if (!response) {
+            return;
+        };
 
         const result = await response.json();
 
-        if (!response.ok) return { err: result.message ?? "Não foi possível criar aula." };
+        if (!response.ok) return { err: result.message ?? errMessage };
 
         return result;
-
     } catch {
         return { err: "Nao foi possivel conectar ao servidor." };
     };
+};
+
+export async function createAula(aula: CreateAulaPayload) {
+    return aulasRequest(`${apiRoutes.aulas}`, "POST", "Não foi possível criar aula.", aula);
 };
 
 export async function deleteAula(aulaId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.aulas}/${aulaId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Não foi possível deletar aula." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return aulasRequest(`${apiRoutes.aulas}/${aulaId}`, "DELETE", "Não foi possível excluir aula.");
 };
 
 export async function finalizarAula(aulaId: number, notas: string) {
-    try {
-        const response = await fetch(`${apiRoutes.aulas}/${aulaId}/finalizacao`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-            body: JSON.stringify({ notas }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Não foi possível finalziar aula." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return aulasRequest(`${apiRoutes.aulas}/${aulaId}/finalizacao`, "PATCH", "Não foi possível finalizar aula", notas)
 };
 
 export async function iniciarAula(aulaId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.aulas}/${aulaId}/inicio`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Não foi possível iniciar aula." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return aulasRequest(`${apiRoutes.aulas}/${aulaId}/inicio`, "PATCH", "Não foi possível iniciar aula");
 };

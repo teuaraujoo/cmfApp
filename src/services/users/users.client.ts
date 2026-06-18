@@ -1,6 +1,7 @@
 import apiRoutes from "@/lib/api";
 import type { CreateProfessorPayload } from "@/@types/professor/professor.types";
 import type { CreateAlunoPayload } from "@/@types/aluno/aluno.types";
+import { apiFetch } from "@/services/csrf/csrf.client";
 
 type UpdateAlunoPayload = Omit<CreateAlunoPayload, "temporary_password">;
 
@@ -11,154 +12,64 @@ export type UpdateUserProfilePayload = {
     tel: string | null;
 };
 
-export async function createAluno(aluno: CreateAlunoPayload) {
+async function usersRequest(
+    url: string,
+    method: "POST" | "PATCH" | "DELETE" | "PUT",
+    errMessage: string,
+    body?: CreateAlunoPayload | CreateProfessorPayload | UpdateAlunoPayload | UpdateUserProfilePayload
+) {
+
     try {
-        const response = await fetch(`${apiRoutes.users}`, {
-            method: "POST",
+        const noBody = method === "DELETE" && body === undefined || method === "PATCH" && body === undefined;
+
+        const response = await apiFetch(url, {
+            method,
             headers: {
                 "Content-Type": "application/json"
             },
             credentials: "same-origin",
-            body: JSON.stringify(aluno),
+            body: noBody ? undefined : JSON.stringify(body)
         });
+
+
+        if (!response) {
+            return;
+        };
 
         const result = await response.json();
 
-        if (!response.ok) return { err: result.message ?? "Não foi possível criar aluno." };
+        if (!response.ok) return { err: result.message ?? errMessage };
 
         return result;
-
     } catch {
         return { err: "Nao foi possivel conectar ao servidor." };
     };
+};
+
+export async function createAluno(aluno: CreateAlunoPayload) {
+    return usersRequest(`${apiRoutes.users}`, "POST", "Não foi possível criar aluno.", aluno);
 };
 
 export async function updateAluno(aluno: UpdateAlunoPayload, userId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.users}/${userId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-            body: JSON.stringify(aluno)
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Não foi possível atualizar aluno." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return usersRequest(`${apiRoutes.users}/${userId}`, "PUT", "Não foi possível atualizar aluno.", aluno);
 };
 
 export async function inactiveUser(userId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.users}/${userId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Nao foi possivel inativar aluno." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return usersRequest(`${apiRoutes.users}/${userId}`, "DELETE", "Não foi possível inativar usuário.");
 };
 
 export async function activeUser(userId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.users}/${userId}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Nao foi possivel ativar aluno." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return usersRequest(`${apiRoutes.users}/${userId}`, "PATCH", "Não foi possível ativar usuário.");
 };
 
 export async function createProfessor(professor: CreateProfessorPayload) {
-
-    try {
-        const response = await fetch(`${apiRoutes.users}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-            body: JSON.stringify(professor)
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Nao foi possivel atualizar professor." };
-
-        return result;
-
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    }
-
+    return usersRequest(`${apiRoutes.users}`, "POST", "Não foi possível criar professor", professor);
 };
 
 export async function updateProfessor(professor: CreateProfessorPayload, userId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.users}/${userId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-            body: JSON.stringify(professor)
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Nao foi possivel atualizar professor." };
-
-        return result;
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return usersRequest(`${apiRoutes.users}/${userId}`, "PUT", "Não foi possível atualizar professor", professor);
 };
 
 export async function updateUser(user: UpdateUserProfilePayload, userId: number) {
-    try {
-        const response = await fetch(`${apiRoutes.users}/${userId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-            body: JSON.stringify(user)
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) return { err: result.message ?? "Nao foi possivel atualizar suas informações." };
-
-        return result;
-    } catch {
-        return { err: "Nao foi possivel conectar ao servidor." };
-    };
+    return usersRequest(`${apiRoutes.users}/${userId}`, "PUT", "Não foi possível atualizar suas informações.", user);
 };

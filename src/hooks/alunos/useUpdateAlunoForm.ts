@@ -43,7 +43,7 @@ export function useUpdateAlunoForm({
         nome: getRequiredFormString(formData, "nome", "Nome"),
         email: getRequiredFormString(formData, "email", "Email"),
         role: "ALUNO" as const,
-        tel: getRequiredFormString(formData, "telefone", "Telefone"),
+        tel: getRequiredFormString(formData, "telefone", "Telefone").replace(/\D/g, ""),
         aluno: {
           data_nasc: dataNasc,
           serie: getRequiredFormString(formData, "serie", "Serie"),
@@ -52,7 +52,7 @@ export function useUpdateAlunoForm({
             formData,
             "respTel",
             "Telefone do responsavel",
-          ),
+          ).replace(/\D/g, ""),
           resp_nome: getRequiredFormString(
             formData,
             "respNome",
