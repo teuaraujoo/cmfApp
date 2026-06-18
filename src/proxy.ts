@@ -35,9 +35,13 @@ function extractAccessToken(cookieValue: string): string | null {
 };
 
 export async function proxy(request: NextRequest) {
+    if (!process.env.JWT_TOKEN_NAME) {
+        throw Error("Nome do token jwt não configurado");
+    };
+
     const pathname = request.nextUrl.pathname;
     const publicRoute = publicRoutes.find(route => route.path === pathname);
-    const authToken = request.cookies.get("sb-omhisblfpknelvzdjcpa-auth-token");
+    const authToken = request.cookies.get(process.env.JWT_TOKEN_NAME);
 
     if (publicAsset(pathname)) {
         return NextResponse.next();
