@@ -5,8 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 // Ele é necessário para criar usuários no Auth sem depender de uma sessão do usuário final.
 
 export function createAdminClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL_TEST;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY_TEST;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
     throw new Error("As variáveis do client admin do Supabase não foram configuradas.");
