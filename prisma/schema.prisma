@@ -503,21 +503,20 @@ model alunos {
   id                Int                 @id @default(autoincrement())
   user_id           Int                 @unique
   data_nasc         DateTime            @db.Date
-  serie             String              @db.VarChar(50)
-  resp_tel          String?             @db.VarChar(20)
-  resp_nome         String?             @db.VarChar(120)
+  serie             String              @db.VarChar
+  resp_tel          String?             @db.VarChar
+  resp_nome         String?             @db.VarChar
   tempo_aula        Int
-  horas_mensais     Decimal             @db.Decimal(5, 2)
-  status            String              @default("ATIVO") @db.VarChar(20)
+  horas_mensais     Decimal             @db.Decimal
+  status            String              @default("ATIVO") @db.VarChar
   created_at        DateTime            @default(now()) @db.Timestamp(6)
   updated_at        DateTime            @default(now()) @db.Timestamp(6)
-  escola            String              @db.VarChar(150)
-  users             public_users        @relation(fields: [user_id], references: [id], map: "fk_alunos_user")
+  escola            String              @db.VarChar
+  users             public_users        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_alunos_user")
   aulas_individuais aulas_individuais[]
   frequencia_aluno  frequencia_aluno[]
   turma_alunos      turma_alunos[]
 
-  @@index([status], map: "idx_alunos_status")
   @@schema("public")
 }
 
@@ -535,18 +534,15 @@ model aulas_individuais {
   encerrada            Boolean                @default(false)
   finished_at          DateTime?              @db.Timestamptz(6)
   finished_by          Int?
-  finished_role        String?                @db.VarChar(20)
-  status               String                 @default("AGENDADA") @db.VarChar(50)
-  users                public_users?          @relation(fields: [finished_by], references: [id], onDelete: Restrict)
-  alunos               alunos                 @relation(fields: [aluno_id], references: [id], map: "fk_aulas_individuais_aluno")
-  modalidades          modalidades            @relation(fields: [modalidade_id], references: [id], map: "fk_aulas_individuais_modalidade")
-  professores          professores            @relation(fields: [professor_id], references: [id], map: "fk_aulas_individuais_professor")
+  finished_role        String?                @db.VarChar
+  status               String                 @default("AGENDADA") @db.VarChar
+  users                public_users?          @relation(fields: [finished_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  alunos               alunos                 @relation(fields: [aluno_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_aulas_individuais_aluno")
+  modalidades          modalidades            @relation(fields: [modalidade_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_aulas_individuais_modalidade")
+  professores          professores            @relation(fields: [professor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_aulas_individuais_professor")
   frequencia_aluno     frequencia_aluno[]
   frequencia_professor frequencia_professor[]
 
-  @@index([aluno_id], map: "idx_aulas_aluno")
-  @@index([started_at], map: "idx_aulas_data")
-  @@index([professor_id], map: "idx_aulas_professor")
   @@schema("public")
 }
 
@@ -555,21 +551,18 @@ model frequencia_aluno {
   id                Int                @id @default(autoincrement())
   turma_agenda_id   Int
   aluno_id          Int
-  status            String             @db.VarChar(30)
+  status            String             @db.VarChar
   confirmed_at      DateTime           @default(now()) @db.Timestamp(6)
   aula_id           Int?
   turma_id          Int?
-  alunos            alunos             @relation(fields: [aluno_id], references: [id], map: "fk_frequencia_aluno_aluno")
-  turma_agenda      turma_agenda       @relation(fields: [turma_agenda_id], references: [id], map: "fk_frequencia_aluno_turma_agenda")
-  aulas_individuais aulas_individuais? @relation(fields: [aula_id], references: [id], onDelete: Restrict)
-  turmas            turmas?            @relation(fields: [turma_id], references: [id], onDelete: Restrict)
+  alunos            alunos             @relation(fields: [aluno_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_frequencia_aluno_aluno")
+  turma_agenda      turma_agenda       @relation(fields: [turma_agenda_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_frequencia_aluno_turma_agenda")
+  aulas_individuais aulas_individuais? @relation(fields: [aula_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  turmas            turmas?            @relation(fields: [turma_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([aluno_id], map: "idx_frequencia_aluno_aluno_id")
-  @@index([turma_agenda_id], map: "idx_frequencia_aluno_turma_agenda_id")
   @@schema("public")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model frequencia_professor {
   id                Int                @id @default(autoincrement())
   turma_agenda_id   Int
@@ -579,19 +572,17 @@ model frequencia_professor {
   notas             String?
   aula_id           Int?
   turma_id          Int?
-  professores       professores        @relation(fields: [professor_id], references: [id], map: "fk_frequencia_professor_professor")
-  turma_agenda      turma_agenda       @relation(fields: [turma_agenda_id], references: [id], map: "fk_frequencia_professor_turma_agenda")
-  aulas_individuais aulas_individuais? @relation(fields: [aula_id], references: [id], onDelete: Restrict)
-  turmas            turmas?            @relation(fields: [turma_id], references: [id], onDelete: Restrict)
+  professores       professores        @relation(fields: [professor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_frequencia_professor_professor")
+  turma_agenda      turma_agenda       @relation(fields: [turma_agenda_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_frequencia_professor_turma_agenda")
+  aulas_individuais aulas_individuais? @relation(fields: [aula_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  turmas            turmas?            @relation(fields: [turma_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([professor_id], map: "idx_frequencia_professor_professor_id")
-  @@index([turma_agenda_id], map: "idx_frequencia_professor_turma_agenda_id")
   @@schema("public")
 }
 
 model modalidades {
   id                Int                 @id @default(autoincrement())
-  tipo              String              @unique @db.VarChar(100)
+  tipo              String              @unique @db.VarChar
   aulas_individuais aulas_individuais[]
   turmas            turmas[]
 
@@ -602,16 +593,15 @@ model modalidades {
 model professores {
   id                   Int                    @id @default(autoincrement())
   user_id              Int                    @unique
-  materia              String                 @db.VarChar(100)
-  status               String                 @default("ATIVO") @db.VarChar(20)
+  materia              String                 @db.VarChar
+  status               String                 @default("ATIVO") @db.VarChar
   created_at           DateTime               @default(now()) @db.Timestamp(6)
   updated_at           DateTime               @default(now()) @db.Timestamp(6)
   aulas_individuais    aulas_individuais[]
   frequencia_professor frequencia_professor[]
-  users                public_users           @relation(fields: [user_id], references: [id], map: "fk_professores_user")
+  users                public_users           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_professores_user")
   turma_professores    turma_professores[]
 
-  @@index([status], map: "idx_professores_status")
   @@schema("public")
 }
 
@@ -626,11 +616,8 @@ model turma_agenda {
   updated_at           DateTime               @default(now()) @db.Timestamp(6)
   frequencia_aluno     frequencia_aluno[]
   frequencia_professor frequencia_professor[]
-  turmas               turmas                 @relation(fields: [turma_id], references: [id], onDelete: Cascade, map: "fk_turma_agenda_turma")
+  turmas               turmas                 @relation(fields: [turma_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_turma_agenda_turma")
 
-  @@unique([turma_id, dia_semana, horario_inicio, horario_fim], map: "uq_turma_agenda_slot")
-  @@index([dia_semana], map: "idx_turma_agenda_dia_semana")
-  @@index([turma_id], map: "idx_turma_agenda_turma_id")
   @@schema("public")
 }
 
@@ -639,10 +626,9 @@ model turma_alunos {
   turma_id   Int
   alunos_id  Int
   created_at DateTime @default(now()) @db.Timestamp(6)
-  alunos     alunos   @relation(fields: [alunos_id], references: [id], map: "fk_turma_alunos_aluno")
-  turmas     turmas   @relation(fields: [turma_id], references: [id], onDelete: Cascade, map: "fk_turma_alunos_turma")
+  alunos     alunos   @relation(fields: [alunos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_turma_alunos_aluno")
+  turmas     turmas   @relation(fields: [turma_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_turma_alunos_turma")
 
-  @@index([alunos_id], map: "idx_turma_alunos_alunos_id")
   @@schema("public")
 }
 
@@ -651,20 +637,18 @@ model turma_professores {
   turma_id       Int
   professores_id Int
   created_at     DateTime    @default(now()) @db.Timestamp(6)
-  turmas         turmas      @relation(fields: [turma_id], references: [id], onDelete: Cascade, map: "fk_turma_professores_turma")
-  professores    professores @relation(fields: [professores_id], references: [id], map: "fk_turma_professsores_professor")
+  turmas         turmas      @relation(fields: [turma_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_turma_professores_turma")
+  professores    professores @relation(fields: [professores_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_turma_professsores_professor")
 
-  @@unique([turma_id, professores_id], map: "uq_turma_professores")
-  @@index([professores_id], map: "idx_turma_professores_professores_id")
   @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model turmas {
   id                   Int                    @id @default(autoincrement())
-  nome                 String                 @unique @db.VarChar(50)
-  horas_semana         Decimal                @db.Decimal(5, 2)
-  status               String                 @default("ATIVO") @db.VarChar(20)
+  nome                 String                 @unique @db.VarChar
+  horas_semana         Decimal                @db.Decimal
+  status               String                 @default("ATIVO") @db.VarChar
   created_at           DateTime               @default(now()) @db.Timestamp(6)
   updated_at           DateTime               @default(now()) @db.Timestamp(6)
   vigencia_inicio      DateTime               @db.Date
@@ -675,22 +659,19 @@ model turmas {
   turma_agenda         turma_agenda[]
   turma_alunos         turma_alunos[]
   turma_professores    turma_professores[]
-  modalidades          modalidades            @relation(fields: [modalidade_id], references: [id], map: "fk_turma_modalidade")
+  modalidades          modalidades            @relation(fields: [modalidade_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_turma_modalidade")
 
-  @@index([status], map: "idx_turmas_status")
-  @@index([vigencia_fim], map: "idx_turmas_vigencia_fim")
-  @@index([vigencia_inicio], map: "idx_turmas_vigencia_inicio")
   @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model public_users {
   id                   Int                 @id @default(autoincrement())
-  nome                 String              @db.VarChar(120)
-  email                String              @unique @db.VarChar(180)
-  role                 String              @db.VarChar(20)
-  tel                  String?             @db.VarChar(20)
-  status               String              @default("ATIVO") @db.VarChar(20)
+  nome                 String              @db.VarChar
+  email                String              @unique @db.VarChar
+  role                 String              @db.VarChar
+  tel                  String?             @db.VarChar
+  status               String              @default("ATIVO") @db.VarChar
   created_at           DateTime            @default(now()) @db.Timestamp(6)
   updated_at           DateTime            @default(now()) @db.Timestamp(6)
   auth_user_id         String              @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -698,10 +679,8 @@ model public_users {
   alunos               alunos?
   aulas_individuais    aulas_individuais[]
   professores          professores?
-  users                auth_users          @relation(fields: [auth_user_id], references: [id], onDelete: Cascade)
+  users                auth_users          @relation(fields: [auth_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([role], map: "idx_users_role")
-  @@index([status], map: "idx_users_status")
   @@map("users")
   @@schema("public")
 }

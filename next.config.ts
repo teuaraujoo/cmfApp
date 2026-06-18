@@ -12,7 +12,7 @@ const cspDirectives = [
   "font-src 'self' data:",
   `style-src 'self' 'unsafe-inline'`,
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""}`,
+  `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL_TEST ?? ""}`,
   "upgrade-insecure-request"
 ];
 

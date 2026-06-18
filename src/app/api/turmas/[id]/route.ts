@@ -4,6 +4,7 @@ import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 import { deleteTurma, getTurmaById, updateTurma } from "@/server/modules/turmas/turmas.services";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
+import { validateCsrfToken } from "@/server/security/csrf.helper";
 
 export async function GET(
     _request: Request,
@@ -31,6 +32,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     try {
 
         await validateRequestOrigin(request);
+        await validateCsrfToken(request);
 
         const session = await requireAdminUser();
 
@@ -58,6 +60,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     try {
 
         await validateRequestOrigin(request);
+        await validateCsrfToken(request);
 
         const session = await requireAdminUser();
 

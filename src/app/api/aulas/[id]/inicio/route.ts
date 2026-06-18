@@ -4,11 +4,13 @@ import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 import { startAula } from "@/server/modules/aulas/aulas.services";
+import { validateCsrfToken } from "@/server/security/csrf.helper";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
 
         await validateRequestOrigin(request);
+        await validateCsrfToken(request);
 
         const session = await requireAdminOrProfessor();
         await rateLimitByIdentifier(`aulas:start:${session.appUser.id}`, adminMutationRateLimit);

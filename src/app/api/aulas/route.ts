@@ -7,6 +7,7 @@ import { validateRequestOrigin } from "@/server/security/origin.helper";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 import { getAulasForAdmin } from "@/server/modules/aulas/aulas.queries";
+import { validateCsrfToken } from "@/server/security/csrf.helper";
 
 export async function GET() {
     try {
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
     try {
 
         await validateRequestOrigin(request);
+        await validateCsrfToken(request);
 
         const session = await requireAdminUser();
         await rateLimitByIdentifier(`aulas:create:admin:${session.appUser.id}`, adminMutationRateLimit);

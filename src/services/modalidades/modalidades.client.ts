@@ -1,4 +1,5 @@
 import apiRoutes from "@/lib/api";
+import { apiFetch } from "../csrf/csrf.client";
 
 type ModalidadePayload = {
   tipo: string;
@@ -10,12 +11,17 @@ async function modalidadeRequest(
   body?: ModalidadePayload,
 ) {
   try {
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
       body: body ? JSON.stringify(body) : undefined,
     });
+
+    if (!response) {
+      return;
+    };
+
     const result = await response.json();
 
     if (!response.ok) {
@@ -25,17 +31,17 @@ async function modalidadeRequest(
     return result;
   } catch {
     return { err: "Não foi possível conectar ao servidor." };
-  }
-}
+  };
+};
 
 export function createModalidade(payload: ModalidadePayload) {
   return modalidadeRequest(apiRoutes.modalidades, "POST", payload);
-}
+};
 
 export function updateModalidade(id: number, payload: ModalidadePayload) {
   return modalidadeRequest(`${apiRoutes.modalidades}/${id}`, "PUT", payload);
-}
+};
 
 export function deleteModalidade(id: number) {
   return modalidadeRequest(`${apiRoutes.modalidades}/${id}`, "DELETE");
-}
+};

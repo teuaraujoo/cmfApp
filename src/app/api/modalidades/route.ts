@@ -5,6 +5,7 @@ import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { adminMutationRateLimit } from "@/server/libs/ratelimit";
 import { createModalidade } from "@/server/modules/modalidades/modalidades.services";
 import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
+import { validateCsrfToken } from "@/server/security/csrf.helper";
 
 export async function GET() {
   try {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
   try {
 
     await validateRequestOrigin(request);
+    await validateCsrfToken(request);
 
     const session = await requireAdminUser();
     await rateLimitByIdentifier(`modalidades:create:admin:${session.appUser.id}`, adminMutationRateLimit);    

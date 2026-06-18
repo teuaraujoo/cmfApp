@@ -4,6 +4,7 @@ import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { createUser, getAllUsers } from "@/server/modules/users/users.services";
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
 import { validateRequestOrigin } from "@/server/security/origin.helper";
+import { validateCsrfToken } from "@/server/security/csrf.helper";
 
 export async function GET() {
   try {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
   try {
 
     await validateRequestOrigin(request);
+    await validateCsrfToken(request);
 
     const session = await requireAdminUser();
     await rateLimitByIdentifier(`users:create:admin:${session.appUser.id}`, adminMutationRateLimit);

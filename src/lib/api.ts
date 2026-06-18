@@ -11,7 +11,8 @@ const apiRoutes = {
     turmas: "/api/turmas",
     aulas: "/api/aulas",
     calendario: "/api/calendario",
-    modalidades: "/api/modalidades"
+    modalidades: "/api/modalidades",
+    csrf: "/api/csrf"
 };
 
 export default apiRoutes;

@@ -34,7 +34,7 @@ export function useUpdateProfessorForm({
         nome: getRequiredFormString(formData, "nome", "Nome"),
         email: getRequiredFormString(formData, "email", "Email"),
         role: "PROFESSOR" as const,
-        tel: getRequiredFormString(formData, "telefone", "Telefone"),
+        tel: getRequiredFormString(formData, "telefone", "Telefone").replace(/\D/g, ""),
         professor: {
           materia: getRequiredFormString(formData, "materia", "Materia"),
         },
