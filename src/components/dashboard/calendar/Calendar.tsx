@@ -9,10 +9,7 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import toast from "react-hot-toast";
 
-import type { Aluno } from "@/@types/aluno/aluno.types";
 import type { Aula } from "@/@types/aulas/aulas.types";
-import type { Modalidade } from "@/@types/modalidade/modalidade.type";
-import type { Professor } from "@/@types/professor/professor.types";
 import { AulaDeleteDialog } from "@/components/dashboard/aulas/semana/AulaDeleteDialog";
 import { AulaDetailsDialog } from "@/components/dashboard/aulas/semana/AulaDetailsDialog";
 import { FinalizarAulaDialog } from "@/components/dashboard/aulas/semana/FinalizarAulaDialog";
@@ -24,21 +21,18 @@ import {
 import { useCreateAulaForm } from "@/hooks/aulas/useCreateAulaForm";
 import { useCalendarEvents } from "@/hooks/calendar/useCalendarEvents";
 import { deleteAula, finalizarAula, iniciarAula } from "@/services/aulas/aulas.client";
+import {
+  getFormOptions,
+  type FormOptions,
+} from "@/services/form-options/form-options.client";
 
-type CalendarProps = {
-  alunos: Aluno[];
-  professores: Professor[];
-  modalidades: Modalidade[];
-};
-
-export default function Calendar({
-  alunos,
-  professores,
-  modalidades,
-}: CalendarProps) {
+export default function Calendar() {
   const [loading, setLoading] = useState(false);
   const calendarRef = useRef<FullCalendar>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [formOptions, setFormOptions] = useState<FormOptions | null>(null);
+  const [formOptionsLoading, setFormOptionsLoading] = useState(false);
+  const [formOptionsError, setFormOptionsError] = useState("");
   const [initialDate, setInitialDate] = useState<string>();
   const [detailsAula, setDetailsAula] = useState<Aula | null>(null);
   const [finalizeAula, setFinalizeAula] = useState<Aula | null>(null);
@@ -64,10 +58,34 @@ export default function Calendar({
     calendarRef.current?.getApi().refetchEvents();
   };
 
+  async function loadFormOptions() {
+    if (formOptions || formOptionsLoading) {
+      return;
+    }
+
+    setFormOptionsError("");
+    setFormOptionsLoading(true);
+
+    const result = await getFormOptions();
+
+    if (!result || "err" in result) {
+      const message = result?.err ?? "Não foi possível carregar dados do formulário.";
+
+      setFormOptionsError(message);
+      toast.error(message);
+      setFormOptionsLoading(false);
+      return;
+    }
+
+    setFormOptions(result.data);
+    setFormOptionsLoading(false);
+  };
+
   function openCreateDialog(date?: string) {
     resetCreateForm();
     setInitialDate(date);
     setCreateDialogOpen(true);
+    void loadFormOptions();
   };
 
   function closeCreateDialog() {
@@ -162,7 +180,7 @@ export default function Calendar({
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm shadow-gray-200/50 dark:border-gray-800 dark:bg-white/[0.03] dark:shadow-black/20">
       <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 px-4 py-3 text-xs font-medium text-gray-600 dark:border-gray-800 dark:text-gray-300 sm:px-6">
-        <CalendarLegend colorClass="bg-blue-500" label="Turma" />
+        <CalendarLegend colorClass="bg-pink-500" label="Turma" />
         <CalendarLegend colorClass="bg-sky-500" label="Aula agendada" />
         <CalendarLegend colorClass="bg-violet-500" label="Aula em andamento" />
         <CalendarLegend colorClass="bg-amber-500" label="Pendente de finalização" />
@@ -206,9 +224,11 @@ export default function Calendar({
         <NovaAulaDialog
           error={createError}
           loading={createLoading}
-          alunos={alunos}
-          professores={professores}
-          modalidades={modalidades}
+          loadingOptions={formOptionsLoading}
+          optionsError={formOptionsError}
+          alunos={formOptions?.alunos ?? []}
+          professores={formOptions?.professores ?? []}
+          modalidades={formOptions?.modalidades ?? []}
           initialDate={initialDate}
           open={createDialogOpen}
           onSubmit={handleCreateAula}

@@ -30,6 +30,8 @@ import { Professor } from "@/@types/professor/professor.types";
 type NovaAulaDialogProps = {
   error: string;
   loading: boolean
+  loadingOptions?: boolean;
+  optionsError?: string;
   open: boolean;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onOpenChange: (open: boolean) => void;
@@ -42,6 +44,8 @@ type NovaAulaDialogProps = {
 export function NovaAulaDialog({
   error,
   loading,
+  loadingOptions = false,
+  optionsError = "",
   open,
   onSubmit,
   onOpenChange,
@@ -82,6 +86,18 @@ export function NovaAulaDialog({
         </DialogHeader>
 
         <form className="space-y-5" onSubmit={onSubmit}>
+          {loadingOptions ? (
+            <p className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm font-medium text-sky-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300">
+              Carregando alunos, professores e modalidades...
+            </p>
+          ) : null}
+
+          {optionsError ? (
+            <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300">
+              {optionsError}
+            </p>
+          ) : null}
+
           {error ? (
             <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300">
               {error}
@@ -105,6 +121,14 @@ export function NovaAulaDialog({
             icon={<UserRound className="size-4" />}
             selectedCount={selectedAlunoId ? 1 : 0}
           >
+            {loadingOptions ? (
+              <SelectionLoading />
+            ) : null}
+
+            {!loadingOptions && alunos.length === 0 ? (
+              <SelectionEmptyMessage message="Nenhum aluno disponível para seleção." />
+            ) : null}
+
             {alunos.map((aluno) => {
               const selected = selectedAlunoId === aluno.id;
               const disabled = selectedAlunoId !== null && !selected;
@@ -137,6 +161,14 @@ export function NovaAulaDialog({
             icon={<GraduationCap className="size-4" />}
             selectedCount={selectedProfessorId ? 1 : 0}
           >
+            {loadingOptions ? (
+              <SelectionLoading />
+            ) : null}
+
+            {!loadingOptions && professores.length === 0 ? (
+              <SelectionEmptyMessage message="Nenhum professor disponível para seleção." />
+            ) : null}
+
             {professores.map((professor) => {
               const selected = selectedProfessorId === professor.id;
               const disabled = selectedProfessorId !== null && !selected;
@@ -169,7 +201,10 @@ export function NovaAulaDialog({
                 Modalidade
               </span>
               <Select name="modalidade" required>
-                <SelectTrigger className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90">
+                <SelectTrigger
+                  disabled={loadingOptions || modalidades.length === 0}
+                  className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
+                >
                   <SelectValue placeholder="Selecione a modalidade">
                     {(value) =>
                       modalidades.find(
@@ -247,14 +282,35 @@ export function NovaAulaDialog({
             <Button
               type="submit"
               className="cursor-pointer bg-[#1FA2E1] text-white hover:bg-[#178CC5]"
-              disabled={loading}
+              disabled={loading || loadingOptions || Boolean(optionsError)}
             >
-              {loading ? "Criando aula..." : "Criar aula"}
+              {loadingOptions ? "Carregando dados..." : loading ? "Criando aula..." : "Criar aula"}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function SelectionLoading() {
+  return (
+    <>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div
+          key={index}
+          className="h-[66px] animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950/60"
+        />
+      ))}
+    </>
+  );
+}
+
+function SelectionEmptyMessage({ message }: { message: string }) {
+  return (
+    <p className="rounded-xl border border-dashed border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-950/60 dark:text-gray-400 md:col-span-2 xl:col-span-3">
+      {message}
+    </p>
   );
 }
 

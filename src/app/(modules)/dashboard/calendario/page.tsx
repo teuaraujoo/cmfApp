@@ -1,19 +1,8 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Calendar from "@/components/dashboard/calendar/Calendar";
-import { getAllModalidadesForAdmin } from "@/server/modules/modalidades/modalidades.queries";
-import {
-  getAllAlunosForAdmin,
-  getAllProfessoresForAdmin,
-} from "@/server/modules/users/user.queries";
 import "./calendar-globals.css";
 
-export default async function CalendarioPage() {
-  const [alunos, professores, modalidades] = await Promise.all([
-    getAllAlunosForAdmin(),
-    getAllProfessoresForAdmin(),
-    getAllModalidadesForAdmin(),
-  ]);
-
+export default function CalendarioPage() {
   return (
     <main className="calendar-page p-3 sm:p-5 lg:p-6">
       <div className="space-y-6">
@@ -29,11 +18,7 @@ export default async function CalendarioPage() {
           </p>
         </section>
 
-        <Calendar
-          alunos={alunos}
-          professores={professores}
-          modalidades={modalidades}
-        />
+        <Calendar />
 
         <div className="calendar-breadcrumb rounded-2xl border border-gray-200 bg-white px-5 py-4 dark:border-gray-800 dark:bg-white/[0.03]">
           <PageBreadcrumb pageTitle="Calendário" />

@@ -7,33 +7,31 @@ import TurmaDeleteDialog from "./TurmaDeleteDialog";
 import TurmaFormDialog from "./TurmaFormDialog";
 import TurmasGrid from "./TurmasGrid";
 import TurmasOverview from "./TurmasOverview";
-import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
-import { Aluno } from "@/@types/aluno/aluno.types";
-import { Professor } from "@/@types/professor/professor.types";
 import toast from "react-hot-toast";
 import { deleteTurma } from "@/services/turmas/turmas.client";
 import { useRouter } from "next/navigation";
 import { useCreateTurmaForm } from "@/hooks/turmas/useCreateTurmaForm";
 import { diasSemanaOptions } from "@/utils/date-utils";
+import {
+  getFormOptions,
+  type FormOptions,
+} from "@/services/form-options/form-options.client";
 
 type TurmasDashboardPageProps = {
   turmas?: TurmaDashboardItem[];
-  modalidades: Modalidade[];
-  alunos: Aluno[];
-  professores: Professor[];
 };
 
 export default function TurmasDashboardPage({
   turmas = [],
-  modalidades,
-  alunos,
-  professores
 }: TurmasDashboardPageProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [selectedDia, setSelectedDia] = useState("Todas");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [formOptions, setFormOptions] = useState<FormOptions | null>(null);
+  const [formOptionsLoading, setFormOptionsLoading] = useState(false);
+  const [formOptionsError, setFormOptionsError] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedTurma, setSelectedTurma] = useState<TurmaDashboardItem | null>(
     null,
@@ -92,12 +90,44 @@ export default function TurmasDashboardPage({
       router.refresh();
     });
   };
+
+  async function loadFormOptions() {
+    if (formOptions || formOptionsLoading) {
+      return;
+    }
+
+    setFormOptionsError("");
+    setFormOptionsLoading(true);
+
+    const result = await getFormOptions();
+
+    if (!result || "err" in result) {
+      const message = result?.err ?? "Não foi possível carregar dados do formulário.";
+
+      setFormOptionsError(message);
+      toast.error(message);
+      setFormOptionsLoading(false);
+      return;
+    }
+
+    setFormOptions(result.data);
+    setFormOptionsLoading(false);
+  };
+
+  function openCreateDialog() {
+    resetCreateForm();
+    setCreateDialogOpen(true);
+    void loadFormOptions();
+  };
+
   function handleCreateDialogOpenChange(open: boolean) {
     if (!open) {
       resetCreateForm();
+      setCreateDialogOpen(false);
+      return;
     }
 
-    setCreateDialogOpen(open);
+    openCreateDialog();
   };
 
   async function handleDeleteTurma(turma: TurmaDashboardItem) {
@@ -130,7 +160,7 @@ export default function TurmasDashboardPage({
           selectedDia={selectedDia}
           onSearchChange={setSearch}
           onSelectDia={setSelectedDia}
-          onOpenCreateDialog={() => setCreateDialogOpen(true)}
+          onOpenCreateDialog={openCreateDialog}
         />
 
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -167,11 +197,13 @@ export default function TurmasDashboardPage({
           mode="create"
           diasSemana={diasSemanaOptions}
           onOpenChange={handleCreateDialogOpenChange}
-          modalidades={modalidades}
-          alunos={alunos}
-          professores={professores}
+          modalidades={formOptions?.modalidades ?? []}
+          alunos={formOptions?.alunos ?? []}
+          professores={formOptions?.professores ?? []}
           error={createError}
           loading={createLoading}
+          loadingOptions={formOptionsLoading}
+          optionsError={formOptionsError}
           onSubmit={(event) => void handleCreateTurma(event)}
         />
       )}

@@ -10,6 +10,7 @@ const apiRoutes = {
     totalProfessores: "/api/professores/total",
     turmas: "/api/turmas",
     aulas: "/api/aulas",
+    formOptions: "/api/form-options",
     calendario: "/api/calendario",
     modalidades: "/api/modalidades",
     csrf: "/api/csrf"

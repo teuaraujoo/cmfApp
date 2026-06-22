@@ -9,17 +9,22 @@ import { AulasSemanaStats } from "@/components/dashboard/aulas/semana/AulasSeman
 import { AulasSemanaTable } from "@/components/dashboard/aulas/semana/AulasSemanaTable";
 import { FinalizarAulaDialog } from "@/components/dashboard/aulas/semana/FinalizarAulaDialog";
 import { NovaAulaDialog } from "@/components/dashboard/aulas/semana/NovaAulaDialog";
-import { deleteAula, finalizarAula, iniciarAula } from "@/services/aulas/aulas.client";
+import {
+  deleteAula,
+  finalizarAula,
+  iniciarAula,
+} from "@/services/aulas/aulas.client";
+import {
+  getFormOptions,
+  type FormOptions,
+} from "@/services/form-options/form-options.client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Aluno } from "@/@types/aluno/aluno.types";
-import { Professor } from "@/@types/professor/professor.types";
-import { Modalidade } from "@/@types/modalidade/modalidade.type";
 import { useCreateAulaForm } from "@/hooks/aulas/useCreateAulaForm";
 import { Aula } from "@/@types/aulas/aulas.types";
 import { canFinishAula, getAulaStatusConfig } from "@/components/dashboard/aulas/aula-status";
 
-export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos, professores, modalidades }: { aulas: Aula[], alunosWithAula: number, alunos: Aluno[], professores: Professor[], modalidades: Modalidade[] }) {
+export default function AulasSemanaDashboardPage({ aulas, alunosWithAula }: { aulas: Aula[], alunosWithAula: number }) {
   const router = useRouter();
   const [selectedAula, setSelectedAula] = useState<Aula | null>(null);
   const [deletedAula, setDeleteAula] = useState<Aula | null>(null);
@@ -28,6 +33,9 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [formOptions, setFormOptions] = useState<FormOptions | null>(null);
+  const [formOptionsLoading, setFormOptionsLoading] = useState(false);
+  const [formOptionsError, setFormOptionsError] = useState("");
   const finalizedAulas = aulas.filter((aula) => aula.status === "FINALIZADA").length;
   const upcomingAulas = aulas.filter((aula) => aula.status === "AGENDADA").length;
   const totalStudents = alunosWithAula;
@@ -73,9 +81,33 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
     },
   });
 
+  async function loadFormOptions() {
+    if (formOptions || formOptionsLoading) {
+      return;
+    };
+
+    setFormOptionsError("");
+    setFormOptionsLoading(true);
+
+    const result = await getFormOptions();
+
+    if (!result || "err" in result) {
+      const message = result?.err ?? "Não foi possível carregar dados do formulário.";
+
+      setFormOptionsError(message);
+      toast.error(message);
+      setFormOptionsLoading(false);
+      return;
+    };
+
+    setFormOptions(result.data);
+    setFormOptionsLoading(false);
+  };
+
   function openCreateDialog() {
     resetCreateForm();
     setCreateDialogOpen(true);
+    void loadFormOptions();
   };
 
   function closeCreateDialog() {
@@ -220,9 +252,11 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula, alunos
         key={createDialogOpen ? "aula-dialog-open" : "aula-dialog-closed"}
         error={createError}
         loading={createLoading}
-        alunos={alunos}
-        modalidades={modalidades}
-        professores={professores}
+        loadingOptions={formOptionsLoading}
+        optionsError={formOptionsError}
+        alunos={formOptions?.alunos ?? []}
+        modalidades={formOptions?.modalidades ?? []}
+        professores={formOptions?.professores ?? []}
         open={createDialogOpen}
         onSubmit={handleCreateAula}
         onOpenChange={(open) => {

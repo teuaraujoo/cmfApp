@@ -43,6 +43,8 @@ type TurmaFormDialogProps = {
   professores: Professor[];
   error: string;
   loading: boolean;
+  loadingOptions?: boolean;
+  optionsError?: string;
   onOpenChange: (open: boolean) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };
@@ -57,6 +59,8 @@ export default function TurmaFormDialog({
   professores,
   error,
   loading,
+  loadingOptions = false,
+  optionsError = "",
   onOpenChange,
   onSubmit
 }: TurmaFormDialogProps) {
@@ -176,6 +180,18 @@ export default function TurmaFormDialog({
           </DialogHeader>
 
           <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overflow-x-hidden p-5 sm:p-6">
+            {loadingOptions ? (
+              <p className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm font-medium text-sky-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300">
+                Carregando alunos, professores e modalidades...
+              </p>
+            ) : null}
+
+            {optionsError ? (
+              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300">
+                {optionsError}
+              </p>
+            ) : null}
+
             <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2">
               <label className="min-w-0 space-y-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -198,7 +214,10 @@ export default function TurmaFormDialog({
                   name="modalidade"
                   defaultValue={turma?.modalidade_id ? String(turma.modalidade_id) : undefined}
                 >
-                  <SelectTrigger className="h-11 w-full rounded-xl mt-2">
+                  <SelectTrigger
+                    disabled={loadingOptions || modalidades.length === 0}
+                    className="h-11 w-full rounded-xl mt-2"
+                  >
                     <SelectValue placeholder="Selecione a modalidade" >
                       {(value) =>
                         modalidades.find(
@@ -353,6 +372,14 @@ export default function TurmaFormDialog({
               icon={<UsersRound className="size-4" />}
               selectedCount={selectedAlunos.length}
             >
+              {loadingOptions ? (
+                <SelectionLoading />
+              ) : null}
+
+              {!loadingOptions && alunos.length === 0 ? (
+                <SelectionEmptyMessage message="Nenhum aluno disponivel para selecao." />
+              ) : null}
+
               {alunos.map((aluno) => {
                 const selected = aluno.id != null && selectedAlunos.includes(aluno.id);
 
@@ -383,6 +410,14 @@ export default function TurmaFormDialog({
               icon={<UserRound className="size-4" />}
               selectedCount={selectedProfessores.length}
             >
+              {loadingOptions ? (
+                <SelectionLoading />
+              ) : null}
+
+              {!loadingOptions && professores.length === 0 ? (
+                <SelectionEmptyMessage message="Nenhum professor disponivel para selecao." />
+              ) : null}
+
               {professores.map((professor) => {
                 const selected = professor.id != null && selectedProfessores.includes(professor.id);
 
@@ -423,7 +458,11 @@ export default function TurmaFormDialog({
             >
               Cancelar
             </Button>
-            <Button type="submit" className=" bg-sky-700 text-white hover:bg-sky-600 mb-[1rem] cursor-pointer">
+            <Button
+              type="submit"
+              className=" bg-sky-700 text-white hover:bg-sky-600 mb-[1rem] cursor-pointer"
+              disabled={loading || loadingOptions || Boolean(optionsError)}
+            >
               {loading
                 ?
                 isEditing ? "Salvando..." : "Criando..."
@@ -528,6 +567,27 @@ function AgendaCard({
         </label>
       </div>
     </article>
+  );
+}
+
+function SelectionLoading() {
+  return (
+    <>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div
+          key={index}
+          className="h-[66px] animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950/60"
+        />
+      ))}
+    </>
+  );
+}
+
+function SelectionEmptyMessage({ message }: { message: string }) {
+  return (
+    <p className="rounded-xl border border-dashed border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-950/60 dark:text-gray-400 md:col-span-2 xl:col-span-3">
+      {message}
+    </p>
   );
 }
 

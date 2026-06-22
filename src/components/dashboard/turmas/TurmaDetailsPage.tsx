@@ -14,30 +14,29 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TurmaFormDialog from "./TurmaFormDialog";
-import type { Modalidade } from "@/@types/modalidade/modalidade.type";
 import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
-import { Aluno } from "@/@types/aluno/aluno.types";
-import { Professor } from "@/@types/professor/professor.types";
 import { useUpdateTurmaForm } from "@/hooks/turmas/useUpdateTurmaForm";
 import { useRouter } from "next/navigation";
 import { diasSemanaOptions } from "@/utils/date-utils";
+import {
+  getFormOptions,
+  type FormOptions,
+} from "@/services/form-options/form-options.client";
+import toast from "react-hot-toast";
 
 type TurmaDetailsPageProps = {
   turma?: TurmaDashboardItem;
-  modalidades: Modalidade[];
-  alunos: Aluno[];
-  professores: Professor[]
 };
 
 export default function TurmaDetailsPage({
   turma,
-  modalidades,
-  alunos,
-  professores
 }: TurmaDetailsPageProps) {
 
   const router = useRouter();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [formOptions, setFormOptions] = useState<FormOptions | null>(null);
+  const [formOptionsLoading, setFormOptionsLoading] = useState(false);
+  const [formOptionsError, setFormOptionsError] = useState("");
   const {
     error: updateError,
     loading: updateLoading,
@@ -56,12 +55,43 @@ export default function TurmaDetailsPage({
     });
   };
 
+  async function loadFormOptions() {
+    if (formOptions || formOptionsLoading) {
+      return;
+    }
+
+    setFormOptionsError("");
+    setFormOptionsLoading(true);
+
+    const result = await getFormOptions();
+
+    if (!result || "err" in result) {
+      const message = result?.err ?? "Não foi possível carregar dados do formulário.";
+
+      setFormOptionsError(message);
+      toast.error(message);
+      setFormOptionsLoading(false);
+      return;
+    }
+
+    setFormOptions(result.data);
+    setFormOptionsLoading(false);
+  };
+
+  function openEditDialog() {
+    resetUpdateForm();
+    setEditDialogOpen(true);
+    void loadFormOptions();
+  };
+
   function handleEditDialogOpenChange(open: boolean) {
     if (!open) {
       resetUpdateForm();
+      setEditDialogOpen(false);
+      return;
     };
 
-    setEditDialogOpen(open);
+    openEditDialog();
   };
 
   if (!turma) {
@@ -108,7 +138,7 @@ export default function TurmaDetailsPage({
 
             <Button
               type="button"
-              onClick={() => setEditDialogOpen(true)}
+              onClick={openEditDialog}
               className="w-full rounded-xl bg-[#1FA2E1] gap-2 px-4 py-5 text-sm font-medium text-white hover:bg-[#178CC5] lg:w-auto"
             >
               <Pencil className="size-4" />
@@ -172,12 +202,14 @@ export default function TurmaDetailsPage({
           open={editDialogOpen}
           mode="edit"
           turma={turma}
-          modalidades={modalidades}
-          alunos={alunos}
-          professores={professores}
+          modalidades={formOptions?.modalidades ?? []}
+          alunos={formOptions?.alunos ?? []}
+          professores={formOptions?.professores ?? []}
           diasSemana={diasSemanaOptions}
           error={updateError}
           loading={updateLoading}
+          loadingOptions={formOptionsLoading}
+          optionsError={formOptionsError}
           onSubmit={(event) => void handleUpdateTurma(event, turma.id)}
           onOpenChange={handleEditDialogOpenChange}
         />

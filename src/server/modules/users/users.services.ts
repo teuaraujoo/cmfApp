@@ -189,6 +189,14 @@ export async function activeUser(userId: number) {
 
 /* =================    ALUNO     =================*/
 
+export async function getAllActiveAlunos() {
+  const alunos = await AlunosRepositories.getAllActive();
+
+  if (!alunos) throw new AppError("Error ao encontrar alunos!", 404);
+
+  return alunos.map((aluno) => AlunoMapper.toResponseAlunoGet(aluno));
+};
+
 export async function getAllAlunos() {
   const alunos = await AlunosRepositories.getAll();
 
@@ -218,6 +226,14 @@ export async function getTotalAlunosWithAulaIndividual() {
 };
 
 /* =================    PROFESSOR     =================*/
+
+export async function getAllActiveProfessores() {
+  const professores = await ProfessoresRepositories.getAllActive();
+
+  if (!professores) throw new AppError("Error ao encontrar professores!", 404);
+
+  return professores.map((professor) => ProfessorMapper.toResponseProfessorGet(professor, professor.users));
+};
 
 export async function getAllProfessores() {
   const professores = await ProfessoresRepositories.getAll();

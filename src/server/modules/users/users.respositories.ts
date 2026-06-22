@@ -74,6 +74,20 @@ export class AlunosRepositories {
     });
   };
 
+  static async getAllActive() {
+    return prisma.alunos.findMany({
+      where: {
+        status: "ATIVO"
+      },
+      orderBy: {
+        created_at: "desc"
+      },
+      include: {
+        users: true,
+      }
+    });
+  }
+
   static async getTotal() {
     return prisma.alunos.count();
   };
@@ -129,6 +143,20 @@ export class AlunosRepositories {
 /* =================    PROFESSOR     =================*/
 
 export class ProfessoresRepositories {
+
+  static async getAllActive() {
+    return prisma.professores.findMany({
+      where: {
+        status: "ATIVO"
+      },
+      orderBy: {
+        created_at: "desc"
+      },
+      include: {
+        users: true,
+      }
+    });
+  };
 
   static async getAll() {
     return prisma.professores.findMany({

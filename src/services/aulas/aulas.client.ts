@@ -1,6 +1,7 @@
 import apiRoutes from "@/lib/api";
 import { CreateAulaPayload } from "@/@types/aulas/aulas.types";
 import { apiFetch } from "@/services/csrf/csrf.client";
+import type { FormOptions } from "@/services/form-options/form-options.client";
 
 async function aulasRequest(
     url: string,
@@ -36,6 +37,28 @@ async function aulasRequest(
 
 export async function createAula(aula: CreateAulaPayload) {
     return aulasRequest(`${apiRoutes.aulas}`, "POST", "Não foi possível criar aula.", aula);
+};
+
+export async function getAulaFormOptions() {
+    try {
+        const response = await apiFetch(apiRoutes.formOptions, {
+            method: "GET",
+        });
+
+        if (!response) {
+            return;
+        };
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            return { err: result.message ?? "Não foi possível carregar dados do formulário." };
+        };
+
+        return result as { message: string; data: FormOptions };
+    } catch {
+        return { err: "Nao foi possivel conectar ao servidor." };
+    };
 };
 
 export async function deleteAula(aulaId: number) {
