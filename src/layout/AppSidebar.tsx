@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "@/context/SidebarContext";
@@ -151,12 +151,15 @@ const AppSidebar: React.FC = () => {
                   >
                     {nav.icon}
                   </span>
-                  {(isExpanded || isHovered || isMobileOpen) && (
-                    <span className={`menu-item-text`}>{nav.name}</span>
-                  )}
-                </Link>
-              )
-            )}
+                {(isExpanded || isHovered || isMobileOpen) && (
+                  <span className={`menu-item-text`}>{nav.name}</span>
+                )}
+                {(isExpanded || isHovered || isMobileOpen) && (
+                  <LinkPendingIndicator />
+                )}
+              </Link>
+            )
+          )}
             {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
               <div
                 ref={(el) => {
@@ -182,7 +185,8 @@ const AppSidebar: React.FC = () => {
                           }`}
                       >
                         {subItem.name}
-                        <span className="flex items-center gap-1 ml-auto">
+                        <span className="flex items-center gap-2 ml-auto">
+                          <LinkPendingIndicator />
                           {subItem.new && (
                             <span
                               className={`ml-auto ${isActive(subItem.path)
@@ -389,6 +393,21 @@ const AppSidebar: React.FC = () => {
         )}
       </div>
     </aside>
+  );
+};
+
+function LinkPendingIndicator() {
+  const { pending } = useLinkStatus();
+
+  if (!pending) {
+    return null;
+  };
+
+  return (
+    <span
+      className="size-2 shrink-0 animate-pulse rounded-full bg-sky-500 shadow-sm shadow-sky-500/40"
+      aria-hidden="true"
+    />
   );
 };
 

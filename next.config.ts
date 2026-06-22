@@ -20,7 +20,9 @@ const contentSecurityPolicy = cspDirectives.join("; ");
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-
+  turbopack: {
+    root: process.cwd()
+  },
   async headers() {
     return [
       {
