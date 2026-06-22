@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { AppError } from "@/server/error/app-errors";
 import { LoginBody, loginSchema, ChangePasswordBody, changePasswordSchema } from "@/server/modules/auth/auth.schema";
 import { createClient } from "@/server/libs/supabase/server";
@@ -66,7 +67,8 @@ export async function changePassword(body: ChangePasswordBody) {
 };
 
 // Garante que a operação atual está sendo executada por um admin ativo.
-export async function requireAdminUser() {
+export const requireAdminUser = cache(async () => {
+
   const session = await requireOnboardedUser();
 
   if (session.appUser.role !== "ADMIN") {
@@ -74,20 +76,22 @@ export async function requireAdminUser() {
   };
 
   return session;
-};
+});
 
-export async function requireAdminOrProfessor() {
-    const session = await requireOnboardedUser();
+export const requireAdminOrProfessor = cache(async () => {
 
-    if (!(["ADMIN", "PROFESSOR"] as const).includes(session.appUser.role as "ADMIN" | "PROFESSOR")) {
-      throw new AppError("Apenas administradores ou professores podem executar esta ação!", 403);
-    };
+  const session = await requireOnboardedUser();
 
-    return session;
-};
+  if (!(["ADMIN", "PROFESSOR"] as const).includes(session.appUser.role as "ADMIN" | "PROFESSOR")) {
+    throw new AppError("Apenas administradores ou professores podem executar esta ação!", 403);
+  };
+
+  return session;
+});
 
 // Busca o usuário autenticado no Supabase e o traduz para o perfil local da aplicação.
-export async function getCurrentAppUser() {
+export const getCurrentAppUser = cache(async () => {
+
   const supabase = await createClient();
 
   const { data: { user: authUser }, error } = await supabase.auth.getUser();
@@ -110,7 +114,7 @@ export async function getCurrentAppUser() {
     appUser,
     supabase
   };
-};
+});
 
 // Retorna uma sessão válida já liberada para uso normal do sistema.
 async function requireOnboardedUser() {
