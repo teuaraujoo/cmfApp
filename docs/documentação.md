@@ -1,163 +1,139 @@
 ## Visao Geral
 
-Sistema de gerenciamento do Curso Matematica Facil, com foco em:
+Sistema web do Curso Matematica Facil para gestao administrativa de alunos, professores, modalidades, turmas recorrentes e aulas individuais.
 
-- autenticacao e controle de acesso
-- cadastro de usuarios, alunos e professores
-- modalidades
-- turmas recorrentes com agenda semanal
-- aulas individuais com data real
-- presenca e execucao de aulas
+O projeto tambem possui base inicial para um portal de alunos/professores. O dashboard administrativo e a area mais completa da aplicacao; o portal ainda esta em fase inicial no workspace atual.
 
 ## Stack Atual
 
-- Next.js
-- React
+- Next.js 16 com App Router
+- React 19
 - TypeScript
-- PostgreSQL
-- Prisma
+- Tailwind CSS 4
+- Prisma 7
+- PostgreSQL/Supabase Database
 - Supabase Auth
-- Upstash Redis
-- Zod
-- Tailwind CSS
-- Docker apenas para ambiente de desenvolvimento
+- Upstash Redis para rate limit
+- Zod para validacao de payloads
+- FullCalendar para calendario administrativo
+- Playwright para testes E2E
+- Docker apenas para padronizar ambiente de desenvolvimento
 
-## Estado Atual do Projeto
+## Areas da Aplicacao
 
-### Backend implementado em maior profundidade
+### Publico
 
-- autenticacao
-- usuarios, alunos e professores
-- modalidades
-- turmas
-- validacoes de agenda e conflito
-- seguranca de rotas e sessao
+- `/`
+  home publica/landing.
+- `/legal/termos`
+  termos de uso.
+- `/legal/politica-privacidade`
+  politica de privacidade.
+- `/choose-login`
+  escolha do tipo de login.
+- `/login`
+  login comum.
+- `/dashboard/login`
+  login administrativo.
+- `/change-password`
+  troca obrigatoria de senha no primeiro acesso.
 
-### Backend em fase inicial
+### Dashboard administrativo
 
-- `aulas_individuais`
-- frequencia
-- fluxos completos de execucao de aula
+Rotas sob `/dashboard` sao protegidas e direcionadas para usuarios `ADMIN`.
 
-### Frontend
+Paginas atuais:
 
-Ainda esta muito inicial. O App Router existe, mas o foco atual do projeto esta na consolidacao do backend e da modelagem de negocio.
+- `/dashboard/home`
+- `/dashboard/alunos`
+- `/dashboard/professores`
+- `/dashboard/turmas`
+- `/dashboard/turmas/[id]`
+- `/dashboard/modalidades`
+- `/dashboard/aulas/semana`
+- `/dashboard/aulas/pendentes`
+- `/dashboard/aulas/historico`
+- `/dashboard/calendario`
+- `/dashboard/perfil`
 
-## Organizacao Atual
+### Portal
 
-### Pastas principais
+Rotas sob `/portal` sao a base do futuro portal de alunos/professores.
 
-- `src/app`
-  frontend e route handlers do App Router
+Estado atual no workspace:
+
+- existe `src/app/(modules)/portal/layout.tsx`
+- existe `src/app/(modules)/portal/page.tsx`
+- a pagina atual ainda e simples e possui logout
+- o proxy redireciona usuarios nao-admin para `/portal`
+
+## Backend Interno
+
+O backend esta dentro do proprio Next.js por route handlers e services server-side.
+
+Pastas principais:
+
+- `src/app/api`
+  endpoints HTTP.
 - `src/server/modules`
-  backend organizado por dominio
-- `src/libs`
-  clients e integracoes de infraestrutura
-- `src/generated/prisma`
-  Prisma Client gerado
-- `prisma`
-  schema Prisma
-- `docs`
-  documentacao funcional e tecnica
+  regras de dominio, services, repositories, mappers e queries server-side.
+- `src/server/libs`
+  Prisma, Supabase e rate limit.
+- `src/server/security`
+  helpers de origin, rate limit e CSRF.
+- `src/server/error`
+  erros padronizados e handler central.
 
-### Modulos do backend
+## Modulos Atuais
 
 - `auth`
-  login, logout e troca de senha
+  login, logout, troca de senha, usuario atual e guards de autorizacao.
 - `users`
-  usuarios, alunos e professores
+  usuarios, alunos e professores.
 - `modalidades`
-  CRUD de modalidades
+  CRUD de modalidades.
 - `turmas`
-  turmas, agenda e relacionamentos
+  turmas recorrentes, agenda, alunos e professores vinculados.
 - `aulas`
-  estrutura inicial das aulas individuais
+  aulas individuais, semana, historico, pendencias, inicio, finalizacao e cron de status.
+- `calendar`
+  eventos de aulas individuais e turmas recorrentes para o calendario.
+- `form-options`
+  opcoes de formularios: alunos ativos, professores ativos e modalidades.
+- `health`
+  health check da API e banco.
 
-## Autenticacao
+## Rotas de API Atuais
 
-O sistema usa Supabase Auth, mas mantem os perfis em `public.users`.
-
-### Estrategia atual
-
-- autenticacao no `auth.users`
-- perfil da aplicacao em `public.users`
-- ligacao por `auth_user_id`
-- controle de primeiro acesso por `must_change_password`
-
-### Rotas implementadas
+### Auth
 
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
 - `POST /api/auth/change-password`
+- `GET /api/csrf`
 
-## Seguranca
-
-Ja existe endurecimento basico no projeto:
-
-- headers HTTP de seguranca
-- CSP em `Report-Only`
-- cookies SSR do Supabase com `httpOnly`, `secure` e `sameSite: 'lax'`
-- validacao de `Origin` nas rotas mutaveis
-- rate limit com Upstash por email, id do usuario ou id do admin, conforme o endpoint
-
-## Ambiente
-
-### Variaveis de ambiente principais
-
-- `DATABASE_URL_TEST`
-- `DIRECT_URL_TEST`
-- `NEXT_PUBLIC_SUPABASE_URL_TEST`
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY_TEST`
-- `SUPABASE_SERVICE_ROLE_KEY_TEST`
-- `UPSTASH_REDIS_REST_URL`
-- `UPSTASH_REDIS_REST_TOKEN`
-- `APP_ORIGIN`
-
-### Docker de desenvolvimento
-
-Arquivos presentes:
-
-- `Dockerfile.dev`
-- `docker-compose.yml`
-- `.dockerignore`
-
-Uso atual:
-
-- sobe apenas a aplicacao
-- nao sobe Postgres local
-- nao sobe Redis local
-- Supabase e Upstash continuam externos
-
-## Rotas atualmente presentes
-
-### Autenticacao
-
-- `POST /api/auth/login`
-- `POST /api/auth/logout`
-- `POST /api/auth/change-password`
-
-### Users
+### Users, alunos e professores
 
 - `GET /api/users`
 - `POST /api/users`
 - `GET /api/users/[id]`
 - `PUT /api/users/[id]`
-- `DELETE /api/users/[id]`
 - `PATCH /api/users/[id]`
-
-### Alunos
-
+- `DELETE /api/users/[id]`
 - `GET /api/alunos`
-- `GET /api/alunos/total-alunos`
+- `GET /api/alunos/total`
 - `GET /api/alunos/[id]`
 - `GET /api/alunos/[id]/turmas`
-
-### Professores
-
+- `GET /api/alunos/[id]/aulas`
+- `GET /api/alunos/[id]/aulas/pendentes`
+- `GET /api/alunos/[id]/aulas/historico`
 - `GET /api/professores`
-- `GET /api/professores/total-professores`
+- `GET /api/professores/total`
 - `GET /api/professores/[id]`
 - `GET /api/professores/[id]/turmas`
+- `GET /api/professores/[id]/aulas`
+- `GET /api/professores/[id]/aulas/pendentes`
+- `GET /api/professores/[id]/aulas/historico`
 
 ### Modalidades
 
@@ -181,16 +157,64 @@ Uso atual:
 
 - `GET /api/aulas`
 - `POST /api/aulas`
+- `GET /api/aulas/todas`
+- `GET /api/aulas/pendentes`
+- `GET /api/aulas/historico?page=1&pageSize=20&search=texto`
 - `DELETE /api/aulas/[id]`
+- `PATCH /api/aulas/[id]/inicio`
+- `PATCH /api/aulas/[id]/finalizacao`
 
-Observacao:
+### Calendario, formulario, health e cron
 
-As rotas de `aulas` ja existem, mas o modulo ainda nao foi finalizado.
+- `GET /api/calendario?start=ISO&end=ISO`
+- `GET /api/form-options`
+- `GET /api/health`
+- `GET /api/cron/aulas/status`
 
-## Padroes Relevantes
+## Seguranca Atual
 
-- mappers para request e response
-- validacao de negocio separada da service
-- repositories encapsulando Prisma
-- transacoes do Prisma para operacoes multi-tabela
-- `deleteMany + createMany` para atualizar relacoes agregadas de turmas
+- proxy de rotas protegidas em `src/proxy.ts`
+- dashboard restrito a `ADMIN`
+- usuarios nao-admin autenticados sao redirecionados para `/portal`
+- usuarios com `must_change_password = true` sao redirecionados para `/change-password`
+- `requireAdminUser` para operacoes administrativas
+- `requireAdminOrProfessor` para inicio/finalizacao de aula
+- `getCurrentAppUser` cacheado por request com `react/cache`
+- validacao de `Origin` em rotas mutaveis
+- CSRF assinado em mutacoes sensiveis
+- rate limit com Upstash por email, IP ou id do usuario
+- headers de seguranca e CSP em `next.config.ts`
+- `server-only` em services, repositories, queries e helpers server-side relevantes
+
+## Testes e Scripts
+
+Scripts principais:
+
+- `yarn dev`
+- `yarn build`
+- `yarn lint`
+- `yarn test:e2e`
+- `yarn test:e2e:ui`
+- `yarn db:seed`
+- `yarn db:reset`
+
+Testes E2E existentes:
+
+- auth/admin login
+- formulario de aluno
+- formulario de professor
+- formulario de turma
+- formulario de aula
+- formulario de aula no calendario
+
+## Ambiente de Desenvolvimento
+
+Docker e usado apenas para desenvolvimento.
+
+Arquivos:
+
+- `Dockerfile.dev`
+- `docker-compose.yml`
+- `.dockerignore`
+
+O container sobe a aplicacao Next.js. Supabase, PostgreSQL e Upstash continuam externos.

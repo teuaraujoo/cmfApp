@@ -1,184 +1,303 @@
 ## Autenticacao e Acesso
 
-### Ja implementado
+### Implementado
 
 - login por email e senha
 - logout
-- troca de senha no primeiro acesso
-- bloqueio de rotas protegidas para usuarios com `must_change_password = true`
-- controle de acesso por role no backend
+- troca de senha obrigatoria no primeiro acesso
+- bloqueio de usuario inativo
+- controle de acesso por role
+- dashboard restrito a admin
+- redirecionamento de usuarios nao-admin para portal
+- rotas publicas para home e documentos legais
 
-### Observacoes
+### Rotas/telas relacionadas
 
-- nao existe signup publico
-- criacao de usuarios comuns e administrativa
+- `/`
+- `/choose-login`
+- `/login`
+- `/dashboard/login`
+- `/change-password`
+- `/dashboard/home`
+- `/portal`
 
-## Usuarios
+## Dashboard Administrativo
 
-### Ja implementado
+### Implementado
 
-- listar usuarios
-- buscar usuario por id
-- criar usuario por admin
-- atualizar usuario por admin
-- ativar usuario
-- inativar usuario
-
-### Inclui
-
-- fluxo de ALUNO
-- fluxo de PROFESSOR
-- fluxo de ADMIN
+- layout com sidebar e header
+- tema claro/escuro
+- dropdown de usuario com dados reais
+- pagina home com cards, grafico, aulas recentes, aulas pendentes e alunos recentes
+- paginas com loading states em rotas do dashboard
+- pagina 404 customizada
 
 ## Alunos
 
-### Ja implementado
+### Implementado
 
 - listar alunos
-- buscar aluno por id de usuario
-- total de alunos
-- listar turmas do aluno
+- pesquisar alunos no frontend
+- criar aluno
+- atualizar aluno
+- ativar/inativar usuario
+- abrir painel de detalhes
+- formulario reorganizado por grupos de dados
+- mascara de telefone
+- campos atuais de aluno:
+  - nome
+  - email
+  - telefone
+  - data de nascimento
+  - serie
+  - escola
+  - responsavel
+  - telefone do responsavel
+  - tempo de aula
+  - horas mensais
+  - status
 
-### Retorno enriquecido
+### Backend
 
-Os dados de aluno sao montados com informacoes de:
-
-- `alunos`
-- `public.users`
-- modalidade relacionada quando aplicavel
+- `GET /api/alunos`
+- `GET /api/alunos/total`
+- `GET /api/alunos/[id]`
+- `GET /api/alunos/[id]/turmas`
+- `GET /api/alunos/[id]/aulas`
+- `GET /api/alunos/[id]/aulas/pendentes`
+- `GET /api/alunos/[id]/aulas/historico`
 
 ## Professores
 
-### Ja implementado
+### Implementado
 
 - listar professores
-- buscar professor por id de usuario
-- total de professores
-- listar turmas do professor
+- pesquisar/filtrar professores
+- criar professor
+- atualizar professor
+- ativar/inativar usuario
+- detalhes do professor
+- formulario de professor
+- teste E2E do formulario de criacao
 
-### Retorno enriquecido
+### Backend
 
-Os dados de professor sao montados com informacoes de:
-
-- `professores`
-- `public.users`
-- `modalidades`
+- `GET /api/professores`
+- `GET /api/professores/total`
+- `GET /api/professores/[id]`
+- `GET /api/professores/[id]/turmas`
+- `GET /api/professores/[id]/aulas`
+- `GET /api/professores/[id]/aulas/pendentes`
+- `GET /api/professores/[id]/aulas/historico`
 
 ## Modalidades
 
-### Ja implementado
+### Implementado
 
 - listar modalidades
-- buscar modalidade por id
 - criar modalidade
 - atualizar modalidade
 - deletar modalidade
+- dialog de confirmacao de exclusao
+- cards de modalidades
+- tratamento para modalidade em uso
+
+### Backend
+
+- `GET /api/modalidades`
+- `POST /api/modalidades`
+- `GET /api/modalidades/[id]`
+- `PUT /api/modalidades/[id]`
+- `DELETE /api/modalidades/[id]`
 
 ## Turmas
 
-### Ja implementado
+### Implementado
 
 - listar turmas
 - buscar turma por id
+- pagina de detalhes da turma
 - criar turma
 - atualizar turma
 - deletar turma
-- listar alunos de uma turma
-- listar professores de uma turma
+- selecionar alunos por cards
+- selecionar professores por cards
+- selecionar modalidade
+- agenda com multiplos dias e horarios
+- calculo de horas semanais a partir da agenda
+- filtros por dias da semana no frontend
+- exibicao de alunos, professores, modalidade, vigencia e agenda
 
-### O que a criacao/atualizacao de turma cobre
+### Validacoes
 
 - nome
-- carga horaria semanal
 - vigencia
-- modalidade
-- agenda recorrente
-- vinculo com alunos
-- vinculo com professores
-
-### Validacoes importantes ja presentes
-
 - modalidade existente
-- vigencia inicial menor ou igual a vigencia final
 - horarios validos
-- conflito dentro da propria agenda
-- conflito de agenda com outras turmas
-- conflito de agenda de aluno
-- conflito de agenda de professor
+- conflito interno de agenda
+- conflito com outras turmas
+- conflito de alunos com turmas
+- conflito de professores com turmas
+- conflito de alunos com aulas individuais
+- conflito de professores com aulas individuais
 
-## Agenda da Turma
+### Backend
 
-### Ja implementado
-
-- criacao junto com a turma
-- recriacao no update da turma
-- validacao de conflito por dia da semana e faixa de horario
-
-### Formato atual
-
-Cada item de agenda usa:
-
-- `dia_semana`
-- `horario_inicio`
-- `horario_fim`
+- `GET /api/turmas`
+- `POST /api/turmas`
+- `GET /api/turmas/[id]`
+- `PUT /api/turmas/[id]`
+- `DELETE /api/turmas/[id]`
+- `GET /api/turmas/[id]/alunos`
+- `GET /api/turmas/[id]/professores`
 
 ## Aulas Individuais
 
+### Implementado
+
+- pagina de aulas da semana
+- pagina de aulas pendentes
+- pagina de historico de aulas
+- historico paginado
+- busca no historico
+- criar aula
+- deletar aula agendada
+- iniciar aula
+- finalizar aula
+- enviar anotacoes na finalizacao
+- exibir detalhes da aula
+- status visual da aula
+- empty state para listagens sem aulas
+- restricao para professor finalizar/iniciar apenas aula atribuida a ele
+
+### Status atuais
+
+- `AGENDADA`
+- `EM_ANDAMENTO`
+- `PENDENTE_FINALIZACAO`
+- `FINALIZADA`
+
+### Backend
+
+- `GET /api/aulas`
+- `POST /api/aulas`
+- `GET /api/aulas/todas`
+- `GET /api/aulas/pendentes`
+- `GET /api/aulas/historico`
+- `DELETE /api/aulas/[id]`
+- `PATCH /api/aulas/[id]/inicio`
+- `PATCH /api/aulas/[id]/finalizacao`
+
+## Calendario
+
+### Implementado
+
+- pagina `/dashboard/calendario`
+- FullCalendar em portugues
+- exibicao de aulas individuais
+- exibicao de turmas recorrentes
+- cores por tipo/status de evento
+- range de datas enviado pela URL da requisicao
+- criacao de aula a partir do calendario
+- detalhes de aulas/turmas no calendario
+- finalizacao de aula pelo calendario
+- exclusao de aula pelo calendario quando permitido
+
+### Backend
+
+- `GET /api/calendario?start=ISO&end=ISO`
+
+## Form Options
+
+### Implementado
+
+- endpoint para buscar opcoes de formulario
+- alunos ativos
+- professores ativos
+- modalidades
+- usado para adiar carregamento de opcoes pesadas ate abrir formularios/dialogs
+
+### Backend
+
+- `GET /api/form-options`
+
+## Perfil
+
+### Implementado
+
+- pagina `/dashboard/perfil`
+- dados reais do usuario autenticado
+- edicao de nome/email
+- atalhos de navegacao
+- logout
+
+## Portal
+
 ### Estado atual
 
-- entidade `aulas_individuais` presente no banco
-- rotas de `aulas` criadas
-- modulo ainda nao finalizado
+- rota `/portal`
+- layout com `robots: noindex`
+- pagina simples com logout
+- proxy ja direciona nao-admin para portal
 
-### Esperado
+### Em evolucao
 
-- criar aula com data real
-- excluir aula individual
-- consultar agenda semanal com turmas e aulas individuais
+- home mobile-first
+- navegacao inferior
+- telas de aulas/turmas/pendencias para aluno e professor
+- exibicao por role
 
-## Frequencia
+## Health Check
 
-### Estrutura no banco ja existe
+### Implementado
 
-- `frequencia_aluno`
-- `frequencia_professor`
+- `GET /api/health`
+- status da aplicacao
+- status do banco com `SELECT 1`
+- tempo de resposta do banco
+- uptime
+- ambiente
 
-### Estado atual
+## Cron
 
-- modelagem presente
-- fluxo completo ainda nao consolidado nos modules do backend
+### Implementado
+
+- `GET /api/cron/aulas/status`
+- protegido por `CRON_SECRET`
+- marca aulas vencidas como `PENDENTE_FINALIZACAO`
+- configurado em `vercel.json`
 
 ## Seguranca
 
-### Ja implementado
+### Implementado
 
 - headers HTTP de seguranca
-- CSP em modo `Report-Only`
-- cookies SSR endurecidos
-- validacao de origem em rotas mutaveis
-- rate limit por:
-  - email
-  - IP
-  - id do usuario autenticado
-  - id do admin
+- CSP ativa
+- HSTS em producao
+- cookies SSR do Supabase
+- validacao de origem
+- CSRF assinado
+- rate limit com Upstash
+- helpers `requireAdminUser` e `requireAdminOrProfessor`
+- `server-only` em camadas server-side
+- handler central de erro
 
-## Ambiente de Desenvolvimento
+## Testes
 
-### Ja implementado
+### Implementado
 
-- `Dockerfile.dev`
-- `docker-compose.yml`
-- suporte a `.env` dentro do container
+- Playwright configurado
+- teste de login admin
+- teste de formulario de aluno
+- teste de formulario de professor
+- teste de formulario de turma
+- teste de formulario de aula
+- teste de aula no calendario
 
-### Fora do Docker
+## Em Evolucao
 
-- Supabase
-- PostgreSQL principal
-- Upstash Redis
-
-## Em evolucao
-
-- modulo de aulas
-- fluxos de frequencia
-- refinamento do update de turmas
-- respostas prontas para calendario do frontend
+- portal de alunos/professores
+- consolidacao de frequencia de aluno/professor
+- refinamento de selects/includes para reduzir carga de queries
+- indices de banco para queries mais usadas
+- melhoria continua das validacoes de conflito entre turmas e aulas

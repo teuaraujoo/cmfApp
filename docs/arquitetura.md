@@ -1,151 +1,268 @@
 ## Visao Geral
 
-O projeto e uma aplicacao web em `Next.js 16` com App Router, organizada em camadas de backend dentro de `src/server/modules`. A aplicacao usa `Prisma` para acesso ao PostgreSQL, `Supabase Auth` para autenticacao e sessao, e `Upstash Redis` para rate limit.
+O projeto e uma aplicacao Next.js 16 com App Router. Ele funciona como um sistema full-stack: o frontend fica em `src/app` e `src/components`, enquanto o backend fica em `src/app/api` e `src/server/modules`.
 
-## Arquitetura em Camadas
+A aplicacao usa Supabase Auth para identidade, PostgreSQL/Supabase Database como banco principal, Prisma para acesso ao banco e Upstash Redis para rate limit.
 
-Fluxo principal do backend:
+## Fluxo Geral
 
-`route -> mdoules -> services -> mapper -> repository`
+Existem dois caminhos principais de dados.
+
+### 1. Requisicoes HTTP pelo client
+
+Usado por formularios, acoes de criacao, edicao, exclusao, inicio/finalizacao de aula e outros fluxos client-side.
+
+Fluxo:
+
+`Client Component -> service client -> apiFetch -> route handler -> service -> validation/mapper -> repository -> Prisma`
+
+Exemplos:
+
+- criar usuario
+- editar professor
+- criar turma
+- criar aula
+- finalizar aula
+- deletar modalidade
+
+### 2. Queries server-side em paginas do App Router
+
+Usado quando a pagina carrega dados diretamente no servidor.
+
+Fluxo:
+
+`Server Page -> query server-side -> requireAdminUser -> service -> repository -> mapper -> component`
+
+Exemplos:
+
+- listagem de alunos
+- listagem de professores
+- listagem de turmas
+- detalhes de turma
+- aulas da semana
+- historico de aulas paginado
+- perfil do usuario autenticado
+
+## Camadas do Backend
+
+### `src/app/api`
+
+Route handlers HTTP do Next.js.
 
 Responsabilidades:
 
-- `src/app/api`
-  define os endpoints HTTP, trata `Request/Response`, autenticacao da rota e tratamento de erro.
-- `src/server/modules/*/*.services.ts`
-  orquestra o caso de uso e transacoes do Prisma.
-- `src/server/modules/*/*.validation.ts`
-  concentram validacoes de negocio e integridade.
-- `src/server/modules/*/*.repositories.ts`
-  fazem leitura e escrita no banco via Prisma.
-- `src/server/modules/*/*.mapper.ts`
-  convertem payloads e respostas entre API e banco.
-- `src/server/helpers`
-  concentram helpers transversais de infraestrutura, como rate limit e validacao de origem.
-- `src/server/utils`
-  concentram funcoes utilitarias pequenas, como comparacao de horario e formatacao de datas/agenda.
+- ler request
+- validar CSRF quando necessario
+- chamar guard de autenticacao/autorizacao
+- aplicar tratamento central de erro
+- devolver `Response.json`
+
+### `src/server/modules/*/*.queries.ts`
+
+Funcoes server-side usadas diretamente por paginas e componentes server.
+
+Responsabilidades:
+
+- chamar `requireAdminUser`
+- aplicar rate limit de leitura
+- chamar services do dominio
+
+Essas funcoes evitam que paginas server-side chamem services sem autorizacao.
+
+### `src/server/modules/*/*.services.ts`
+
+Casos de uso da aplicacao.
+
+Responsabilidades:
+
+- validar payload com Zod
+- executar regras de negocio
+- orquestrar transacoes Prisma
+- coordenar Supabase Auth quando necessario
+- chamar repositories
+
+### `src/server/modules/*/*.repositories.ts`
+
+Acesso direto ao banco via Prisma.
+
+Responsabilidades:
+
+- `findMany`
+- `findUnique`
+- `create`
+- `update`
+- `updateMany`
+- `delete`
+- `groupBy`
+- queries com `include`/`select`
+
+### `src/server/modules/*/*.mapper.ts`
+
+Conversao entre formato de API/frontend e formato do banco.
+
+Responsabilidades:
+
+- formatar respostas
+- converter datas
+- normalizar relacionamentos
+- montar payloads Prisma
+- remover detalhes desnecessarios antes de retornar ao frontend
+
+### `src/server/modules/*/*.validation.ts`
+
+Regras de negocio e integridade.
+
+Responsabilidades:
+
+- validar conflitos de agenda
+- validar existencia de entidades
+- validar horarios
+- validar regras especificas de turmas e aulas
 
 ## Organizacao Atual de Pastas
 
-### Frontend e rotas
+### Frontend
 
-- `src/app`
-  App Router do Next.
-- `src/app/api`
-  endpoints do backend expostos via route handlers.
+- `src/app/(modules)/(auth)`
+  telas de login, escolha de login e troca de senha.
+- `src/app/(modules)/dashboard`
+  area administrativa protegida.
+- `src/app/(modules)/legal`
+  paginas publicas de termos e privacidade.
+- `src/app/(modules)/portal`
+  base inicial do portal para alunos/professores.
+- `src/components/dashboard`
+  componentes das paginas administrativas.
+- `src/components/auth`
+  formularios de autenticacao.
+- `src/components/ui`
+  componentes reutilizaveis de interface.
+- `src/layout`
+  sidebar, header e layout principal do dashboard.
 
-### Backend modularizado
+### Backend
 
 - `src/server/modules/auth`
-  login, logout e troca de senha.
 - `src/server/modules/users`
-  usuarios, alunos e professores.
 - `src/server/modules/modalidades`
-  CRUD de modalidades.
 - `src/server/modules/turmas`
-  CRUD de turmas, agenda e vinculos.
 - `src/server/modules/aulas`
-  estrutura inicial para aulas individuais.
+- `src/server/modules/calendar`
+- `src/server/modules/form-options`
+- `src/server/modules/health`
 
 ### Infraestrutura
 
-- `src/libs/prisma.ts`
-  inicializacao do client Prisma.
-- `src/libs/supabase/server.ts`
-  client SSR/server do Supabase com cookies seguros.
-- `src/libs/supabase/client.ts`
-  client de browser do Supabase.
-- `src/libs/supabase/admin.ts`
-  client server-only com `service_role`.
-- `src/libs/ratelimit.ts`
-  configuracao dos limitadores do Upstash.
-
-### Gerado automaticamente
-
-- `src/generated/prisma`
-  client Prisma gerado a partir do schema atual.
-
-## Padroes Atuais do Projeto
-
-### 1. Modulos por dominio
-
-Cada dominio principal possui seus proprios arquivos de:
-
-- schema
-- repository
-- service
-- mapper
-- validation/rules
-
-Isso reduz acoplamento entre entidades e deixa os endpoints mais previsiveis.
-
-### 2. Services com transacao quando necessario
-
-Fluxos que alteram varias tabelas usam `prisma.$transaction`, por exemplo:
-
-- criacao de usuario
-- criacao de turma
-- atualizacao de turma
-
-### 3. Create e update por agregados
-
-Em turmas, os relacionamentos `turma_agenda`, `turma_alunos` e `turma_professores` sao tratados como conjuntos. No update, o padrao atual e:
-
-- atualizar `turmas`
-- apagar vinculos/agenda antigos
-- recriar o conjunto atual com `createMany`
-
-### 4. Validacao de agenda por regras
-
-Conflitos de agenda sao avaliados nas validacoes do modulo de turmas, usando:
-
-- vigencia da turma
-- dia da semana
-- horario de inicio e fim
-- comparacao com outras turmas de alunos e professores
-
-### 5. DTO de resposta via mapper
-
-Os mappers nao servem apenas para create/update. Eles tambem montam respostas prontas para o frontend, evitando que o cliente tenha que juntar dados de varias rotas.
+- `src/server/libs/prisma.ts`
+  Prisma Client.
+- `src/server/libs/supabase/server.ts`
+  Supabase server/SSR com cookies.
+- `src/server/libs/supabase/client.ts`
+  Supabase browser client.
+- `src/server/libs/supabase/admin.ts`
+  Supabase service role para criacao administrativa.
+- `src/server/libs/ratelimit.ts`
+  limitadores Upstash.
+- `src/server/security`
+  CSRF, origin e rate limit helpers.
+- `src/server/error`
+  `AppError` e `handleApiError`.
 
 ## Autenticacao e Autorizacao
 
-O projeto separa autenticacao de perfil:
+O projeto separa identidade de perfil de negocio:
 
 - `auth.users`
-  identidade e sessao no Supabase.
+  usuario do Supabase Auth.
 - `public.users`
-  perfil de negocio da aplicacao.
+  usuario da aplicacao.
 
-Relacao principal:
+Ligacao:
 
 - `public.users.auth_user_id -> auth.users.id`
 
-Autorizacao atual:
+Funcoes principais:
 
-- sessao validada via Supabase SSR
-- role validada no backend
-- usuarios com `must_change_password = true` ficam bloqueados nas rotas protegidas
+- `loginUser`
+- `logoutUser`
+- `changePassword`
+- `getCurrentAppUser`
+- `requireAdminUser`
+- `requireAdminOrProfessor`
 
-## Seguranca Ja Implementada
+`getCurrentAppUser`, `requireAdminUser` e `requireAdminOrProfessor` usam `cache` do React para reduzir chamadas repetidas dentro da mesma renderizacao/request.
 
-- headers de seguranca em `next.config.ts`
-- CSP em `Content-Security-Policy-Report-Only`
+## Proxy de Rotas
+
+Arquivo:
+
+- `src/proxy.ts`
+
+Responsabilidades:
+
+- liberar rotas publicas
+- liberar assets e `/api`
+- redirecionar usuario sem token para `/`
+- redirecionar usuario com senha provisoria para `/change-password`
+- impedir usuario nao-admin de acessar `/dashboard`
+- redirecionar usuarios nao-admin autenticados para `/portal`
+- redirecionar admin autenticado para `/dashboard/home` quando entrar no login administrativo
+
+## Seguranca
+
+Implementacoes atuais:
+
+- headers globais em `next.config.ts`
+- CSP ativa via `Content-Security-Policy`
+- HSTS em producao
+- `Cache-Control: no-store` para `/api`
 - validacao de `Origin` em rotas mutaveis
-- cookies SSR com `httpOnly`, `secure` por ambiente e `sameSite: 'lax'`
+- CSRF assinado por HMAC em mutacoes sensiveis
 - rate limit com Upstash Redis
-- criacao administrativa de usuarios via `service_role`
+- cookies SSR do Supabase
+- `server-only` em arquivos server-side
+- tratamento central de erro com `handleApiError`
 
-## Ambiente de Desenvolvimento
+## Calendario
 
-O projeto passou a ter configuracao Docker apenas para desenvolvimento:
+O calendario administrativo usa FullCalendar no frontend.
 
-- `Dockerfile.dev`
-- `docker-compose.yml`
+Backend:
 
-Uso atual:
+- `GET /api/calendario?start=ISO&end=ISO`
+- `src/server/modules/calendar`
 
-- sobe a app Next em container
-- Supabase continua na nuvem
-- Upstash continua externo
-- banco PostgreSQL nao e executado localmente via Docker
+O service busca:
+
+- aulas individuais no periodo
+- turmas recorrentes com vigencia no periodo
+
+Depois os mappers convertem esses dados para eventos do calendario.
+
+## Cron
+
+Arquivo:
+
+- `src/app/api/cron/aulas/status/route.ts`
+
+Responsabilidade:
+
+- verificar aulas vencidas
+- alterar status de aulas `AGENDADA` ou `EM_ANDAMENTO` para `PENDENTE_FINALIZACAO` quando o horario final ja passou
+
+Protecao:
+
+- header `Authorization: Bearer ${CRON_SECRET}`
+
+Configuracao:
+
+- `vercel.json`
+
+## Padroes Importantes
+
+- services e repositories devem permanecer server-side
+- paginas server-side devem usar `*.queries.ts` quando precisarem de dados protegidos
+- mutacoes devem validar CSRF e permissao
+- responses devem passar por mapper quando forem consumidas pelo frontend
+- transacoes Prisma devem ser usadas em fluxos multi-tabela
+- updates de agregados de turma usam substituicao do conjunto relacionado
