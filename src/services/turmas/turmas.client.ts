@@ -28,7 +28,7 @@ type CreateTurmaPayload = {
 
 async function turmasRequest(
     url: string,
-    method: "POST" | "DELETE" | "PUT",
+    method: "POST" | "DELETE" | "PUT" | "PATCH",
     errMessage: string,
     body?: CreateTurmaPayload,
 ) {
@@ -66,6 +66,10 @@ export async function updateTurma(turma: CreateTurmaPayload, turmaId: number) {
     return turmasRequest(`${apiRoutes.turmas}/${turmaId}`, "PUT", "Não foi possível atualizar turma.", turma);
 };
 
-export async function deleteTurma(turmaId: number) {
+export async function inactiveTurma(turmaId: number) {
     return turmasRequest(`${apiRoutes.turmas}/${turmaId}`, "DELETE", "Não foi possível deletar turma.");
+};
+
+export async function activeTurma(turmaId: number) {
+    return turmasRequest(`${apiRoutes.turmas}/${turmaId}`, "PATCH", "Não foi possível ativar turma.");
 };

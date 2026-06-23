@@ -9,7 +9,7 @@ import TurmasGrid from "./TurmasGrid";
 import TurmasOverview from "./TurmasOverview";
 import type { TurmaDashboardItem } from "@/@types/turma/turma.types";
 import toast from "react-hot-toast";
-import { deleteTurma } from "@/services/turmas/turmas.client";
+import { inactiveTurma, activeTurma } from "@/services/turmas/turmas.client";
 import { useRouter } from "next/navigation";
 import { useCreateTurmaForm } from "@/hooks/turmas/useCreateTurmaForm";
 import { diasSemanaOptions } from "@/utils/date-utils";
@@ -130,12 +130,12 @@ export default function TurmasDashboardPage({
     openCreateDialog();
   };
 
-  async function handleDeleteTurma(turma: TurmaDashboardItem) {
+  async function handleInactiveTurma(turma: TurmaDashboardItem) {
     if (!turma) {
       return;
     };
 
-    const result = await toast.promise(deleteTurma(turma.id), {
+    const result = await toast.promise(inactiveTurma(turma.id), {
       loading: 'Carregando...',
       success: (response) => response?.message,
       error: (error) => error?.message || "Error ao conectar com o servidor!",
@@ -148,6 +148,24 @@ export default function TurmasDashboardPage({
 
     refreshTurmas();
     setDeleteDialogOpen(false);
+  };
+
+  async function handleActiveTurma(turmaId: number) {
+    if (!turmaId) return;
+
+    const result = await toast.promise(activeTurma(turmaId), {
+      loading: 'Carregando...',
+      success: (response) => response?.message,
+      error: (error) => error?.message || "Error ao conectar com o servidor!",
+    })
+
+
+    if (result?.err) {
+      toast.error(result.err);
+      return;
+    };
+
+    refreshTurmas();
   };
 
   return (
@@ -182,6 +200,7 @@ export default function TurmasDashboardPage({
               <TurmasGrid
                 turmas={filteredTurmas}
                 onOpenDeleteDialog={openDeleteDialog}
+                onActive={handleActiveTurma}
               />
             )}
           </section>
@@ -212,7 +231,7 @@ export default function TurmasDashboardPage({
         turma={selectedTurma}
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        onDelete={handleDeleteTurma}
+        onInactive={handleInactiveTurma}
       />
     </main>
   );
