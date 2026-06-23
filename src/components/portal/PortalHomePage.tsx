@@ -1,0 +1,125 @@
+"use client"
+
+import {
+  AlertCircle,
+  BookOpen,
+  CalendarDays,
+  Clock3,
+  GraduationCap,
+  History,
+  UserRoundCog,
+} from "lucide-react";
+
+import { PortalSummaryCards } from "@/components/portal/PortalSummaryCards";
+import { PortalUserCard } from "@/components/portal/PortalUserCard";
+import { QuickAccessGrid } from "@/components/portal/QuickAccessGrid";
+
+const mockPortalUser = {
+  nome: "Cristiane Santos",
+  telefone: "(11) 99999-9999",
+  email: "cristianeteste@email.com",
+  role: "PROFESSOR",
+};
+
+const quickAccessItems = [
+  {
+    label: "Aulas",
+    href: "/portal/aulas",
+    icon: BookOpen,
+    description: "Veja sua rotina",
+    iconClassName:
+      "bg-sky-50 text-sky-700 group-hover:bg-sky-600 group-hover:text-white dark:bg-sky-500/10 dark:text-sky-200",
+    hoverClassName:
+      "hover:border-sky-200 hover:bg-sky-50 dark:hover:border-sky-500/30 dark:hover:bg-sky-500/10",
+  },
+  {
+    label: "Turmas",
+    href: "/portal/turmas",
+    icon: GraduationCap,
+    description: "Acompanhe grupos",
+    iconClassName:
+      "bg-emerald-50 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white dark:bg-emerald-500/10 dark:text-emerald-200",
+    hoverClassName:
+      "hover:border-emerald-200 hover:bg-emerald-50 dark:hover:border-emerald-500/30 dark:hover:bg-emerald-500/10",
+  },
+  {
+    label: "Calendario",
+    href: "/portal/calendario",
+    icon: CalendarDays,
+    description: "Agenda completa",
+    iconClassName:
+      "bg-violet-50 text-violet-700 group-hover:bg-violet-600 group-hover:text-white dark:bg-violet-500/10 dark:text-violet-200",
+    hoverClassName:
+      "hover:border-violet-200 hover:bg-violet-50 dark:hover:border-violet-500/30 dark:hover:bg-violet-500/10",
+  },
+  {
+    label: "Historico",
+    href: "/portal/historico",
+    icon: History,
+    description: "Registros antigos",
+    iconClassName:
+      "bg-amber-50 text-amber-700 group-hover:bg-amber-500 group-hover:text-white dark:bg-amber-500/10 dark:text-amber-200",
+    hoverClassName:
+      "hover:border-amber-200 hover:bg-amber-50 dark:hover:border-amber-500/30 dark:hover:bg-amber-500/10",
+  },
+  {
+    label: "Pendencias",
+    href: "/portal/pendencias",
+    icon: AlertCircle,
+    description: "Itens em aberto",
+    iconClassName:
+      "bg-rose-50 text-rose-700 group-hover:bg-rose-600 group-hover:text-white dark:bg-rose-500/10 dark:text-rose-200",
+    hoverClassName:
+      "hover:border-rose-200 hover:bg-rose-50 dark:hover:border-rose-500/30 dark:hover:bg-rose-500/10",
+  },
+  {
+    label: "Perfil",
+    href: "/portal/perfil",
+    icon: UserRoundCog,
+    description: "Perfil e informações do usuário",
+    iconClassName:
+      "bg-gray-200 text-gray-700 group-hover:bg-gray-600 group-hover:text-white dark:bg-gray-500/10 dark:text-gray-200",
+    hoverClassName:
+      "hover:border-gray-200 hover:bg-gray-50 dark:hover:border-gray-500/30 dark:hover:bg-gray-500/10",
+  },
+];
+
+const summaryItems = [
+  { label: "Aulas hoje", value: 2, description: "Na sua agenda" },
+  { label: "Proximas aulas", value: 5, description: "Nos proximos dias" },
+  { label: "Pendencias", value: 1, description: "Aguardando acao" },
+  { label: "Turmas ativas", value: 3, description: "Em andamento" },
+];
+
+export function PortalHomePage() {
+  return (
+    <div className="space-y-7">
+      <PortalUserCard user={mockPortalUser} />
+
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-950 dark:text-white">
+            Próximo compromisso
+          </h2>
+        </div>
+
+        <div className="flex items-center gap-3 px-1">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-200">
+            <Clock3 className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-gray-950 dark:text-white">
+              Aula de Matemática
+            </p>
+            <p className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+              Hoje, 14:00 - 15:00
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <QuickAccessGrid items={quickAccessItems} />
+      <PortalSummaryCards items={summaryItems} />
+    </div>
+  );
+}

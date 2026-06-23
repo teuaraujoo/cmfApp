@@ -29,6 +29,27 @@ type ScheduleSlot = {
 type GroupedSchedules = Map<number, ScheduleSlot[]>;
 export class TurmaValidation {
 
+    static async validateTurmaForReactive(turmaId: number, data: CreateTurmaBody, alunos: CreateTurmaAlunoPrisma[], professores: CreateTurmaProfessorPrisma[]) {
+
+        await this.validateTurma(data, turmaId);
+        await this.validateAgenda(data.turma_agenda, data.vigencia_inicio, data.vigencia_fim, turmaId);
+        await this.validateTurmaAlunos(alunos, data.turma_agenda, turmaId);
+        await this.validateTurmaAlunosAulas(
+            alunos,
+            data.turma_agenda,
+            new Date(data.vigencia_inicio),
+            new Date(data.vigencia_fim)
+        );
+        await this.validateTurmaProfessores(professores, data.turma_agenda, turmaId);
+        await this.validateTurmaProfessoresAulas(
+            professores,
+            data.turma_agenda,
+            new Date(data.vigencia_inicio),
+            new Date(data.vigencia_fim),
+        );
+
+    }
+
     static async validateTurma(data: CreateTurmaBody, turmaId?: number) {
         const turmaNome = await TurmaRepositories.getByName(data.nome);
         const modalidade = await ModalidadeRepositories.getById(data.modalidade_id);
@@ -114,11 +135,9 @@ export class TurmaValidation {
 
         if (!newAgenda?.length) throw new AppError("Agenda da turma é obrigatória!", 404);
 
+        await this.validateTurmaAlunosExist(alunos);
+
         const alunosIds = alunos.map(aluno => aluno.alunos_id);
-        const findAlunos = await AlunosRepositories.findManyByIds(alunosIds);
-
-        if (!findAlunos || findAlunos.length !== alunosIds.length) throw new AppError("Error ao achar alunos", 400);
-
         const turmasDosAlunos = await TurmaRepositories.findTurmasByAlunosIds(alunosIds, turmaId);
 
 
@@ -146,6 +165,13 @@ export class TurmaValidation {
         );
     };
 
+    static async validateTurmaAlunosExist(alunos: CreateTurmaAlunoPrisma[]) {
+        const alunosIds = alunos.map(aluno => aluno.alunos_id);
+        const findAlunos = await AlunosRepositories.findManyByIds(alunosIds);
+
+        if (!findAlunos || findAlunos.length !== alunosIds.length) throw new AppError("Error ao achar alunos", 400);
+    };
+
     static async validateTurmaProfessores(
         professores: CreateTurmaProfessorPrisma[],
         newAgenda: CreateTurmaAgendaBody[],
@@ -154,11 +180,9 @@ export class TurmaValidation {
 
         if (!newAgenda?.length) throw new AppError("Agenda da turma é obrigatória!", 404);
 
+        await this.validateTurmaProfessoresExist(professores);
+
         const professoresIds = professores.map(professor => professor.professores_id);
-        const findProfessores = await ProfessoresRepositories.findManyByIds(professoresIds);
-
-        if (!findProfessores || findProfessores.length !== professoresIds.length) throw new AppError("Error ao achar professores!", 400);
-
         const turmasDosProfessores = await TurmaRepositories.findTurmasByProfessoresIds(professoresIds, turmaId);
 
         const groupedNewSchedules = this.groupSchedulesByDay(
@@ -183,6 +207,15 @@ export class TurmaValidation {
             groupedCurrentSchedules,
             "Professor já possui turma nesse dia e horário!"
         );
+    };
+
+    static async validateTurmaProfessoresExist(
+        professores: CreateTurmaProfessorPrisma[]
+    ) {
+        const professoresIds = professores.map(professor => professor.professores_id);
+        const findProfessores = await ProfessoresRepositories.findManyByIds(professoresIds);
+
+        if (!findProfessores || findProfessores.length !== professoresIds.length) throw new AppError("Error ao achar professores!", 400);
     };
 
     static async validateTurmaProfessoresAulas(

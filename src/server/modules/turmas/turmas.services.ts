@@ -110,33 +110,68 @@ export async function createTurma(body: CreateTurmaBody) {
 export async function updateTurma(body: CreateTurmaBody, id: number) {
 
     const data = createTurmaSchema.parse(body);
+    const currentTurma = await TurmaRepositories.getById(id);
+
+    if (!currentTurma) throw new AppError("Turma não encontrada", 400);
+
+    const isInactive = currentTurma.status === "INATIVO";
 
     await TurmaValidation.validateTurma(data, id);
 
     try {
         return await prisma.$transaction(async (tx) => {
-            const turma = await TurmaRepositories.updateTurmaById(tx, id, TurmaMapper.toPrisma(data));
 
-            if (!turma) {
-                throw new AppError("Error ao atualizar turma!", 500);
+            // Turma ativa
+            if (!isInactive) {
+
+                const turma = await TurmaRepositories.updateTurmaById(tx, id, TurmaMapper.toPrisma(data));
+
+                if (!turma) {
+                    throw new AppError("Error ao atualizar turma!", 500);
+                };
+
+                if (data.turma_agenda) {
+                    await TurmaAgendaRepositories.deleteTurmaAgendaByTurmaId(tx, turma.id);
+                    await createAgendaIfProvided(tx, turma.id, data);
+                };
+
+                if (data.turma_alunos) {
+                    await TurmaAlunosRepositories.deleteTurmaAlunosByTurmaId(tx, turma.id);
+                    await createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda, data.vigencia_inicio, data.vigencia_fim);
+                };
+
+                if (data.turma_professores) {
+                    await TurmaProfessoresRepositories.deleteTurmaProfessoresByTurmaId(tx, turma.id);
+                    await createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda, data.vigencia_inicio, data.vigencia_fim);
+                };
+
+                return turma;
+            } else {
+
+                // Turma inativa
+                const turma = await TurmaRepositories.updateTurmaById(tx, id, TurmaMapper.toPrisma(data));
+
+                if (!turma) {
+                    throw new AppError("Error ao atualizar turma!", 500);
+                };
+
+                if (data.turma_agenda) {
+                    await TurmaAgendaRepositories.deleteTurmaAgendaByTurmaId(tx, turma.id);
+                    await createAgendaInactiveIfProvided(tx, turma.id, data)
+                }
+
+                if (data.turma_alunos) {
+                    await TurmaAlunosRepositories.deleteTurmaAlunosByTurmaId(tx, turma.id);
+                    await createTurmaAlunoInactiveIfProvided(tx, turma.id, data.turma_alunos);
+                };
+
+                if (data.turma_professores) {
+                    await TurmaProfessoresRepositories.deleteTurmaProfessoresByTurmaId(tx, turma.id);
+                    await createTurmaProfessorInactiveIfProvided(tx, turma.id, data.turma_professores);
+                };
+
+                return turma;
             };
-
-            if (data.turma_agenda) {
-                await TurmaAgendaRepositories.deleteTurmaAgendaByTurmaId(tx, turma.id);
-                await createAgendaIfProvided(tx, turma.id, data);
-            };
-
-            if (data.turma_alunos) {
-                await TurmaAlunosRepositories.deleteTurmaAlunosByTurmaId(tx, turma.id);
-                await createTurmaAlunoIfProvided(tx, turma.id, data.turma_alunos, data.turma_agenda,  data.vigencia_inicio, data.vigencia_fim);
-            };
-
-            if (data.turma_professores) {
-                await TurmaProfessoresRepositories.deleteTurmaProfessoresByTurmaId(tx, turma.id);
-                await createTurmaProfessorIfProvided(tx, turma.id, data.turma_professores, data.turma_agenda,  data.vigencia_inicio, data.vigencia_fim);
-            };
-
-            return turma;
         }, {
             maxWait: 5000,
             timeout: 10000,
@@ -148,19 +183,46 @@ export async function updateTurma(body: CreateTurmaBody, id: number) {
     };
 };
 
-export async function deleteTurma(id: number) {
+export async function inactiveTurma(id: number) {
     try {
 
-        const turma = await TurmaRepositories.getById(id);
+        const currentTurma = await TurmaRepositories.getById(id);
 
-        if (!turma) {
-            throw new AppError("Turma não encontrada", 404);
-        };
+        if (!currentTurma) throw new AppError("Turma não encontrada", 404);
 
-        return await TurmaRepositories.deleteById(id);
+        return TurmaRepositories.inactiveById(id);
 
     } catch (err) {
         throw err
+    };
+};
+
+export async function activeTurma(turmaId: number) {
+
+    const currentTurma = await TurmaRepositories.getById(turmaId);
+
+    if (!currentTurma) throw new AppError("Turma não encontrada", 404);
+
+    if (currentTurma.status === "ATIVA") throw new AppError("Turma já está ativa.", 409);
+
+    const data = TurmaMapper.toValidationPayload(currentTurma);
+
+    const alunos = data.turma_alunos!.map((aluno) =>
+        TurmaAlunosMapper.toTurmaAlunosPrisma(turmaId, aluno),
+    );
+
+    const professores = data.turma_professores!.map((professor) =>
+        TurmaProfessoresMapper.toTurmaProfessoresPrisma(turmaId, professor),
+    );
+
+    await TurmaValidation.validateTurmaForReactive(turmaId, data, alunos, professores);
+
+    try {
+
+        return TurmaRepositories.activeTurma(turmaId);
+
+    } catch (err) {
+        throw err;
     };
 };
 
@@ -200,6 +262,21 @@ export async function getProfessoresByTurmaId(turmaId: number) {
 
 // VALIDATION
 
+async function createAgendaInactiveIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaBody) {
+    if (!data.turma_agenda?.length) return;
+
+    const agenda = data.turma_agenda.map((item) => {
+        return TurmaAgendaMapper.toTurmaAgenda(turmaId, item);
+    });
+
+    for (const agenda of data.turma_agenda) {
+        await TurmaValidation.validateAgendaItem(agenda);
+    };
+
+    const agendaResult = await TurmaAgendaRepositories.newTurmaAgenda(tx, agenda);
+    checkCreateManyCount(agendaResult, agenda.length, "Agenda da turma");
+};
+
 async function createAgendaIfProvided(tx: Prisma.TransactionClient, turmaId: number, data: CreateTurmaBody) {
 
     if (!data.turma_agenda?.length) return;
@@ -238,6 +315,22 @@ async function createTurmaAlunoIfProvided(
     checkCreateManyCount(alunosResult, alunos.length, "Alunos da turma");
 };
 
+async function createTurmaAlunoInactiveIfProvided(
+    tx: Prisma.TransactionClient,
+    turmaId: number,
+    data: CreateTurmaAlunoBody[]
+) {
+    const alunos = data.map((aluno) => {
+        return TurmaAlunosMapper.toTurmaAlunosPrisma(turmaId, aluno);
+    });
+
+    await TurmaValidation.validateTurmaAlunosExist(alunos);
+
+    const alunosResult = await TurmaAlunosRepositories.newTurmaAluno(tx, alunos);
+
+    checkCreateManyCount(alunosResult, alunos.length, "Alunos da turma");
+};
+
 async function createTurmaProfessorIfProvided(
     tx: Prisma.TransactionClient,
     turmaId: number,
@@ -253,6 +346,22 @@ async function createTurmaProfessorIfProvided(
 
     await TurmaValidation.validateTurmaProfessores(professores, agenda, turmaId);
     await TurmaValidation.validateTurmaProfessoresAulas(professores, agenda, new Date(vigenciaInicio), new Date(vigenciaFim));
+
+    const professorResult = await TurmaProfessoresRepositories.newTurmaProfessor(tx, professores);
+
+    checkCreateManyCount(professorResult, professores.length, "Professores da turma");
+};
+
+async function createTurmaProfessorInactiveIfProvided(
+    tx: Prisma.TransactionClient,
+    turmaId: number,
+    data: CreateTurmaProfessorBody[]
+) {
+    const professores = data.map((professor) => {
+        return TurmaProfessoresMapper.toTurmaProfessoresPrisma(turmaId, professor);
+    });
+
+    await TurmaValidation.validateTurmaProfessoresExist(professores);
 
     const professorResult = await TurmaProfessoresRepositories.newTurmaProfessor(tx, professores);
 

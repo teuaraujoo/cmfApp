@@ -28,6 +28,9 @@ export class TurmaRepositories {
                         }
                     }
                 }
+            },
+            orderBy: {
+                status: "asc"
             }
         });
     };
@@ -37,6 +40,7 @@ export class TurmaRepositories {
             where: {
                 vigencia_inicio: { lt: end },
                 vigencia_fim: { gte: start },
+                status: "ATIVO"
             },
             include: {
                 modalidades: true,
@@ -106,7 +110,7 @@ export class TurmaRepositories {
     };
 
     static async getTotalTurmas() {
-        return prisma.turmas.count();
+        return prisma.turmas.count({ where: { status: "ATIVO" } });
     };
 
     // Achar todas as turmas que o professor ja esta (create) / achar todas as turmas que o professor esta menos a turma que esta sendo atualizada (update)
@@ -119,6 +123,7 @@ export class TurmaRepositories {
                         professores_id: { in: professoresIds },
                     },
                 },
+                status: "ATIVO"
             },
             include: {
                 turma_agenda: true,
@@ -135,7 +140,8 @@ export class TurmaRepositories {
                     some: {
                         alunos_id: { in: alunosIds }
                     }
-                }
+                },
+                status: "ATIVO"
             },
             include: {
                 turma_agenda: true,
@@ -163,6 +169,7 @@ export class TurmaRepositories {
                         dia_semana: diaSemana,
                     },
                 },
+                status: "ATIVO"
             },
             include: {
                 turma_agenda: {
@@ -193,6 +200,7 @@ export class TurmaRepositories {
                         dia_semana: diaSemana,
                     },
                 },
+                status: "ATIVO"
             },
             include: {
                 turma_agenda: {
@@ -230,6 +238,7 @@ export class TurmaRepositories {
                         },
                     },
                 },
+                status: "ATIVO"
             },
             include: {
                 turma_agenda: true,
@@ -245,8 +254,18 @@ export class TurmaRepositories {
         return tx.turmas.update({ where: { id }, data: turma });
     };
 
-    static async deleteById(id: number) {
-        return prisma.turmas.delete({ where: { id } })
+    static async inactiveById(turmaId: number) {
+        return prisma.turmas.update({
+            where: { id: turmaId },
+            data: { status: "INATIVO" }
+        })
+    };
+
+    static async activeTurma(turmaId: number) {
+        return prisma.turmas.update({
+            where: { id: turmaId },
+            data: { status: "ATIVO" }
+        });
     };
 };
 

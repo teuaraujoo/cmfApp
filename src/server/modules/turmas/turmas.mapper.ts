@@ -85,6 +85,27 @@ export class TurmaMapper {
             turma_agenda: TurmaAgendaMapper.toResponseTurmaAgendaGet(turma.turma_agenda)
         };
     };
+
+    static toValidationPayload(turma: TurmaWithRelations): CreateTurmaBody {
+        return {
+            nome: turma.nome,
+            horas_semana: Number(turma.horas_semana),
+            vigencia_inicio: turma.vigencia_inicio.toISOString().split("T")[0],
+            vigencia_fim: turma.vigencia_fim.toISOString().split("T")[0],
+            modalidade_id: turma.modalidade_id,
+            turma_agenda: turma.turma_agenda.map((agenda) => ({
+                dia_semana: agenda.dia_semana,
+                horario_inicio: DateUtils.dateToTime(agenda.horario_inicio),
+                horario_fim: DateUtils.dateToTime(agenda.horario_fim),
+            })),
+            turma_alunos: turma.turma_alunos.map((aluno) => ({
+                aluno_id: aluno.alunos_id,
+            })),
+            turma_professores: turma.turma_professores.map((professor) => ({
+                professor_id: professor.professores_id,
+            })),
+        };
+    };
 };
 
 /* =================   TURMA ALUNO     =================*/
