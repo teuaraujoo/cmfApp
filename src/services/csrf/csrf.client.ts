@@ -1,25 +1,37 @@
 import apiRoutes from "@/lib/api";
 
 let csrfToken: string | null = null;
+let csrfPromise: Promise<string> | null = null;
 
 async function getCsrfToken() {
     if (csrfToken) return csrfToken;
 
-    const response = await fetch(`${apiRoutes.csrf}`, {
-        method: "GET",
-        credentials: "same-origin",
-        cache: "no-store"
-    });
+    if (csrfPromise) return csrfPromise
 
-    const result = await response.json();
+    csrfPromise = (async () => {
 
-    if (!response.ok || !result.csrfToken) {
-        throw new Error("Não foi possível gerar token CSRF.");
+        const response = await fetch(`${apiRoutes.csrf}`, {
+            method: "GET",
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.csrfToken) {
+            throw new Error("Não foi possível gerar token CSRF.");
+        };
+
+        csrfToken = result.csrfToken as string;
+
+        return csrfToken;
+    })();
+
+    try {
+        return await csrfPromise;
+    } finally {
+        csrfPromise = null;
     };
-
-    csrfToken = result.csrfToken;
-
-    return csrfToken;
 };
 
 export async function apiFetch(input: RequestInfo | URL, init: RequestInit = {}) {

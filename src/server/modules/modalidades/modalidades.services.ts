@@ -75,7 +75,7 @@ export async function deleteModalidade(id: number) {
             throw new AppError("Modalidade não encontrada!", 404);
         };
 
-        return ModalidadeRepositories.deleteModalidadeById(id);
+        return await ModalidadeRepositories.deleteModalidadeById(id);
 
     } catch (err) {
         if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2003") {

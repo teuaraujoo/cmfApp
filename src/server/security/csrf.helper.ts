@@ -70,6 +70,10 @@ export async function createCsrfToken() {
     const signedToken = createSignedToken();
     const cookieStore = await cookies();
 
+    const existingToken = cookieStore.get(CSRF_COOKIE)?.value;
+
+    if (existingToken && isValidSignedToken(existingToken)) return existingToken;
+
     cookieStore.set(CSRF_COOKIE, signedToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
