@@ -13,12 +13,14 @@ import {
 import { PortalSummaryCards } from "@/components/portal/PortalSummaryCards";
 import { PortalUserCard } from "@/components/portal/PortalUserCard";
 import { QuickAccessGrid } from "@/components/portal/QuickAccessGrid";
+import { Aula } from "@/@types/aulas/aulas.types";
+import { DIAS_SEMANAS, formatHorarioLocal } from "@/utils/date-utils";
 
-const mockPortalUser = {
-  nome: "Cristiane Santos",
-  telefone: "(11) 99999-9999",
-  email: "cristianeteste@email.com",
-  role: "PROFESSOR",
+export type UserInfo = {
+  nome: string
+  email: string
+  tel?: string | null
+  role: string
 };
 
 const quickAccessItems = [
@@ -43,7 +45,7 @@ const quickAccessItems = [
       "hover:border-emerald-200 hover:bg-emerald-50 dark:hover:border-emerald-500/30 dark:hover:bg-emerald-500/10",
   },
   {
-    label: "Calendario",
+    label: "Calendário",
     href: "/portal/calendario",
     icon: CalendarDays,
     description: "Agenda completa",
@@ -53,7 +55,7 @@ const quickAccessItems = [
       "hover:border-violet-200 hover:bg-violet-50 dark:hover:border-violet-500/30 dark:hover:bg-violet-500/10",
   },
   {
-    label: "Historico",
+    label: "Histórico",
     href: "/portal/historico",
     icon: History,
     description: "Registros antigos",
@@ -63,7 +65,7 @@ const quickAccessItems = [
       "hover:border-amber-200 hover:bg-amber-50 dark:hover:border-amber-500/30 dark:hover:bg-amber-500/10",
   },
   {
-    label: "Pendencias",
+    label: "Pendências",
     href: "/portal/pendencias",
     icon: AlertCircle,
     description: "Itens em aberto",
@@ -91,10 +93,20 @@ const summaryItems = [
   { label: "Turmas ativas", value: 3, description: "Em andamento" },
 ];
 
-export function PortalHomePage() {
+export function PortalHomePage({ userInfo, aulas }: { userInfo: UserInfo, aulas: Aula }) {
+  const hoje = new Date().getDay();
+  
+  const nextEngagement = {
+    inicio: formatHorarioLocal(aulas.inicio), 
+    fim: formatHorarioLocal(aulas.fim),
+    dia: hoje ===  aulas.inicio.getDay() ? "Hoje" : DIAS_SEMANAS[aulas.inicio.getUTCDay()],
+    materia: aulas.professor.materia
+  };
+
+
   return (
     <div className="space-y-7">
-      <PortalUserCard user={mockPortalUser} />
+      <PortalUserCard user={userInfo} />
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
@@ -109,10 +121,11 @@ export function PortalHomePage() {
           </span>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-gray-950 dark:text-white">
-              Aula de Matemática
+              {`Aula de ${nextEngagement.materia}`}
             </p>
             <p className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
-              Hoje, 14:00 - 15:00
+              {/* Hoje, 14:00 - 15:00 */}
+              {`${nextEngagement.dia}, ${nextEngagement.inicio} - ${nextEngagement.fim}`}
             </p>
           </div>
         </div>

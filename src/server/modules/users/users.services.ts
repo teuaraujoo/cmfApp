@@ -11,7 +11,8 @@ import { UsersRepositories } from "@/server/modules/users/users.respositories";
 import { AlunosRepositories } from "@/server/modules/users/users.respositories";
 import { ProfessoresRepositories } from "@/server/modules/users/users.respositories";
 import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "@/server/modules/users/user.schema";
-
+import { AulasRepositories } from "../aulas/aulas.repositories";
+import { AulasMapper } from "../aulas/aulas.mapper";
 
 /* =================    USERS     =================*/
 
@@ -223,6 +224,28 @@ export async function getAlunoByUserId(userId: number) {
 
 export async function getTotalAlunosWithAulaIndividual() {
   return AlunosRepositories.getTotalAlunosWithAulaIndividual();
+};
+
+export async function getNextEngagement(id: number) {
+  const hoje = new Date();
+
+  const user = await UsersRepositories.getById(id);
+
+  if (!user) throw new AppError("Error ao encontrar usuário.", 404);
+
+  const role = user.role;
+
+  const findUserByRole = role === "PROFESSOR" ? await ProfessoresRepositories.getByUserId(id) : await AlunosRepositories.getByUserId(id);
+
+  if (!findUserByRole) throw new AppError("Error ao encontrar id do usuário pela role.", 404);
+
+  const aulas = await AulasRepositories.getAulasByUserId(findUserByRole.id, role);
+
+  if (!aulas) throw new AppError("Error ao encontrar aulas.", 404);
+
+  const mappedAulas = aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
+
+  return mappedAulas.find(aula => aula.inicio.getTime() > hoje.getTime());
 };
 
 /* =================    PROFESSOR     =================*/

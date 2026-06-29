@@ -18,7 +18,7 @@ export function QuickAccessGrid({ items }: { items: QuickAccessItem[] }) {
     <section className="space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-950 dark:text-white">
-          Acesso rapido
+          Acesso rápido
         </h2>
       </div>
 

@@ -1,16 +1,9 @@
 import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
-
 import ThemeToggleButton from "@/components/common/ThemeToggleButton";
+import { UserInfo } from "./PortalHomePage";
 
-type PortalUser = {
-  nome: string;
-  telefone: string;
-  email: string;
-  role?: string;
-};
-
-export function PortalUserCard({ user }: { user: PortalUser }) {
+export function PortalUserCard({ user }: { user: UserInfo }) {
   return (
     <article className="relative overflow-hidden rounded-[1.75rem] border border-white/70 bg-white p-4 dark:border-white/10 dark:bg-white/[0.06]">
       <div className="relative flex min-h-24 items-stretch gap-4">
@@ -34,7 +27,7 @@ export function PortalUserCard({ user }: { user: PortalUser }) {
               <div className="flex flex-col mt-1 gap-2">
                 <span className="inline-flex items-center gap-2 text-xs font-semibold text-sky-700 dark:text-gray-300">
                   <Phone className="size-3 text-sky-600 dark:text-sky-300" />
-                  {user.telefone}
+                  {user.tel}
                 </span>
                 <span className="inline-flex items-center gap-2 text-xs font-semibold text-sky-700 dark:text-gray-300">
                   <Mail className="size-3 text-sky-600 dark:text-sky-300" />

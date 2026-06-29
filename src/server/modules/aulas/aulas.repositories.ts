@@ -264,6 +264,44 @@ export class AulasRepositories {
         })
     };
 
+    static async getAulasByUserId(id: number, role: string) {
+        const { start, end } = DateUtils.getCurrentWeekRangeUTC();
+        const where: Prisma.aulas_individuaisWhereInput = {
+            started_at: {
+                gte: start,
+                lt: end
+            },
+            status: "AGENDADA"
+        };
+
+        if (role === "PROFESSOR") {
+            where.professor_id = id;
+        } else {
+            where.aluno_id = id;
+        };
+
+        return prisma.aulas_individuais.findMany({
+            where,
+            include: {
+                professores: {
+                    include: {
+                        users: true
+                    }
+                },
+                alunos: {
+                    include: {
+                        users: true
+                    }
+                },
+                modalidades: true,
+                users: true
+            },
+            orderBy: {
+                started_at: "asc"
+            }
+        });
+    };
+
     static async getAulasNotFinishedByProfessorId(professorId: number) {
         return prisma.aulas_individuais.findMany({
             where: {

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { requireAdminUser } from "../auth/auth.services";
-import { getAllAlunos, getAllProfessores, getTotalAlunos, getTotalProfessores, getTotalAlunosWithAulaIndividual } from "./users.services";
+import { getAllAlunos, getAllProfessores, getTotalAlunos, getTotalProfessores, getTotalAlunosWithAulaIndividual, getNextEngagement } from "./users.services";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 import { generalQueriesRateLimit } from "@/server/libs/ratelimit";
 
@@ -37,4 +37,8 @@ export async function getAllProfessoresForAdmin() {
     const session = await requireAdminUser();
     await rateLimitByIdentifier(`professores:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAllProfessores();
+};
+
+export async function getNextEngagementForUser(id: number) {
+    return getNextEngagement(id)
 };
