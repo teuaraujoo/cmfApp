@@ -10,11 +10,11 @@ import {
   UserRoundCog,
 } from "lucide-react";
 
-import { PortalSummaryCards } from "@/components/portal/PortalSummaryCards";
 import { PortalUserCard } from "@/components/portal/PortalUserCard";
 import { QuickAccessGrid } from "@/components/portal/QuickAccessGrid";
-import { Aula } from "@/@types/aulas/aulas.types";
 import { DIAS_SEMANAS, formatHorarioLocal } from "@/utils/date-utils";
+import { Aula } from "@/@types/aulas/aulas.types";
+import { TurmaNextEngagement } from "@/@types/turma/turma.types";
 
 export type UserInfo = {
   nome: string
@@ -86,23 +86,11 @@ const quickAccessItems = [
   },
 ];
 
-const summaryItems = [
-  { label: "Aulas hoje", value: 2, description: "Na sua agenda" },
-  { label: "Proximas aulas", value: 5, description: "Nos proximos dias" },
-  { label: "Pendencias", value: 1, description: "Aguardando acao" },
-  { label: "Turmas ativas", value: 3, description: "Em andamento" },
-];
-
-export function PortalHomePage({ userInfo, aulas }: { userInfo: UserInfo, aulas: Aula }) {
+export function PortalHomePage({ userInfo, aula, turma }: { userInfo: UserInfo, aula?: Aula | null, turma: TurmaNextEngagement | null }) {
+  const hasCompromissos = aula || turma;
   const hoje = new Date().getDay();
-  
-  const nextEngagement = {
-    inicio: formatHorarioLocal(aulas.inicio), 
-    fim: formatHorarioLocal(aulas.fim),
-    dia: hoje ===  aulas.inicio.getDay() ? "Hoje" : DIAS_SEMANAS[aulas.inicio.getUTCDay()],
-    materia: aulas.professor.materia
-  };
 
+  console.log(turma?.turma_agenda[0].dia_semana)
 
   return (
     <div className="space-y-7">
@@ -115,24 +103,52 @@ export function PortalHomePage({ userInfo, aulas }: { userInfo: UserInfo, aulas:
           </h2>
         </div>
 
-        <div className="flex items-center gap-3 px-1">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-200">
-            <Clock3 className="size-5" />
-          </span>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-gray-950 dark:text-white">
-              {`Aula de ${nextEngagement.materia}`}
-            </p>
-            <p className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
-              {/* Hoje, 14:00 - 15:00 */}
-              {`${nextEngagement.dia}, ${nextEngagement.inicio} - ${nextEngagement.fim}`}
-            </p>
+        {hasCompromissos ? (
+          <div className="space-y-3">
+            {aula && (
+              <div className="flex items-center gap-3 px-1">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-200">
+                  <Clock3 className="size-5" />
+                </span>
+
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-gray-950 dark:text-white">
+                    {`Aula de ${aula.professor.materia}`}
+                  </p>
+
+                  <p className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                    {`${aula.inicio.getDay() === hoje ? "Hoje" : DIAS_SEMANAS[aula.inicio.getUTCDay()]}, ${formatHorarioLocal(aula.inicio)} - ${formatHorarioLocal(aula.fim)}`}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {turma && (
+              <div className="flex items-center gap-3 px-1">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200">
+                  <GraduationCap className="size-5" />
+                </span>
+
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-gray-950 dark:text-white">
+                    {turma.nome}
+                  </p>
+
+                  <p className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                    {`${turma.turma_agenda[0].dia_semana === hoje ? "Hoje" : DIAS_SEMANAS[turma.turma_agenda[0].dia_semana!]},   ${turma.turma_agenda[0].horario_inicio} - ${turma.turma_agenda[0].horario_fim}`}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-gray-200 bg-white/70 px-4 py-4 text-sm text-gray-500 dark:border-gray-700 dark:bg-gray-900/40 dark:text-gray-400">
+            Nenhum compromisso próximo no momento.
+          </div>
+        )}
       </section>
 
       <QuickAccessGrid items={quickAccessItems} />
-      <PortalSummaryCards items={summaryItems} />
     </div>
   );
-}
+};

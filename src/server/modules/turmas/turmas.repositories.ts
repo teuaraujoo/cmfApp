@@ -109,6 +109,64 @@ export class TurmaRepositories {
         })
     };
 
+    static async getTurmasByProfessorId(id: number, diaSemana: number) {
+        const hoje = new Date();
+
+        return prisma.turmas.findMany({
+            where: {
+                vigencia_inicio: {
+                    lte: hoje
+                },
+                vigencia_fim: {
+                    gte: hoje
+                },
+                turma_agenda: {
+                    some: {
+                        dia_semana: diaSemana
+                    }
+                },
+                turma_professores: {
+                    some: {
+                        professores_id: id
+                    }
+                },
+                status: "ATIVO",
+            },
+            include: {
+                turma_agenda: true
+            }
+        });
+    }
+
+    static async getTurmasByAlunoId(id: number, diaSemana: number) {
+        const hoje = new Date();
+
+        return prisma.turmas.findMany({
+            where: {
+                vigencia_inicio: {
+                    lte: hoje
+                },
+                vigencia_fim: {
+                    gte: hoje
+                },
+                turma_agenda: {
+                    some: {
+                        dia_semana: diaSemana
+                    }
+                },
+                turma_alunos: {
+                    some: {
+                        alunos_id: id
+                    }
+                },
+                status: "ATIVO",
+            },
+            include: {
+                turma_agenda: true
+            }
+        });
+    }
+
     static async getTotalTurmas() {
         return prisma.turmas.count({ where: { status: "ATIVO" } });
     };

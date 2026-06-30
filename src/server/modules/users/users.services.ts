@@ -13,6 +13,8 @@ import { ProfessoresRepositories } from "@/server/modules/users/users.respositor
 import { CreateUserBody, UpdateUserBody, createUserSchema, updateUserSchema } from "@/server/modules/users/user.schema";
 import { AulasRepositories } from "../aulas/aulas.repositories";
 import { AulasMapper } from "../aulas/aulas.mapper";
+import { TurmaRepositories } from "../turmas/turmas.repositories";
+import { TurmaMapper } from "../turmas/turmas.mapper";
 
 /* =================    USERS     =================*/
 
@@ -230,22 +232,52 @@ export async function getNextEngagement(id: number) {
   const hoje = new Date();
 
   const user = await UsersRepositories.getById(id);
-
   if (!user) throw new AppError("Error ao encontrar usuário.", 404);
 
   const role = user.role;
 
-  const findUserByRole = role === "PROFESSOR" ? await ProfessoresRepositories.getByUserId(id) : await AlunosRepositories.getByUserId(id);
+  if (role === "ADMIN") return null;
 
+  const findUserByRole = role === "PROFESSOR" ? await ProfessoresRepositories.getByUserId(id) : await AlunosRepositories.getByUserId(id);
   if (!findUserByRole) throw new AppError("Error ao encontrar id do usuário pela role.", 404);
 
   const aulas = await AulasRepositories.getAulasByUserId(findUserByRole.id, role);
-
-  if (!aulas) throw new AppError("Error ao encontrar aulas.", 404);
-
   const mappedAulas = aulas.map((aula) => AulasMapper.toResponseAulasGet(aula));
+  const nextAula = mappedAulas
+    .filter((aula) => aula.inicio.getTime() > hoje.getTime())
+    .sort((a, b) => a.inicio.getTime() - b.inicio.getTime())[0] ?? null;
 
-  return mappedAulas.find(aula => aula.inicio.getTime() > hoje.getTime());
+  const turmas = role === "PROFESSOR"
+    ? await TurmaRepositories.getTurmasByProfessorId(findUserByRole.id, hoje.getDay())
+    : await TurmaRepositories.getTurmasByAlunoId(findUserByRole.id, hoje.getDay());
+
+
+  const nextTurma = turmas.map(turma => {
+    const agenda = turma.turma_agenda[0];
+
+    const horario = new Date(hoje);
+
+    horario.setHours(
+      agenda.horario_inicio.getUTCHours(),
+      agenda.horario_inicio.getUTCMinutes(),
+      0,
+      0
+    );
+
+    return {
+      turma,
+      diferenca: horario.getTime() - hoje.getTime(),
+    };
+  })
+    .filter(item => item.diferenca >= 0)
+    .sort((a, b) => a.diferenca - b.diferenca)[0];
+
+  if (!nextAula && !nextTurma) return null;
+
+  return {
+    aula: nextAula,
+    turma: TurmaMapper.toResponseNextEngagement(nextTurma.turma)
+  };
 };
 
 /* =================    PROFESSOR     =================*/

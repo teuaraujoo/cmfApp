@@ -1,4 +1,5 @@
 export type TurmaAgenda = {
+  dia_semana?: number;
   horario_inicio: string;
   horario_fim: string;
 }
@@ -68,4 +69,10 @@ export type TurmaDashboardItem = {
   agenda: TurmaAgenda[];
   alunos: TurmaAluno[];
   professores: TurmaProfessor[];
+};
+
+export type TurmaNextEngagement = {
+  id: number;
+  nome: string;
+  turma_agenda: TurmaAgenda[]
 };

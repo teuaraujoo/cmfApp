@@ -27,6 +27,12 @@ export type TurmaWithRelations = Prisma.turmasGetPayload<{
     };
 }>;
 
+type TurmaWithTurmaAgenda = Prisma.turmasGetPayload<{
+    include: {
+        turma_agenda: true
+    }
+}>
+
 type TurmaProfessorWithRelations = TurmaWithRelations["turma_professores"][number];
 type TurmaAlunoWithRelations = TurmaWithRelations["turma_alunos"][number];
 type TurmaAgendaWithRelations = TurmaWithRelations["turma_agenda"][number];
@@ -106,6 +112,19 @@ export class TurmaMapper {
             })),
         };
     };
+
+    static toResponseNextEngagement(turma: TurmaWithTurmaAgenda) {
+        return {
+            id: turma.id,
+            nome: turma.nome,
+            turma_agenda: turma.turma_agenda.map((agenda) => ({
+                dia_semana: agenda.dia_semana,
+                horario_inicio: DateUtils.dateToTime(agenda.horario_inicio),
+                horario_fim: DateUtils.dateToTime(agenda.horario_fim),
+            }))
+        }
+    };
+
 };
 
 /* =================   TURMA ALUNO     =================*/

@@ -11,9 +11,10 @@ export default async function PortalHomeRoute() {
     tel: appUser.tel,
     role: appUser.role,
   };
-  const aula = await getNextEngagementForUser(appUser.id);
+  const nextEngagement = await getNextEngagementForUser(appUser.id);
+  const aula = nextEngagement?.aula ?? null;
+  const turma = nextEngagement?.turma ?? null;
 
-  if (!aula) return;
 
-  return <PortalHomePage userInfo={userInfo} aulas={aula} />;
+  return <PortalHomePage userInfo={userInfo} aula={aula} turma={turma} />;
 };

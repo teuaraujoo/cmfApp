@@ -40,5 +40,5 @@ export async function getAllProfessoresForAdmin() {
 };
 
 export async function getNextEngagementForUser(id: number) {
-    return getNextEngagement(id)
+    return getNextEngagement(id);
 };
