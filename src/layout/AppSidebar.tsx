@@ -13,9 +13,9 @@ import {
   Component,
   BookOpenText,
   Ellipsis,
-  FileUser,
   Shapes,
-  MessageCircleQuestionMark
+  MessageCircleQuestionMark,
+  UserRoundCog
 } from "lucide-react";
 
 const supportWhatsappUrl =
@@ -71,7 +71,7 @@ const navItems: NavItem[] = [
     path: "/dashboard/modalidades",
   },
   {
-    icon: <FileUser />,
+    icon: <UserRoundCog />,
     name: "Perfil",
     path: "/dashboard/perfil",
   },
@@ -151,15 +151,15 @@ const AppSidebar: React.FC = () => {
                   >
                     {nav.icon}
                   </span>
-                {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className={`menu-item-text`}>{nav.name}</span>
-                )}
-                {(isExpanded || isHovered || isMobileOpen) && (
-                  <LinkPendingIndicator />
-                )}
-              </Link>
-            )
-          )}
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <span className={`menu-item-text`}>{nav.name}</span>
+                  )}
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <LinkPendingIndicator />
+                  )}
+                </Link>
+              )
+            )}
             {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
               <div
                 ref={(el) => {

@@ -1,4 +1,4 @@
-import PerfilDashboardPage from "@/components/perfil/PerfilDashboardPage";
+import PerfilDashboardPage from "@/components/dashboard/perfil/PerfilDashboardPage";
 import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
 
 type AppUserRole = "ADMIN" | "ALUNO" | "PROFESSOR";
