@@ -230,6 +230,7 @@ export async function getTotalAlunosWithAulaIndividual() {
 
 export async function getNextEngagement(id: number) {
   const hoje = new Date();
+  const diaSemana = hoje.getDay();
 
   const user = await UsersRepositories.getById(id);
   if (!user) throw new AppError("Error ao encontrar usuário.", 404);
@@ -251,9 +252,10 @@ export async function getNextEngagement(id: number) {
     ? await TurmaRepositories.getTurmasByProfessorId(findUserByRole.id, hoje.getDay())
     : await TurmaRepositories.getTurmasByAlunoId(findUserByRole.id, hoje.getDay());
 
-
   const nextTurma = turmas.map(turma => {
-    const agenda = turma.turma_agenda[0];
+    const agenda = turma.turma_agenda.find((a) => a.dia_semana === diaSemana);
+
+    if (!agenda) return null;
 
     const horario = new Date(hoje);
 
@@ -265,18 +267,22 @@ export async function getNextEngagement(id: number) {
     );
 
     return {
-      turma,
+      turma: {
+        ...turma,
+        turma_agenda: [agenda]
+      },
       diferenca: horario.getTime() - hoje.getTime(),
     };
   })
+    .filter((item): item is NonNullable<typeof item> => item !== null)
     .filter(item => item.diferenca >= 0)
-    .sort((a, b) => a.diferenca - b.diferenca)[0];
+    .sort((a, b) => a.diferenca - b.diferenca);
 
   if (!nextAula && !nextTurma) return null;
 
   return {
     aula: nextAula,
-    turma: TurmaMapper.toResponseNextEngagement(nextTurma.turma)
+    turma: TurmaMapper.toResponseNextEngagement(nextTurma[0].turma)
   };
 };
 

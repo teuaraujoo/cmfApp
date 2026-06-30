@@ -90,8 +90,6 @@ export function PortalHomePage({ userInfo, aula, turma }: { userInfo: UserInfo, 
   const hasCompromissos = aula || turma;
   const hoje = new Date().getDay();
 
-  console.log(turma?.turma_agenda[0].dia_semana)
-
   return (
     <div className="space-y-7">
       <PortalUserCard user={userInfo} />
