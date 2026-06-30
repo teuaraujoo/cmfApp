@@ -114,6 +114,8 @@ export class TurmaMapper {
     };
 
     static toResponseNextEngagement(turma: TurmaWithTurmaAgenda) {
+        if (!turma) return null
+
         return {
             id: turma.id,
             nome: turma.nome,

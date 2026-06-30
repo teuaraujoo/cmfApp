@@ -282,7 +282,7 @@ export async function getNextEngagement(id: number) {
 
   return {
     aula: nextAula,
-    turma: TurmaMapper.toResponseNextEngagement(nextTurma[0].turma)
+    turma:  TurmaMapper.toResponseNextEngagement(nextTurma[0]?.turma) 
   };
 };
 
