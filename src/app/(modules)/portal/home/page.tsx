@@ -1,4 +1,4 @@
-import { PortalHomePage } from "@/components/portal/PortalHomePage";
+import { PortalHomePage } from "@/components/portal/home/PortalHomePage";
 import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
 import { getNextEngagementForUser } from "@/server/modules/users/user.queries";
 

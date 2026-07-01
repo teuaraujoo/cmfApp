@@ -10,8 +10,8 @@ import {
   UserRoundCog,
 } from "lucide-react";
 
-import { PortalUserCard } from "@/components/portal/PortalUserCard";
-import { QuickAccessGrid } from "@/components/portal/QuickAccessGrid";
+import { PortalUserCard } from "@/components/portal/home/PortalUserCard";
+import { QuickAccessGrid } from "@/components/portal/home/QuickAccessGrid";
 import { DIAS_SEMANAS, formatHorarioLocal } from "@/utils/date-utils";
 import { Aula } from "@/@types/aulas/aulas.types";
 import { TurmaNextEngagement } from "@/@types/turma/turma.types";

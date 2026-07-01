@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-import { PortalBottomNavigation } from "@/components/portal/PortalBottomNavigation";
+import { PortalBottomNavigation } from "@/components/portal/home/PortalBottomNavigation";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 export const metadata: Metadata = {

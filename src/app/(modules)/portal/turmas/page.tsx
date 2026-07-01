@@ -1,4 +1,4 @@
-import { PortalPlaceholderPage } from "@/components/portal/PortalPlaceholderPage";
+import { PortalPlaceholderPage } from "@/components/portal/home/PortalPlaceholderPage";
 
 export default function PortalTurmasPage() {
   return <PortalPlaceholderPage title="Turmas" />;
