@@ -24,10 +24,10 @@ export async function getTurmaByIdForAdmin(turmaId: number) {
 };
 
 
-export async function getAllTurmasByProfessorIdForUser(id: number) {
+export async function getAllTurmasByProfessorIdForProfessor(id: number) {
     return getAllTurmasByProfessorId(id);
 };
 
-export async function getAllTurmasByAlunoIdForUser(id: number) {
+export async function getAllTurmasByAlunoIdForAluno(id: number) {
     return getAllTurmasByAlunoId(id);
 };

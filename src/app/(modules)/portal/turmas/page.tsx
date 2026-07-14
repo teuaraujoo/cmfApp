@@ -2,7 +2,7 @@ import { TurmaApiResponse } from "@/@types/turma/turma.types";
 import { toTurmaDashboardItems } from "@/components/dashboard/turmas/turmas-view.mapper";
 import { PortalPlaceholderPage } from "@/components/portal/home/PortalPlaceholderPage";
 import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
-import { getAllTurmasByProfessorIdForUser, getAllTurmasByAlunoIdForUser } from "@/server/modules/turmas/turmas.queries";
+import { getAllTurmasByProfessorIdForProfessor, getAllTurmasByAlunoIdForAluno } from "@/server/modules/turmas/turmas.queries";
 
 export default async function PortalTurmasPage() {
   const { appUser } = await getCurrentAppUser();
@@ -19,8 +19,8 @@ export default async function PortalTurmasPage() {
   if (!id) return;
 
   const turmas = appUser.role === "PROFESSOR" 
-    ? await getAllTurmasByProfessorIdForUser(id) 
-    : await getAllTurmasByAlunoIdForUser(id);
+    ? await getAllTurmasByProfessorIdForProfessor(id) 
+    : await getAllTurmasByAlunoIdForAluno(id);
 
   // const turmasF = toTurmaDashboardItems(turmas as TurmaApiResponse[]);
   console.log("turmas: ", turmas);

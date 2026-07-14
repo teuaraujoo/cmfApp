@@ -1,7 +1,7 @@
 import "server-only";
 
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
-import { getAllAulas, getAulas, getAulasCountByModalidade, getAulasHistoricoPaginated, getAulasNotFinished, getTotalAulas } from "./aulas.services";
+import { getAllAulas, getAulas, getAulasByAlunoId, getAulasByProfessorId, getAulasCountByModalidade, getAulasHistoricoPaginated, getAulasNotFinished, getTotalAulas } from "./aulas.services";
 import { generalQueriesRateLimit } from "@/server/libs/ratelimit";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 
@@ -39,4 +39,12 @@ export async function getAulasCountByModalidadeForAdmin() {
     const session = await requireAdminUser();
     await rateLimitByIdentifier(`aulas:get:admin:${session.appUser.id}`, generalQueriesRateLimit);
     return getAulasCountByModalidade();
+};
+
+export async function getAulasByProfesorIdForProfessor(id: number) {
+    return getAulasByProfessorId(id);
+};
+
+export async function getAulasByAlunoIdForAluno(id: number) {
+    return getAulasByAlunoId(id);
 };
