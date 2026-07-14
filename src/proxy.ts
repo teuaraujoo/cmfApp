@@ -83,7 +83,7 @@ export async function proxy(request: NextRequest) {
     if (!effectiveMustChangePassword && pathname === "/change-password") {
         const redirectUrl = request.nextUrl.clone();
 
-        redirectUrl.pathname = role === "ADMIN" ? "/dashboard/home" : "/portal";
+        redirectUrl.pathname = role === "ADMIN" ? "/dashboard/home" : "/portal/home";
 
         return NextResponse.redirect(redirectUrl);
     };
@@ -97,7 +97,7 @@ export async function proxy(request: NextRequest) {
         } else if (pathname.startsWith("/dashboard") && role === "ADMIN") {
             redirectUrl.pathname = "/dashboard/home";
         } else {
-            redirectUrl.pathname = "/portal";
+            redirectUrl.pathname = "/portal/home";
         };
 
         return NextResponse.redirect(redirectUrl);
@@ -112,7 +112,7 @@ export async function proxy(request: NextRequest) {
         };
 
         if (pathname.startsWith("/dashboard") && role !== "ADMIN") {
-            redirectUrl.pathname = "/portal";
+            redirectUrl.pathname = "/portal/home";
             return NextResponse.redirect(redirectUrl);
         };
     };
