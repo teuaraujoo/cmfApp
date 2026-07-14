@@ -109,7 +109,7 @@ export class TurmaRepositories {
         })
     };
 
-    static async getTurmasByProfessorId(id: number, diaSemana: number) {
+    static async getTurmasByProfessorIdAndDay(id: number, diaSemana: number) {
         const hoje = new Date();
 
         return prisma.turmas.findMany({
@@ -138,7 +138,7 @@ export class TurmaRepositories {
         });
     }
 
-    static async getTurmasByAlunoId(id: number, diaSemana: number) {
+    static async getTurmasByAlunoIdAndDay(id: number, diaSemana: number) {
         const hoje = new Date();
 
         return prisma.turmas.findMany({
@@ -169,6 +169,70 @@ export class TurmaRepositories {
 
     static async getTotalTurmas() {
         return prisma.turmas.count({ where: { status: "ATIVO" } });
+    };
+
+    static async getAllTurmasByAlunoId(alunoId: number) {
+        return prisma.turmas.findMany({
+            where: {
+                turma_alunos: {
+                    some: {
+                        alunos_id: alunoId
+                    }
+                },
+                status: "ATIVO",
+            },
+            include: {
+                turma_agenda: true,
+                modalidades: true,
+                turma_professores: {
+                    include: {
+                        professores: {
+                            include: {
+                                users: true
+                            }
+                        }
+                    }
+                },
+            },
+        });
+    };
+
+    static async getAllTurmasByProfessorId(professorId: number) {
+        return prisma.turmas.findMany({
+            where: {
+                turma_professores: {
+                    some: {
+                        professores_id: professorId
+                    }
+                },
+                status: "ATIVO"
+            },
+            include: {
+                turma_agenda: true,
+                modalidades: true,
+                turma_alunos: {
+                    include: {
+                        alunos: {
+                            include: {
+                                users: true
+                            }
+                        }
+                    }
+                },
+                turma_professores: {
+                    include: {
+                        professores: {
+                            include: {
+                                users: true
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy: {
+                status: "asc"
+            }
+        });
     };
 
     // Achar todas as turmas que o professor ja esta (create) / achar todas as turmas que o professor esta menos a turma que esta sendo atualizada (update)

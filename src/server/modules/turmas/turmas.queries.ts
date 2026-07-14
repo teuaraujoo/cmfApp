@@ -1,7 +1,7 @@
 import "server-only";
 
 import { requireAdminUser } from "../auth/auth.services";
-import { getAllTurmas, getTotalTurmas, getTurmaById, getTurmasByAlunoId, getTurmasByProfessorId } from "./turmas.services";
+import { getAllTurmas, getTotalTurmas, getTurmaById, getAllTurmasByProfessorId, getAllTurmasByAlunoId } from "./turmas.services";
 import { generalQueriesRateLimit } from "@/server/libs/ratelimit";
 import { rateLimitByIdentifier } from "@/server/security/rate-limit.helper";
 
@@ -24,10 +24,10 @@ export async function getTurmaByIdForAdmin(turmaId: number) {
 };
 
 
-export async function getTurmasByProfessorIdForUser(id: number[]) {
-    return getTurmasByProfessorId(id);
+export async function getAllTurmasByProfessorIdForUser(id: number) {
+    return getAllTurmasByProfessorId(id);
 };
 
-export async function getTurmasByAlunoIdForUser(id: number[]) {
-    return getTurmasByAlunoId(id);
+export async function getAllTurmasByAlunoIdForUser(id: number) {
+    return getAllTurmasByAlunoId(id);
 };

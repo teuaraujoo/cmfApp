@@ -27,6 +27,22 @@ export type TurmaWithRelations = Prisma.turmasGetPayload<{
     };
 }>;
 
+type TurmaWithRelationsForAluno = Prisma.turmasGetPayload<{
+    include: {
+        modalidades: true,
+        turma_agenda: true,
+        turma_professores: {
+            include: {
+                professores: {
+                    include: {
+                        users: true;
+                    };
+                };
+            };
+        };
+    };
+}>;
+
 type TurmaWithTurmaAgenda = Prisma.turmasGetPayload<{
     include: {
         turma_agenda: true
@@ -77,6 +93,19 @@ export class TurmaMapper {
             turma_agenda: TurmaAgendaMapper.toResponseTurmaAgendaGet(turma.turma_agenda),
             turma_alunos: TurmaAlunosMapper.toResponseTurmaAlunosGet(turma.turma_alunos),
             turma_professores: TurmaProfessoresMapper.toResponseTurmaProfessoresGet(turma.turma_professores),
+        };
+    };
+
+    static toResponseTurmasGetForAluno(turma: TurmaWithRelationsForAluno) {
+        return {
+            id: turma.id,
+            nome: turma.nome,
+            horas_semana: turma.horas_semana,
+            status: turma.status,
+            vigencia_inicio: turma.vigencia_inicio,
+            vigencia_fim: turma.vigencia_fim,
+            modalidade: turma.modalidades,
+            turma_agenda: TurmaAgendaMapper.toResponseTurmaAgendaGet(turma.turma_agenda)
         };
     };
 
@@ -138,7 +167,7 @@ export class TurmaAlunosMapper {
             alunos_id: turmaAluno.aluno_id,
         };
     };
-    
+
     static toResponseTurmaAlunosGet(turmaAluno: TurmaAlunoWithRelations[]) {
         return turmaAluno.map((aluno) => {
             return {
@@ -166,7 +195,7 @@ export class TurmaAlunosMapper {
 /* =================   TURMA PROFESSOR    =================*/
 
 export class TurmaProfessoresMapper {
-    
+
     static toTurmaProfessoresPrisma(turmaId: number, turmaProfessores: CreateTurmaProfessorBody) {
         return {
             turma_id: turmaId,

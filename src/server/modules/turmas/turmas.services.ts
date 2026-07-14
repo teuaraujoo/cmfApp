@@ -40,7 +40,7 @@ export async function getTurmaById(id: number) {
     };
 };
 
-export async function getTurmasByAlunoId(alunoId: number[]) {
+export async function findTurmasByAlunoId(alunoId: number[]) {
     try {
         const turmas = await TurmaRepositories.findTurmasByAlunosIds(alunoId);
 
@@ -55,7 +55,7 @@ export async function getTurmasByAlunoId(alunoId: number[]) {
     };
 };
 
-export async function getTurmasByProfessorId(alunoId: number[]) {
+export async function findTurmasByProfessorId(alunoId: number[]) {
     try {
         const turmas = await TurmaRepositories.findTurmasByProfessoresIds(alunoId);
 
@@ -65,6 +65,32 @@ export async function getTurmasByProfessorId(alunoId: number[]) {
 
         return turmas.map((turma) => TurmaMapper.toResponseTurmasOfUsersGet(turma));
 
+    } catch (err) {
+        throw err;
+    };
+};
+
+export async function getAllTurmasByProfessorId(professorId: number) {
+    try {
+        const turmas = await TurmaRepositories.getAllTurmasByProfessorId(professorId);
+
+        if (!turmas) throw new AppError("Turmas não encontradas", 404);
+
+        return turmas.map((turma) => TurmaMapper.toResponseTurmasGet(turma));
+
+    } catch (err) {
+        throw err;
+    };
+};
+
+export async function getAllTurmasByAlunoId(alunoId: number) {
+    try {
+        const turmas = await TurmaRepositories.getAllTurmasByAlunoId(alunoId);
+
+        if (!turmas) throw new AppError("Turmas não encontradas", 404);
+
+        return turmas.map((turma) => TurmaMapper.toResponseTurmasGetForAluno(turma));
+        
     } catch (err) {
         throw err;
     };

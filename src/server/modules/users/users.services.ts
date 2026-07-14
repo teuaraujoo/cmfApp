@@ -249,8 +249,8 @@ export async function getNextEngagement(id: number) {
     .sort((a, b) => a.inicio.getTime() - b.inicio.getTime())[0] ?? null;
 
   const turmas = role === "PROFESSOR"
-    ? await TurmaRepositories.getTurmasByProfessorId(findUserByRole.id, hoje.getDay())
-    : await TurmaRepositories.getTurmasByAlunoId(findUserByRole.id, hoje.getDay());
+    ? await TurmaRepositories.getTurmasByProfessorIdAndDay(findUserByRole.id, hoje.getDay())
+    : await TurmaRepositories.getTurmasByAlunoIdAndDay(findUserByRole.id, hoje.getDay());
 
   const nextTurma = turmas.map(turma => {
     const agenda = turma.turma_agenda.find((a) => a.dia_semana === diaSemana);
