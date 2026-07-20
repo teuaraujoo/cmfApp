@@ -89,6 +89,7 @@ export async function getAllTurmasByAlunoId(alunoId: number) {
 
         if (!turmas) throw new AppError("Turmas não encontradas", 404);
 
+        
         return turmas.map((turma) => TurmaMapper.toResponseTurmasGetForAluno(turma));
         
     } catch (err) {

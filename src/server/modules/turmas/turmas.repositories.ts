@@ -193,6 +193,11 @@ export class TurmaRepositories {
                         }
                     }
                 },
+                _count: {
+                    select: {
+                        turma_alunos: true
+                    }
+                }
             },
         });
     };

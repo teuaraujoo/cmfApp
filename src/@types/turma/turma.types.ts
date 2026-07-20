@@ -71,6 +71,58 @@ export type TurmaDashboardItem = {
   professores: TurmaProfessor[];
 };
 
+export type TurmaApiPortalResponse = {
+  id: number;
+  nome: string;
+  horas_semana: number | string | { toString(): string };
+  status: string;
+  vigencia_inicio: string | Date | null;
+  vigencia_fim: string | Date | null;
+  modalidade: TurmaModalidade | string | null;
+  turma_agenda: Array<{
+    horario_inicio: string;
+    horario_fim: string;
+    dia_semana: string | number;
+  }>;
+  turma_alunos?: Array<{
+    id: number;
+    turma_id: number;
+    alunos_id: number;
+    aluno: {
+      nome: string;
+      email: string;
+      serie: string | null;
+    };
+  }>;
+  turma_professores?: Array<{
+    id: number;
+    turma_id: number;
+    professor_id: number;
+    professor: {
+      nome: string;
+      email: string;
+      materia: string;
+    };
+  }>;
+  alunosCount?: number;
+}
+
+export type TurmaPortalItem = {
+  id: number;
+  nome: string;
+  horas_semana: number;
+  status: string;
+  vigencia_inicio: string;
+  vigencia_fim: string;
+  modalidade_id?: number;
+  modalidade: string;
+  diasSemana: (string | number)[];
+  agenda: TurmaAgenda[];
+  alunos?: TurmaAluno[];
+  professores?: TurmaProfessor[];
+  alunosCount?: number;
+}
+
 export type TurmaNextEngagement = {
   id: number;
   nome: string;

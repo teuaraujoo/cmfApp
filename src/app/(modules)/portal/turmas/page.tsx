@@ -1,10 +1,10 @@
-import { TurmaApiResponse } from "@/@types/turma/turma.types";
-import { toTurmaDashboardItems } from "@/components/dashboard/turmas/turmas-view.mapper";
-import { PortalPlaceholderPage } from "@/components/portal/home/PortalPlaceholderPage";
+import { TurmaApiPortalResponse } from "@/@types/turma/turma.types";
+import { toTurmaPortalItem } from "@/components/portal/turmas/turmas-portal-view.mapper";
+import PortalTurmasPage from "@/components/portal/turmas/PortalTurmasPage";
 import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
 import { getAllTurmasByProfessorIdForProfessor, getAllTurmasByAlunoIdForAluno } from "@/server/modules/turmas/turmas.queries";
 
-export default async function PortalTurmasPage() {
+export default async function PortalTurmasRoute() {
   const { appUser } = await getCurrentAppUser();
   let id;
 
@@ -18,12 +18,11 @@ export default async function PortalTurmasPage() {
 
   if (!id) return;
 
-  const turmas = appUser.role === "PROFESSOR" 
-    ? await getAllTurmasByProfessorIdForProfessor(id) 
+  const turmas = appUser.role === "PROFESSOR"
+    ? await getAllTurmasByProfessorIdForProfessor(id)
     : await getAllTurmasByAlunoIdForAluno(id);
 
-  // const turmasF = toTurmaDashboardItems(turmas as TurmaApiResponse[]);
-  console.log("turmas: ", turmas);
+  const turmasPortal = turmas.map((turma) => toTurmaPortalItem(turma as TurmaApiPortalResponse))
 
-  return <PortalPlaceholderPage title="Turmas" />;
+  return < PortalTurmasPage turmas={turmasPortal} />;
 }

@@ -31,3 +31,11 @@ export async function getAllTurmasByProfessorIdForProfessor(id: number) {
 export async function getAllTurmasByAlunoIdForAluno(id: number) {
     return getAllTurmasByAlunoId(id);
 };
+
+export async function getTurmaByIdForAluno(id: number) {
+
+};
+
+export async function getTurmaByIdForProfessor(id: number) {
+
+};

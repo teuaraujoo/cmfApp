@@ -48,16 +48,27 @@ export function formatBirthDay(value?: string | Date | null) {
 
 
 export function formatDate(value: string) {
-  return new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" }).format(
-    new Date(`${value}T00:00:00Z`),
-  );
+    return new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" }).format(
+        new Date(`${value}T00:00:00Z`),
+    );
 };
 
 export function formatCalendarTime(value: Date) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "UTC",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(value);
+    return new Intl.DateTimeFormat("pt-BR", {
+        timeZone: "UTC",
+        hour: "2-digit",
+        minute: "2-digit",
+    }).format(value);
 };
 
+export function toDateInputValue(value: string | Date | null) {
+    if (!value) {
+        return "";
+    };
+
+    if (value instanceof Date) {
+        return value.toISOString().slice(0, 10);
+    };
+
+    return value.slice(0, 10);
+};

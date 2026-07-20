@@ -40,6 +40,11 @@ type TurmaWithRelationsForAluno = Prisma.turmasGetPayload<{
                 };
             };
         };
+        _count: {
+            select: {
+                turma_alunos: true
+            }
+        };
     };
 }>;
 
@@ -105,7 +110,9 @@ export class TurmaMapper {
             vigencia_inicio: turma.vigencia_inicio,
             vigencia_fim: turma.vigencia_fim,
             modalidade: turma.modalidades,
-            turma_agenda: TurmaAgendaMapper.toResponseTurmaAgendaGet(turma.turma_agenda)
+            turma_agenda: TurmaAgendaMapper.toResponseTurmaAgendaGet(turma.turma_agenda),
+            turma_professores: TurmaProfessoresMapper.toResponseTurmaProfessoresGet(turma.turma_professores),
+            alunosCount: turma._count.turma_alunos
         };
     };
 

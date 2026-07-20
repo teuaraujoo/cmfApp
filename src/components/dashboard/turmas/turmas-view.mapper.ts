@@ -1,4 +1,5 @@
 import type { TurmaApiResponse, TurmaDashboardItem } from "@/@types/turma/turma.types";
+import { toDateInputValue } from "@/utils/date-utils";
 
 export function toTurmaDashboardItems(
   turmas: TurmaApiResponse[],
@@ -43,15 +44,3 @@ export function toTurmaDashboardItem(turma: TurmaApiResponse): TurmaDashboardIte
     })),
   };
 }
-
-function toDateInputValue(value: string | Date | null) {
-  if (!value) {
-    return "";
-  };
-
-  if (value instanceof Date) {
-    return value.toISOString().slice(0, 10);
-  };
-
-  return value.slice(0, 10);
-};
