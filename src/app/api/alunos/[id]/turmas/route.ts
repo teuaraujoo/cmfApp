@@ -2,7 +2,7 @@
 
 import { handleApiError } from "@/server/error/handle-api-error";
 import { requireAdminUser } from "@/server/modules/auth/auth.services";
-import { getTurmasByAlunoId } from "@/server/modules/turmas/turmas.services"
+import { getAllTurmasByAlunoId } from "@/server/modules/turmas/turmas.services"
 
 export async function GET(
     _request: Request,
@@ -12,7 +12,7 @@ export async function GET(
         await requireAdminUser();
 
         const { id } = await params;
-        const turmas = await getTurmasByAlunoId([Number(id)]);
+        const turmas = await getAllTurmasByAlunoId(Number(id));
 
         return Response.json(
             {
