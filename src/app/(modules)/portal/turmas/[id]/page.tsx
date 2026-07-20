@@ -1,4 +1,4 @@
-export function TurmaDetailsRoute() {
+export default function TurmaDetailsRoute() {
     return (
         <>
             <h1>Hello World</h1>
