@@ -135,7 +135,8 @@ export default function AulasSemanaDashboardPage({ aulas, alunosWithAula }: { au
     });
   };
 
-  async function handleFinalizeAula(aula: Aula) {
+  async function handleFinalizeAula(aula: Aula, notes: string) {
+    console.log("aula: ", aula);
     setLoading(true);
 
     if (!selectedAula) {

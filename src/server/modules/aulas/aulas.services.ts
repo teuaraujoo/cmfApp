@@ -133,11 +133,6 @@ export async function createAula(body: CreateAulasBody) {
     const data = createAulasSchema.parse(body);
     await AulaValidation.validateAula(data);
 
-    console.log("TZ:", process.env.TZ);
-    console.log("Intl:", Intl.DateTimeFormat().resolvedOptions().timeZone);
-    console.log("Now:", new Date());
-    console.log("ISO:", new Date().toISOString());
-
     try {
         const aula = await AulasRepositories.createAula(AulasMapper.toPrismaCreate(data));
 
@@ -189,13 +184,13 @@ export async function startAula(aulaId: number, actor: Actor) {
     };
 };
 
-export async function finishAula(aulaId: number, body: unknown, actor: Actor) {
+export async function finishAula(aulaId: number, body: string, actor: Actor) {
     try {
         if (!aulaId || aulaId <= 0) {
             throw new AppError("ID da aula inválido!", 400);
         };
 
-        const { notas } = finishAulaSchema.parse(body);
+        const data = finishAulaSchema.parse(body)
         const now = new Date();
 
         const aula = await AulasRepositories.getAulaById(aulaId);
@@ -210,9 +205,9 @@ export async function finishAula(aulaId: number, body: unknown, actor: Actor) {
 
         if (now < aula.ended_at && aula.status !== "EM_ANDAMENTO") throw new AppError("Aula ainda não pode ser finalizada!", 409);
 
-        const data = AulasMapper.toPrismaFinish(notas, now, actor);
+        const mapedAula = AulasMapper.toPrismaFinish(data, now, actor);
 
-        const finishAula = await AulasRepositories.finishAula(aulaId, data);
+        const finishAula = await AulasRepositories.finishAula(aulaId, mapedAula);
 
         return finishAula;
 

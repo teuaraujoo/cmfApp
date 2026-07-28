@@ -18,7 +18,7 @@ async function aulasRequest(
                 "Content-Type": "application/json"
             },
             credentials: "same-origin",
-            body: method === "DELETE" ? undefined : typeof body === "string" ? JSON.stringify({ body }) : JSON.stringify(body)
+            body: method === "DELETE" ? undefined : JSON.stringify(body)
         });
 
         if (!response) {

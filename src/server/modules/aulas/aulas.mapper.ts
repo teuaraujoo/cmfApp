@@ -64,7 +64,7 @@ export class AulasMapper {
             finished_by: actor.userId,
             finished_role: actor.role,
             finished_at: now,
-            notas: notas ?? null,
+            notas: notas,
             status: "FINALIZADA",
             encerrada: true
         };

@@ -18,7 +18,7 @@ type FinalizarAulaDialogProps = {
   loading: boolean;
   onNotesChange: (notes: string) => void;
   onClose: () => void;
-  onFinalize: (aulas: Aula) => Promise<void>;
+  onFinalize: (aulas: Aula, notes: string) => Promise<void>;
 };
 
 export function FinalizarAulaDialog({
@@ -95,7 +95,7 @@ export function FinalizarAulaDialog({
           </Button>
           <Button
             type="button"
-            onClick={() => void onFinalize(aula!)}
+            onClick={() => void onFinalize(aula!, notes)}
             className="cursor-pointer bg-red-700 text-white hover:bg-red-600"
             disabled={loading}
           >

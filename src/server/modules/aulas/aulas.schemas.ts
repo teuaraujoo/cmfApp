@@ -10,9 +10,7 @@ export const createAulasSchema = z.object({
     ended_at: z.coerce.date()
 });
 
-export const finishAulaSchema = z.object({
-    notas: z.string().optional()
-});
+export const finishAulaSchema = z.string().optional();
 
 export type CreateAulasBody = z.infer<typeof createAulasSchema>;
 export type FinishAulaBody = z.infer<typeof finishAulaSchema>;
