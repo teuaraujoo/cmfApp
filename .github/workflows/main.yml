@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branchese:
+    branches:
       - main
 
   pull_request:
@@ -13,28 +13,37 @@ jobs:
   validate:
     runs-on: ubuntu-latest
 
-  defaults:
-    run:
-      working-directory:
+    defaults:
+      run:
+        working-directory: .
 
   steps:
     - name: Checkout
       uses: actions/checkout@v4
 
     - name: Setup Node.js
-      uses: actions/checkout@v4
+      uses: actions/setup-node@v4
       with:
         node-version: 22
-        cache-dependency-path: api/yarn.lock
+        cache-dependency-path: yarn.lock
 
     - name: Enable Corepack
       run: corepack enable
 
+    - name: Check Versions
+      run: |
+        node -v
+        corepack --version
+        yarn -v
+
     - name: Install Dependecies
-      run: yarn install --imutable
+      run: yarn install --immutable
 
     - name: Generate Prisma
       run: yarn prisma generate
+
+    - name: Type Check
+      run: yarn tsc --noEmit
 
     - name: Build
       run: yarn build
@@ -43,9 +52,9 @@ jobs:
       run: yarn global add vercel@latest
 
     - name: Pull Vercel Enviroment
-      run: vercel pull --yes --enviroment=production --token=${{ secrets.VERCEL_TOKEN }}
+      run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-    - name: Build Project 
+    - name: Build Project
       run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
     - name: Deploy to Vercel
