@@ -46,7 +46,7 @@ jobs:
         run: yarn tsc --noEmit
 
       - name: Install Vercel CLI
-        run: yarn global add vercel@latest
+        run: corepack yarn dlx vercel --version
 
       - name: Pull Vercel Enviroment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
