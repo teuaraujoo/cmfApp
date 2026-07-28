@@ -133,6 +133,11 @@ export async function createAula(body: CreateAulasBody) {
     const data = createAulasSchema.parse(body);
     await AulaValidation.validateAula(data);
 
+    console.log("TZ:", process.env.TZ);
+    console.log("Intl:", Intl.DateTimeFormat().resolvedOptions().timeZone);
+    console.log("Now:", new Date());
+    console.log("ISO:", new Date().toISOString());
+
     try {
         const aula = await AulasRepositories.createAula(AulasMapper.toPrismaCreate(data));
 
@@ -147,7 +152,7 @@ export async function deleteAula(aulaId: number) {
     try {
         const aula = await AulasRepositories.getAulaById(aulaId);
 
-        if (aula?.status !== "AGENDADA") throw new AppError("Aula já iniciadas não podems ser excluídas!");
+        if (aula?.status !== "AGENDADA") throw new AppError("Aula já iniciadas ou excluidas não podem ser excluídas!");
 
         if (!aula) throw new AppError("Aula não encontrada!");
 
