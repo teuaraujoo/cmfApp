@@ -84,7 +84,7 @@ function buildPayload(data: FormData) {
         aluno_id: getPositiveNumber(data, "aluno", "Aluno"),
         professor_id: getPositiveNumber(data, "professor", "Professor"),
         modalidade_id: getPositiveNumber(data, "modalidade", "Modalidade"),
-        started_at: `${aulaDate}T${horarioInicio}:00`,
-        ended_at: `${aulaDate}T${horarioFim}:00`
+        started_at: startedAt.toISOString(),
+        ended_at: endedAt.toISOString()
     };
 };
