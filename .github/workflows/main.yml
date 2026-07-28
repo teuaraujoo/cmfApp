@@ -45,9 +45,6 @@ jobs:
       - name: Type Check
         run: yarn tsc --noEmit
 
-      - name: Build
-        run: yarn build
-
       - name: Install Vercel CLI
         run: yarn global add vercel@latest
 
