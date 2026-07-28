@@ -147,7 +147,7 @@ export async function deleteAula(aulaId: number) {
     try {
         const aula = await AulasRepositories.getAulaById(aulaId);
 
-        if (aula?.status !== "AGENDADA") throw new AppError("Aula já iniciadas ou excluidas não podem ser excluídas!");
+        if (aula?.status !== "AGENDADA" && aula?.status !== "PENDENTE_FINALIZAÇÃO") throw new AppError("Aulas já iniciadas não podem ser excluídas!");
 
         if (!aula) throw new AppError("Aula não encontrada!");
 
