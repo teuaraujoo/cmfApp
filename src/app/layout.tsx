@@ -7,10 +7,10 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
+const appOrigin = process.env.APP_ORIGIN || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.APP_ORIGIN ?? "http://localhost:3000",
-  ),
+  metadataBase: URL.canParse(appOrigin) ? new URL(appOrigin) : new URL("http://localhost:3000"),
   title: {
     default: "CMF | Gestão Educacional em um só painel",
     template: "%s | CMF",
