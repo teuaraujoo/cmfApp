@@ -46,7 +46,7 @@ jobs:
         run: yarn tsc --noEmit
 
       - name: Install Vercel CLI
-        run: corepack yarn dlx vercel --version
+        run: npm install -g vercel
 
       - name: Pull Vercel Enviroment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
