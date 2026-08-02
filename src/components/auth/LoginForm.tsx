@@ -51,7 +51,7 @@ export default function LoginForm() {
         router.replace("/change-password");
       } else {
         toast.success(`${result.message} Bem vindo(a)`);
-        router.replace("/portal");
+        router.replace("/portal/home");
       };
 
     } catch {
