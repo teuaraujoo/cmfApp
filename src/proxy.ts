@@ -22,13 +22,12 @@ const publicAsset = (pathname: string) => {
 
 function extractAccessToken(cookieValue: string): string | null {
     try {
-        const base64 = cookieValue.replace("base64-", "");
-
+        const base64 = cookieValue.startsWith("base64-") ? cookieValue.replace("base64-", "") : cookieValue;
         const decoded = atob(base64);
-
         const parsed = JSON.parse(decoded);
+        const accessToken = parsed?.access_token;
 
-        return parsed?.access_token ?? null;
+        return typeof accessToken === "string" && accessToken.includes(".") ? accessToken : null;
     } catch {
         return null;
     };
@@ -60,12 +59,36 @@ export async function proxy(request: NextRequest) {
     };
 
     const accessToken = extractAccessToken(authToken.value);
-    if (!accessToken) return NextResponse.next();
+    if (!accessToken) {
+        if (publicRoute) {
+            return NextResponse.next();
+        };
 
-    const decodedToken = decodeJwt(accessToken) as {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/";
+
+        const response = NextResponse.redirect(redirectUrl);
+        response.cookies.delete(process.env.JWT_TOKEN_NAME);
+
+        return response;
+    };
+
+    let decodedToken: {
         user_metadata?: { role?: string, must_change_password: boolean };
         app_metadata?: { role?: string, must_change_password: boolean };
     };
+
+    try {
+        decodedToken = decodeJwt(accessToken) as typeof decodedToken;
+    } catch {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = publicRoute ? publicRoute.path : "/";
+
+        const response = NextResponse.redirect(redirectUrl);
+        response.cookies.delete(process.env.JWT_TOKEN_NAME);
+
+        return response;
+    }
 
     const role = decodedToken.user_metadata?.role ?? decodedToken.app_metadata?.role;
     const mustChangePassword = decodedToken.user_metadata?.must_change_password;
