@@ -35,7 +35,7 @@ export async function createUser(body: CreateUserBody) {
 
   const { data: authData, error: authError } = await adminSupabase.auth.admin.createUser({
     email: data.email,
-    password: 'Temporaria1234@',
+    password: process.env.USER_TEMPORARY_PASSWORD,
     email_confirm: true,
     user_metadata: {
       role: data.role,
