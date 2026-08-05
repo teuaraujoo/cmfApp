@@ -112,6 +112,7 @@ export class AulasMapper {
             encerrada: aula.encerrada,
             status: aula.status,
             finished_at: aula.finished_at,
+            notas: aula.notas,
             aluno: {
                 nome: aula.alunos.users.nome,
                 serie: aula.alunos.serie

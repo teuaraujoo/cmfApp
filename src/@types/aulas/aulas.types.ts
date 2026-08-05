@@ -40,6 +40,27 @@ export type Aula = {
   };
 };
 
+export type AulaPortal = {
+  id: number;
+  aluno_id: number;
+  professor_id: number;
+  modalidade: string;
+  inicio: Date;
+  fim: Date;
+  encerrada: boolean;
+  status: AulaStatus;
+  notas?: string | null;
+  finished_at?: Date | null;
+  aluno?: {
+    nome: string;
+    serie: string | null;
+  };
+  professor?: {
+    nome: string;
+    materia: string;
+  };
+};
+
 export type AulasPagination = {
   page: number;
   pageSize: number;

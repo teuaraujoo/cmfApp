@@ -97,7 +97,7 @@ export function PortalHomePage({ userInfo, aula, turma }: { userInfo: UserInfo, 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-950 dark:text-white">
-            Próximo compromisso
+            Próximos compromissos
           </h2>
         </div>
 
