@@ -1,22 +1,11 @@
 import { PortalPlaceholderPage } from "@/components/portal/home/PortalPlaceholderPage";
 import { getAulasByAlunoIdForAluno, getAulasByProfesorIdForProfessor } from "@/server/modules/aulas/aulas.queries";
-import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
+import { getPortalUserContext } from "@/server/modules/auth/auth.services";
 
 export default async function PortalAulasPage() {
-  const { appUser } = await getCurrentAppUser();
-  let id;
+  const { role, id } = await getPortalUserContext();
 
-  if (!appUser) return;
-
-  if (appUser.alunos) {
-    id = appUser.alunos.id;
-  } else if (appUser.professores) {
-    id = appUser.professores?.id;
-  };
-
-  if (!id) return;
-
-  const aulas = appUser.role === "PROFESSOR"
+  const aulas = role === "PROFESSOR"
     ? await getAulasByProfesorIdForProfessor(id)
     : await getAulasByAlunoIdForAluno(id)
 

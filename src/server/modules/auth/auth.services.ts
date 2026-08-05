@@ -116,6 +116,35 @@ export const getCurrentAppUser = cache(async () => {
   };
 });
 
+export const getPortalUserContext = cache(async () => {
+  const { appUser } = await getCurrentAppUser();
+
+  if (appUser.role === "PROFESSOR") {
+    const professorId = appUser.professores?.id;
+
+    if (!professorId) throw new AppError("Perfil de professor não encontrado.", 403);
+    return { role: "PROFESSOR", id: professorId }
+  };
+
+  if (appUser.role === "ALUNO") {
+    const alunoId = appUser.alunos?.id;
+
+    if (!alunoId) throw new AppError("Perfil de aluno não encontrado.", 403);
+
+    return { role: "ALUNO", id: alunoId };
+  };
+
+  if (appUser.role === "ADMIN") {
+    const adminId = appUser.id;
+
+    if (!adminId) throw new AppError("Perfil de administrador não encontrado.", 403);
+
+    return { role: "ADMIN", id: adminId }
+  };
+
+  throw new AppError("Acesso não permitido para o portal.", 403);
+});
+
 // Retorna uma sessão válida já liberada para uso normal do sistema.
 async function requireOnboardedUser() {
   const session = await getCurrentAppUser();

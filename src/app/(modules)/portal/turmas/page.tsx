@@ -1,24 +1,13 @@
 import { TurmaApiPortalResponse } from "@/@types/turma/turma.types";
 import { toTurmaPortalItem } from "@/components/portal/turmas/turmas-portal-view.mapper";
 import PortalTurmasPage from "@/components/portal/turmas/PortalTurmasPage";
-import { getCurrentAppUser } from "@/server/modules/auth/auth.services";
+import { getPortalUserContext } from "@/server/modules/auth/auth.services";
 import { getAllTurmasByProfessorIdForProfessor, getAllTurmasByAlunoIdForAluno } from "@/server/modules/turmas/turmas.queries";
 
 export default async function PortalTurmasRoute() {
-  const { appUser } = await getCurrentAppUser();
-  let id;
+  const { role, id } = await getPortalUserContext();
 
-  if (!appUser) return;
-
-  if (appUser.alunos) {
-    id = appUser.alunos.id;
-  } else if (appUser.professores) {
-    id = appUser.professores?.id;
-  };
-
-  if (!id) return;
-
-  const turmas = appUser.role === "PROFESSOR"
+  const turmas = role === "PROFESSOR"
     ? await getAllTurmasByProfessorIdForProfessor(id)
     : await getAllTurmasByAlunoIdForAluno(id);
 
