@@ -52,7 +52,7 @@ export function AulaDetailsDialog({
             <DetailItem label="Professor" value={aula.professor.nome} />
             <DetailItem label="Disciplina" value={aula.professor.materia} />
             <DetailItem label="Modalidade" value={aula.modalidade} />
-            <DetailItem label="Dia" value={DIAS_SEMANAS[aula.inicio.getUTCDay()]} />
+            <DetailItem label="Dia" value={DIAS_SEMANAS[aula.inicio.getDay()]} />
             <DetailItem label="Data" value={aula.inicio.toLocaleDateString("pt-BR")} />
             <DetailItem
               label="Horário"
