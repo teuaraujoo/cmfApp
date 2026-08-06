@@ -5,6 +5,7 @@ import { CalendarX } from "lucide-react";
 import type { AulaPortal } from "@/@types/aulas/aulas.types";
 import PortalAulasGrid from "./PortalAulasGrid";
 import PortalAulasHeader from "./PortalAulasHeader";
+import PortalAulasDetailsDialog from "./PortalAulasDetailsDialog";
 
 type Props = {
   aulas: AulaPortal[]
@@ -12,6 +13,7 @@ type Props = {
 
 export default function PortalAulasPage({ aulas }: Props) {
   const [search, setSearch] = useState("");
+  const [aula, setAula] = useState<AulaPortal | null>(null);
 
   const filteredAulas = useMemo(() => {
     const value = search
@@ -44,6 +46,11 @@ export default function PortalAulasPage({ aulas }: Props) {
         onSearchChange={setSearch}
       />
 
+      <PortalAulasDetailsDialog
+        aula={aula}
+        onClose={() => setAula(null)}
+      />
+
       {!filteredAulas.length ? (
         <section className="flex min-h-80 flex-col items-center justify-center rounded-3xl border border-dashed border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
           <CalendarX className="mb-3 size-10 text-gray-400" />
@@ -57,7 +64,7 @@ export default function PortalAulasPage({ aulas }: Props) {
           </p>
         </section>
       ) : (
-        <PortalAulasGrid aulas={filteredAulas} />
+        <PortalAulasGrid aulas={filteredAulas} onOpenAula={setAula}  />
       )}
     </main>
   );

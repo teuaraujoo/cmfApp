@@ -3,13 +3,14 @@ import PortalAulaCard from "./PortalAulasCard";
 
 type Props = {
   aulas: AulaPortal[]
+  onOpenAula?: (aula: AulaPortal) => void
 };
 
-export default function PortalAulasGrid({ aulas }: Props) {
+export default function PortalAulasGrid({ aulas, onOpenAula }: Props) {
   return (
     <section className="grid gap-4">
       {aulas.map((aula) => (
-        <PortalAulaCard key={aula.id} aula={aula} />
+        <PortalAulaCard key={aula.id} aula={aula} onOpenAula={onOpenAula} />
       ))}
     </section>
   );

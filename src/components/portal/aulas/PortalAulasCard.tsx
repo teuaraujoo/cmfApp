@@ -10,10 +10,11 @@ import { formatHorarioLocal } from "@/utils/date-utils";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  aula: AulaPortal
+  aula: AulaPortal;
+  onOpenAula?: (aula: AulaPortal) => void
 };
 
-export default function PortalAulaCard({ aula }: Props) {
+export default function PortalAulaCard({ aula, onOpenAula }: Props) {
   return (
     <article className="rounded-3xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03] sm:p-5">
       <div className="flex items-start justify-between gap-3">
@@ -67,6 +68,7 @@ export default function PortalAulaCard({ aula }: Props) {
       <Button
         className="w-full gap-2 mt-6"
         variant="outline"
+        onClick={() => onOpenAula?.(aula)}
       >
         <Eye size={18} />
         Ver detalhes
