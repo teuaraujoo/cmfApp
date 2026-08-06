@@ -4,7 +4,6 @@ import Link from "next/link";
 import { BookOpen, GraduationCap, Home } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTheme } from "@/context/ThemeContext";
 
 import { cn } from "@/lib/utils";
 
@@ -29,7 +28,6 @@ const navItems = [
 export function PortalBottomNavigation() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  const { theme } = useTheme();
 
   useEffect(() => {
     const id = window.requestAnimationFrame(() => {
@@ -77,12 +75,7 @@ export function PortalBottomNavigation() {
   if (!mounted) {
     return (
       <nav className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+14px)]" aria-hidden="true">
-        <div
-          className={cn(
-            "flex h-16 w-full max-w-sm items-center justify-between rounded-full border border-white/10 px-2 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-3xl",
-            theme === "dark" ? "bg-slate-900/80 text-[var(--foreground)]" : "bg-[var(--background)] text-[var(--foreground)]"
-          )}
-        >
+        <div className="flex h-16 w-full max-w-sm items-center justify-between rounded-full border border-white/10 bg-[var(--background)] text-[var(--foreground)] px-2 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-3xl dark:bg-slate-900/80">
           {navItems.map((item) => {
             const Icon = item.icon;
 
@@ -107,12 +100,7 @@ export function PortalBottomNavigation() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+14px)]">
-      <div
-        className={cn(
-          "flex h-16 w-full max-w-sm items-center justify-between rounded-full border border-white/10 px-2 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-3xl",
-          theme === "dark" ? "bg-slate-900/80 text-[var(--foreground)]" : "bg-[var(--background)] text-[var(--foreground)]"
-        )}
-      >
+      <div className="flex h-16 w-full max-w-sm items-center justify-between rounded-full border border-white/10 bg-[var(--background)] text-[var(--foreground)] px-2 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-3xl dark:bg-slate-900/80">
         {navContent}
       </div>
     </nav>
